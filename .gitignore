@@ -33,6 +33,7 @@ _testmain.go
 /.vscode
 /output
 dousheng_server
+/default.etcd
 *.local.yml
 dumped_hertz_remote_config.json
 
