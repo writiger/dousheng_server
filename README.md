@@ -19,8 +19,15 @@ hz new 项目名
 ## 微服务内框架：kitex
 
 ~~~ cmd
-kitex -module 模块名 -service 服务名 idl文件路径
+kitex -module dousheng_server -service 服务名 idl文件路径
 ~~~
+
+### 服务端口预分配
+
+| 服务 | 端口 |
+| --- | ----------- |
+| userservice | 8900 |
+| snowflakeservice | 8901 |
 
 ## orm框架：gorm
 
