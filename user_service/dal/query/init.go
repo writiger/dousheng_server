@@ -1,6 +1,7 @@
 package query
 
 import (
+	"dousheng_server/user_service/dal/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -13,5 +14,10 @@ func init() {
 	GormClient, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err.Error())
+	}
+
+	err = GormClient.AutoMigrate(&model.User{})
+	if err != nil {
+		panic("gorm init table failed ")
 	}
 }

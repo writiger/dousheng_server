@@ -22,7 +22,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserCenter"
 	handlerType := (*kitex_gen.UserCenter)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"Ping": kitex.NewMethodInfo(pingHandler, newPingArgs, newPingResult, false),
+		"Ping":     kitex.NewMethodInfo(pingHandler, newPingArgs, newPingResult, false),
+		"Register": kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -183,6 +184,151 @@ func (p *PingResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func registerHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.RegisterRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).Register(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *RegisterArgs:
+		success, err := handler.(kitex_gen.UserCenter).Register(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RegisterResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newRegisterArgs() interface{} {
+	return &RegisterArgs{}
+}
+
+func newRegisterResult() interface{} {
+	return &RegisterResult{}
+}
+
+type RegisterArgs struct {
+	Req *kitex_gen.RegisterRequest
+}
+
+func (p *RegisterArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.RegisterRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *RegisterArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *RegisterArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *RegisterArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in RegisterArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RegisterArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.RegisterRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RegisterArgs_Req_DEFAULT *kitex_gen.RegisterRequest
+
+func (p *RegisterArgs) GetReq() *kitex_gen.RegisterRequest {
+	if !p.IsSetReq() {
+		return RegisterArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RegisterArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type RegisterResult struct {
+	Success *kitex_gen.RegisterResponse
+}
+
+var RegisterResult_Success_DEFAULT *kitex_gen.RegisterResponse
+
+func (p *RegisterResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.RegisterResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *RegisterResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *RegisterResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *RegisterResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in RegisterResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RegisterResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.RegisterResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RegisterResult) GetSuccess() *kitex_gen.RegisterResponse {
+	if !p.IsSetSuccess() {
+		return RegisterResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RegisterResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.RegisterResponse)
+}
+
+func (p *RegisterResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -198,6 +344,16 @@ func (p *kClient) Ping(ctx context.Context, Req *kitex_gen.Request) (r *kitex_ge
 	_args.Req = Req
 	var _result PingResult
 	if err = p.c.Call(ctx, "Ping", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Register(ctx context.Context, Req *kitex_gen.RegisterRequest) (r *kitex_gen.RegisterResponse, err error) {
+	var _args RegisterArgs
+	_args.Req = Req
+	var _result RegisterResult
+	if err = p.c.Call(ctx, "Register", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

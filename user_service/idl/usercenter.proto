@@ -11,6 +11,19 @@ message Response {
   string pong = 1;
 }
 
+message RegisterRequest {
+  string username = 1; // 注册用户名，最长32个字符
+  string password = 2; // 密码，最长32个字符
+}
+
+message RegisterResponse {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  int64 user_id = 3; // 用户id
+  string token = 4; // 用户鉴权token
+}
+
 service UserCenter {
   rpc Ping(Request) returns(Response);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
 }
