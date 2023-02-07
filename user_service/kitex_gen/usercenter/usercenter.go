@@ -26,7 +26,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"Register": kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
 	}
 	extra := map[string]interface{}{
-		"PackageName": "user",
+		"PackageName": "user.go",
 	}
 	svcInfo := &kitex.ServiceInfo{
 		ServiceName:     serviceName,

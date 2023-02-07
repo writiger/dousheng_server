@@ -289,16 +289,16 @@ func file_idl_usercenter_proto_rawDescGZIP() []byte {
 
 var file_idl_usercenter_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_idl_usercenter_proto_goTypes = []interface{}{
-	(*Request)(nil),          // 0: user.Request
-	(*Response)(nil),         // 1: user.Response
-	(*RegisterRequest)(nil),  // 2: user.RegisterRequest
-	(*RegisterResponse)(nil), // 3: user.RegisterResponse
+	(*Request)(nil),          // 0: user.go.Request
+	(*Response)(nil),         // 1: user.go.Response
+	(*RegisterRequest)(nil),  // 2: user.go.RegisterRequest
+	(*RegisterResponse)(nil), // 3: user.go.RegisterResponse
 }
 var file_idl_usercenter_proto_depIdxs = []int32{
-	0, // 0: user.UserCenter.Ping:input_type -> user.Request
-	2, // 1: user.UserCenter.Register:input_type -> user.RegisterRequest
-	1, // 2: user.UserCenter.Ping:output_type -> user.Response
-	3, // 3: user.UserCenter.Register:output_type -> user.RegisterResponse
+	0, // 0: user.go.UserCenter.Ping:input_type -> user.go.Request
+	2, // 1: user.go.UserCenter.Register:input_type -> user.go.RegisterRequest
+	1, // 2: user.go.UserCenter.Ping:output_type -> user.go.Response
+	3, // 3: user.go.UserCenter.Register:output_type -> user.go.RegisterResponse
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

@@ -3,13 +3,19 @@
 package main
 
 import (
-	handler "dousheng_server/biz/handler"
+	"dousheng_server/biz/handler"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/cloudwego/hertz/pkg/route"
 )
 
 // customizeRegister registers customize routers.
 func customizedRegister(r *server.Hertz) {
 	r.GET("/ping", handler.Ping)
+	dy := r.Group("/douyin")
+	initUserRoute(dy)
+}
 
-	// your code ...
+func initUserRoute(dy *route.RouterGroup) {
+	user := dy.Group("/user")
+	user.POST("/register", handler.Register)
 }
