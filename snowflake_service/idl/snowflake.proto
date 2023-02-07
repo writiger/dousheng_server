@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package snowflake;
+
+option go_package="kitex_gen";
+
+message NewIDRequest {
+}
+
+message NewIDResponse {
+  int64 ID = 1;
+}
+
+service Snowflake {
+  rpc NewID(NewIDRequest) returns(NewIDResponse);
+}
