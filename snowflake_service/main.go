@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dousheng_server/snowflake_service/kitex_gen/kitex_gen/snowflake"
+	"dousheng_server/snowflake_service/kitex_gen/snowflake"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"

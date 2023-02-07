@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package snowflake;
 
-option go_package="kitex_gen";
+option go_package="/";
 
 message NewIDRequest {
 }

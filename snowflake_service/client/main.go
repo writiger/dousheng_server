@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"dousheng_server/snowflake_service/kitex_gen/kitex_gen"
-	"dousheng_server/snowflake_service/kitex_gen/kitex_gen/snowflake"
+	"dousheng_server/snowflake_service/kitex_gen"
+	"dousheng_server/snowflake_service/kitex_gen/snowflake"
 	"github.com/cloudwego/kitex/client"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"

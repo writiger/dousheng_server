@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"dousheng_server/user_service/kitex_gen/kitex_gen"
-	"dousheng_server/user_service/kitex_gen/kitex_gen/usercenter"
+	"dousheng_server/user_service/kitex_gen"
+	"dousheng_server/user_service/kitex_gen/usercenter"
 	"github.com/cloudwego/kitex/client"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
