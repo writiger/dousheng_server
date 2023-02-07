@@ -31,9 +31,9 @@ _testmain.go
 .DS_Store
 /.idea
 /.vscode
-/output
 dousheng_server
-/default.etcd
+/default.etcd/
+*/output/
 *.local.yml
 dumped_hertz_remote_config.json
 
