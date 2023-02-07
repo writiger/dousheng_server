@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"dousheng_server/user_service/kitex_gen/kitex_gen"
+	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/service"
 	"fmt"
 )

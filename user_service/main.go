@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dousheng_server/user_service/kitex_gen/kitex_gen/usercenter"
+	"dousheng_server/user_service/kitex_gen/usercenter"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"

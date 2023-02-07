@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	kitex_gen "dousheng_server/snowflake_service/kitex_gen/kitex_gen"
+	"dousheng_server/snowflake_service/kitex_gen"
 	"dousheng_server/snowflake_service/snowfalke"
 )
 
