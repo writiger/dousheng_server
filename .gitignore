@@ -32,6 +32,8 @@ _testmain.go
 /.idea
 /.vscode
 /output
+dousheng_server
 *.local.yml
 dumped_hertz_remote_config.json
+
 		  

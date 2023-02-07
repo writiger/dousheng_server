@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	snowfalke_gen "dousheng_server/snowflake_service/kitex_gen/kitex_gen"
-	"dousheng_server/snowflake_service/kitex_gen/kitex_gen/snowflake"
+	snowfalke_gen "dousheng_server/snowflake_service/kitex_gen"
+	"dousheng_server/snowflake_service/kitex_gen/snowflake"
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/dal/query"
 	"dousheng_server/user_service/util"
