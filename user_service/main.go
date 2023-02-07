@@ -1,7 +1,7 @@
 package main
 
 import (
-	kitexgen "dousheng_server/user_service/kitex_gen/kitex_gen/usercenter"
+	"dousheng_server/user_service/kitex_gen/kitex_gen/usercenter"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	svr := kitexgen.NewServer(new(UserCenterImpl),
+	svr := usercenter.NewServer(new(UserCenterImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: "userservice"}),
 		server.WithRegistry(r))
 
