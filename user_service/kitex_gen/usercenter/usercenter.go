@@ -24,6 +24,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	methods := map[string]kitex.MethodInfo{
 		"Ping":     kitex.NewMethodInfo(pingHandler, newPingArgs, newPingResult, false),
 		"Register": kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
+		"Login":    kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -272,14 +273,14 @@ func (p *RegisterArgs) IsSetReq() bool {
 }
 
 type RegisterResult struct {
-	Success *kitex_gen.RegisterResponse
+	Success *kitex_gen.BasicResponse
 }
 
-var RegisterResult_Success_DEFAULT *kitex_gen.RegisterResponse
+var RegisterResult_Success_DEFAULT *kitex_gen.BasicResponse
 
 func (p *RegisterResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(kitex_gen.RegisterResponse)
+		p.Success = new(kitex_gen.BasicResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -306,7 +307,7 @@ func (p *RegisterResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *RegisterResult) Unmarshal(in []byte) error {
-	msg := new(kitex_gen.RegisterResponse)
+	msg := new(kitex_gen.BasicResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -314,7 +315,7 @@ func (p *RegisterResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *RegisterResult) GetSuccess() *kitex_gen.RegisterResponse {
+func (p *RegisterResult) GetSuccess() *kitex_gen.BasicResponse {
 	if !p.IsSetSuccess() {
 		return RegisterResult_Success_DEFAULT
 	}
@@ -322,10 +323,155 @@ func (p *RegisterResult) GetSuccess() *kitex_gen.RegisterResponse {
 }
 
 func (p *RegisterResult) SetSuccess(x interface{}) {
-	p.Success = x.(*kitex_gen.RegisterResponse)
+	p.Success = x.(*kitex_gen.BasicResponse)
 }
 
 func (p *RegisterResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func loginHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.LoginRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).Login(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *LoginArgs:
+		success, err := handler.(kitex_gen.UserCenter).Login(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*LoginResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newLoginArgs() interface{} {
+	return &LoginArgs{}
+}
+
+func newLoginResult() interface{} {
+	return &LoginResult{}
+}
+
+type LoginArgs struct {
+	Req *kitex_gen.LoginRequest
+}
+
+func (p *LoginArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.LoginRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *LoginArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *LoginArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *LoginArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in LoginArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *LoginArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.LoginRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var LoginArgs_Req_DEFAULT *kitex_gen.LoginRequest
+
+func (p *LoginArgs) GetReq() *kitex_gen.LoginRequest {
+	if !p.IsSetReq() {
+		return LoginArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *LoginArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type LoginResult struct {
+	Success *kitex_gen.LoginResponse
+}
+
+var LoginResult_Success_DEFAULT *kitex_gen.LoginResponse
+
+func (p *LoginResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.LoginResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *LoginResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *LoginResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *LoginResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in LoginResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *LoginResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.LoginResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *LoginResult) GetSuccess() *kitex_gen.LoginResponse {
+	if !p.IsSetSuccess() {
+		return LoginResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *LoginResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.LoginResponse)
+}
+
+func (p *LoginResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
@@ -349,11 +495,21 @@ func (p *kClient) Ping(ctx context.Context, Req *kitex_gen.Request) (r *kitex_ge
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) Register(ctx context.Context, Req *kitex_gen.RegisterRequest) (r *kitex_gen.RegisterResponse, err error) {
+func (p *kClient) Register(ctx context.Context, Req *kitex_gen.RegisterRequest) (r *kitex_gen.BasicResponse, err error) {
 	var _args RegisterArgs
 	_args.Req = Req
 	var _result RegisterResult
 	if err = p.c.Call(ctx, "Register", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Login(ctx context.Context, Req *kitex_gen.LoginRequest) (r *kitex_gen.LoginResponse, err error) {
+	var _args LoginArgs
+	_args.Req = Req
+	var _result LoginResult
+	if err = p.c.Call(ctx, "Login", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

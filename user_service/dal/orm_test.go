@@ -24,3 +24,55 @@ func TestCreateUser(t *testing.T) {
 		}
 	}
 }
+
+func TestCheckPassword(t *testing.T) {
+	type args struct {
+		name     string
+		password string
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		wantRes bool
+	}{
+		{
+			name: "1. 正确测试",
+			args: args{
+				name:     "hello",
+				password: "test",
+			},
+			wantRes: true,
+		},
+		{
+			name: "2. 错误测试",
+			args: args{
+				name:     "hello",
+				password: "world",
+			},
+			wantRes: false,
+		},
+		{
+			name: "3. 账号不存在测试",
+			args: args{
+				name:     "hello2",
+				password: "test",
+			},
+			wantRes: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res, err := query.CheckPassword(tt.args.name, tt.args.password)
+			if err != nil {
+				t.Fatalf("%s 出错,err : %v", tt.name, err)
+				return
+			}
+			if res != tt.wantRes {
+				t.Fatal("结果出错")
+				return
+			}
+			t.Log(tt.name, "Pass")
+		})
+	}
+}

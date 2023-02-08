@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"dousheng_server/user_service/kitex_gen/kitex_gen"
-	"dousheng_server/user_service/kitex_gen/kitex_gen/usercenter"
+	"dousheng_server/user_service/kitex_gen"
+	"dousheng_server/user_service/kitex_gen/usercenter"
+	"fmt"
 	"github.com/cloudwego/kitex/client"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
@@ -17,11 +18,12 @@ func TestUserCenter_CreateUser(t *testing.T) {
 		log.Fatal(err)
 	}
 	req := kitex_gen.RegisterRequest{
-		Username: "hello",
+		Username: "hello2",
 		Password: "test",
 	}
-	_, err = userClient.Register(context.Background(), &req)
+	resp, err := userClient.Register(context.Background(), &req)
 	if err != nil {
-		return
+		fmt.Println(err.Error())
 	}
+	fmt.Println(resp)
 }

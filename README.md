@@ -13,8 +13,8 @@
 ## 基础接口
 
 - [ ] 视频流
-- [ ] 用户注册
-- [ ] 用户登录
+- [x] 用户注册
+- [x] 用户登录
 - [ ] 用户信息
 - [ ] 视频投稿
 - [ ] 发布列表
@@ -52,8 +52,7 @@ kitex -module dousheng_server -service 服务名 idl文件路径
 ## 服务启动命令
 
 ~~~ cmd
-sh build.sh
-sh output/bootstrap.sh
+sh build.sh && sh output/bootstrap.sh
 ~~~
 
 
