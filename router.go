@@ -18,4 +18,5 @@ func customizedRegister(r *server.Hertz) {
 func initUserRoute(dy *route.RouterGroup) {
 	user := dy.Group("/user")
 	user.POST("/register", handler.Register)
+	user.POST("/login", handler.CheckUser)
 }

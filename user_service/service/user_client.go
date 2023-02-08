@@ -16,27 +16,27 @@ type UserCenter struct {
 }
 
 // CreateUser 注册用户
-func (ucs UserCenter) CreateUser(userName, password string) (int64, string, error) {
+func (uc UserCenter) CreateUser(userName, password string) error {
 	// 1. 判断用户名是否存在
 	existed, err := query.IsUserNameExisted(userName)
-	if err != nil || existed == -1 {
-		return -1, "", err
+	if err != nil {
+		return err
 	}
 
 	if existed == 1 {
-		return -1, "", errors.New("用户名已存在")
+		return errors.New("用户名已存在")
 	}
 	// 2. 生成用户
 	// 获取uuid
 	uuid, err := getUUID()
-
 	if err != nil {
-		return -1, "", err
+		return err
 	}
+
 	// 加密
 	passwd, err := util.HashAndSalt(password)
 	if err != nil {
-		return -1, "", err
+		return err
 	}
 	user := &model.User{
 		UUID:          uuid,
@@ -45,14 +45,19 @@ func (ucs UserCenter) CreateUser(userName, password string) (int64, string, erro
 		FollowCount:   0,
 		FollowerCount: 0,
 	}
+
 	// 3. 保存
 	err = query.CreateUser(user)
 	if err != nil {
-		return -1, "", err
+		return err
 	}
 	// 4. 生成Token返回
+	return nil
+}
 
-	return uuid, "token", nil
+// LoginByPassword 使用用户名-密码登录
+func (uc UserCenter) LoginByPassword(userName, password string) (*model.User, error) {
+	return query.CheckPassword(userName, password)
 }
 
 func getUUID() (int64, error) {

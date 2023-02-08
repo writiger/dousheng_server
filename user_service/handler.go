@@ -19,20 +19,39 @@ func (s *UserCenterImpl) Ping(ctx context.Context, req *kitex_gen.Request) (resp
 }
 
 // Register implements the UserCenterImpl interface.
-func (s *UserCenterImpl) Register(ctx context.Context, req *kitex_gen.RegisterRequest) (*kitex_gen.RegisterResponse, error) {
-	userID, token, err := service.UserCenter{}.CreateUser(req.Username, req.Password)
+func (s *UserCenterImpl) Register(ctx context.Context, req *kitex_gen.RegisterRequest) (*kitex_gen.BasicResponse, error) {
+	err := service.UserCenter{}.CreateUser(req.Username, req.Password)
 	if err != nil {
-		return &kitex_gen.RegisterResponse{
+		return &kitex_gen.BasicResponse{
 			StatusCode: -1,
 			StatusMsg:  "user create failed",
-			UserId:     -1,
-			Token:      "",
 		}, err
 	}
-	return &kitex_gen.RegisterResponse{
+	return &kitex_gen.BasicResponse{
 		StatusCode: 0,
 		StatusMsg:  "success",
-		UserId:     userID,
-		Token:      token,
+	}, nil
+}
+
+// Login implements the UserCenterImpl interface.
+func (s *UserCenterImpl) Login(ctx context.Context, req *kitex_gen.LoginRequest) (resp *kitex_gen.LoginResponse, err error) {
+	userModel, err := service.UserCenter{}.LoginByPassword(req.Username, req.Password)
+
+	if err != nil {
+		return &kitex_gen.LoginResponse{
+			StatusCode: -1,
+			StatusMsg:  "UserCenter{}.LoginByPassword wrong",
+		}, err
+	}
+	if userModel.UUID == 0 {
+		return &kitex_gen.LoginResponse{
+			StatusCode: -1,
+			StatusMsg:  "failed",
+		}, nil
+	}
+	return &kitex_gen.LoginResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+		UserId:     userModel.UUID,
 	}, nil
 }

@@ -7,7 +7,9 @@ import (
 )
 
 func main() {
-	h := server.Default(server.WithHostPorts("0.0.0.0:8080"))
+	h := server.Default(
+		server.WithHostPorts("0.0.0.0:8080"),
+		server.WithHandleMethodNotAllowed(true))
 
 	register(h)
 	h.Spin()

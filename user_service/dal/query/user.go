@@ -2,6 +2,8 @@ package query
 
 import (
 	"dousheng_server/user_service/dal/model"
+	"dousheng_server/user_service/util"
+	"errors"
 )
 
 // CreateUser 添加用户
@@ -21,4 +23,14 @@ func IsUserNameExisted(name string) (int64, error) {
 		return -1, err
 	}
 	return res.RowsAffected, nil
+}
+
+// CheckPassword 判断用户名密码是否正确
+func CheckPassword(name, password string) (*model.User, error) {
+	var user model.User
+	err := GormClient.Where("username = ?", name).Find(&user).Error
+	if !util.ComparePasswords(user.Password, password) {
+		return nil, errors.New("wrong password")
+	}
+	return &user, err
 }
