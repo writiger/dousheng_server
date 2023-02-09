@@ -34,8 +34,8 @@ _testmain.go
 dousheng_server
 /default.etcd/
 */output/
-/static/videos/
-/static/covers/
+static/videos/
+static/covers/
 *.local.yml
 dumped_hertz_remote_config.json
 
