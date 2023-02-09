@@ -54,7 +54,7 @@ func LoginByPassword(username, password string) (int64, error) {
 		Password: password,
 	}
 	resp, err := userClient.Login(context.Background(), &req)
-	if err != nil || resp.StatusCode != 0 {
+	if err != nil {
 		return 0, err
 	}
 	return resp.UserId, nil
@@ -64,7 +64,7 @@ func LoginByPassword(username, password string) (int64, error) {
 func GetUserInfo(uuid int64) (*model.User, error) {
 	req := kitex_gen.GetInfoRequest{Uuid: uuid}
 	resp, err := userClient.GetInfo(context.Background(), &req)
-	if err != nil || resp.StatusCode != 0 {
+	if err != nil {
 		return nil, err
 	}
 	userModel := model.User{

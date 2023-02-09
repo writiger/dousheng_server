@@ -3,13 +3,11 @@ package dal
 import (
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/dal/query"
-	"dousheng_server/user_service/util"
 	"fmt"
 	"testing"
 )
 
 func TestCreateUser(t *testing.T) {
-	fmt.Println(util.HashAndSalt("testing"))
 	user := model.User{
 		Username:      "test",
 		Password:      "test",
@@ -90,4 +88,14 @@ func TestGetInfo(t *testing.T) {
 		}
 		fmt.Println(user2)
 	})
+}
+
+func TestForeignKey(t *testing.T) {
+	var users []model.User
+	err := query.GormClient.Model(&model.User{}).Preload("Videos").Find(&users).Error
+	if err != nil {
+		t.Fatalf(err.Error())
+		return
+	}
+	fmt.Println(users)
 }

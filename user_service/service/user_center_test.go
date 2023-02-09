@@ -18,7 +18,7 @@ func TestUserCenter_CreateUser(t *testing.T) {
 		log.Fatal(err)
 	}
 	req := kitex_gen.RegisterRequest{
-		Username: "hello2",
+		Username: "hello3",
 		Password: "test",
 	}
 	resp, err := userClient.Register(context.Background(), &req)

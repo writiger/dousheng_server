@@ -46,7 +46,8 @@ func Register(ctx context.Context, c *app.RequestContext) {
 // Info 用户信息
 func Info(ctx context.Context, c *app.RequestContext) {
 	// 1. 验证参数
-	user := middleware.JwtMiddleware.IdentityHandler(ctx, c).(*model.User)
+	userGet, _ := c.Get("identity")
+	user := userGet.(*model.User)
 	if strconv.FormatInt(user.UUID, 10) != c.Query("user_id") {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,
