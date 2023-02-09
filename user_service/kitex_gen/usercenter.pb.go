@@ -348,7 +348,7 @@ type GetInfoRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Uuid int64 `protobuf:"varint,1,opt,name=uuid,proto3" json:"uuid,omitempty"`
+	Uuid int64 `protobuf:"varint,1,opt,name=uuidmaker,proto3" json:"uuidmaker,omitempty"`
 }
 
 func (x *GetInfoRequest) Reset() {

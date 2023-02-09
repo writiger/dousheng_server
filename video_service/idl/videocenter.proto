@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package video;
+
+option go_package="/";
+
+message BasicResponse{
+  int64  status_code = 1;
+  string status_msg  = 2;
+}
+
+message PublishRequest{
+  int64  user_id   = 1;
+  string play_url  = 2;
+  string cover_url = 3;
+  string title     = 4;
+}
+
+message PublishResponse{
+  int64  status_code = 1;
+  string status_msg  = 2;
+  int64  uuid        = 3;
+}
+
+message DeleteRequest{
+  int64 uuid = 1;
+}
+
+service VideoCenter {
+  rpc Publish(PublishRequest) returns (PublishResponse);
+  rpc Delete(DeleteRequest) returns (BasicResponse);
+}

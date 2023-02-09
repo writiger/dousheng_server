@@ -16,10 +16,11 @@ var JwtMiddleware *jwt.HertzJWTMiddleware
 func init() {
 	var err error
 	JwtMiddleware, err = jwt.New(&jwt.HertzJWTMiddleware{
-		Key:         []byte("revres_gnehsoud"),
-		Timeout:     time.Hour * 7 * 24,
-		MaxRefresh:  time.Hour * 7 * 24,
-		TokenLookup: "query: token, header: Authorization, cookie: jwt",
+		Key:           []byte("revres_gnehsoud"),
+		Timeout:       time.Hour * 7 * 24,
+		MaxRefresh:    time.Hour * 7 * 24,
+		TokenLookup:   "query: token, header: Authorization, form: token",
+		TokenHeadName: "Bearer",
 		// 解析
 		IdentityHandler: func(ctx context.Context, c *app.RequestContext) interface{} {
 			claims := jwt.ExtractClaims(ctx, c)
@@ -44,11 +45,11 @@ func init() {
 				return "", jwt.ErrMissingLoginValues
 			}
 			uuid, err := rpc.LoginByPassword(username, password)
-			c.Set("uuid", uuid)
+			c.Set("uuidmaker", uuid)
 			return uuid, err
 		},
 		LoginResponse: func(ctx context.Context, c *app.RequestContext, code int, token string, expire time.Time) {
-			uuid, _ := c.Get("uuid")
+			uuid, _ := c.Get("uuidmaker")
 			c.JSON(http.StatusOK, utils.H{
 				"status_code": 0,
 				"status_msg":  "success",

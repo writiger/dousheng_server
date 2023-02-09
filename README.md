@@ -62,8 +62,11 @@ sh build.sh && sh output/bootstrap.sh
 | 服务 | 端口 |
 | --- | ----------- |
 | hertz | 8080 |
-| userservice | 8900 |
-| snowflakeservice | 8901 |
+| user | 8900 |
+| snowflake | 8901 |
+| video | 8902 |
+
+
 
 ## orm框架：gorm
 
@@ -71,11 +74,15 @@ sh build.sh && sh output/bootstrap.sh
 
 ~~~ golang
 type User struct {
-	gorm.Model
-	Username      string `json:"username"`
-	Password      string `json:"password"`
-	FollowCount   int64  `json:"followCount"`
-	FollowerCount int64  `json:"followerCount"`
+	UUID          int64         `gorm:"primaryKey" json:"id"`
+	Username      string        `json:"username"`
+	Password      string        `json:"password"`
+	FollowCount   int64         `json:"follow_count"`
+	FollowerCount int64         `json:"follower_count"`
+	Videos        []model.Video `gorm:"foreignKey:user_id"`
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 ~~~
 

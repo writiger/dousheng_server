@@ -3,29 +3,24 @@
 package main
 
 import (
-	"context"
 	"dousheng_server/biz/handler"
 	"dousheng_server/middleware"
-	"fmt"
-	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/hertz/pkg/route"
 )
 
 // customizeRegister registers customize routers.
 func customizedRegister(r *server.Hertz) {
+	// 静态资源映射
+	r.Static("/static/", "/home/writiger/go/src/github.com/cloudwego/dousheng_server")
+
 	dy := r.Group("/douyin")
 	auth := r.Group("/douyin")
 	auth.Use(middleware.JwtMiddleware.MiddlewareFunc())
-	{
-		auth.GET("/user/", handler.Info)
-	}
+
 	dy.POST("/user/register/", handler.Register)
 	dy.POST("/user/login/", handler.CheckUser)
-}
+	auth.GET("/user/", handler.Info)
 
-func initVideoRoute(dy *route.RouterGroup) {
-	dy.GET("/feed/", func(c context.Context, ctx *app.RequestContext) {
-		fmt.Println("here ")
-	})
+	auth.POST("/publish/action/", handler.Publish)
+
 }
