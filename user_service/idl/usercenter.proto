@@ -32,11 +32,21 @@ message LoginResponse{
   int64  user_id      = 3; // UUID
 }
 
+message GetInfoRequest{
+  int64 uuid = 1;
+}
+
+message GetInfoResponse{
+  int32  status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg  = 2; // 返回状态描述
+  User   user        = 3;
+}
 
 service UserCenter {
   rpc Ping(Request) returns(Response);
   rpc Register(RegisterRequest) returns (BasicResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
+  rpc GetInfo(GetInfoRequest)returns(GetInfoResponse);
 }
 
 message User {

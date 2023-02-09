@@ -1,7 +1,10 @@
+// Package rpc
+// 封装与service的请求与返回
 package rpc
 
 import (
 	"context"
+	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/kitex_gen/usercenter"
 	"errors"
@@ -30,7 +33,6 @@ func init() {
 
 // Register .
 func Register(username, password string) error {
-	// 2. 请求注册服务
 	req := kitex_gen.RegisterRequest{
 		Username: username,
 		Password: password,
@@ -47,7 +49,6 @@ func Register(username, password string) error {
 
 // LoginByPassword .
 func LoginByPassword(username, password string) (int64, error) {
-	// 2. 请求登录服务
 	req := kitex_gen.LoginRequest{
 		Username: username,
 		Password: password,
@@ -57,4 +58,20 @@ func LoginByPassword(username, password string) (int64, error) {
 		return 0, err
 	}
 	return resp.UserId, nil
+}
+
+// GetUserInfo .
+func GetUserInfo(uuid int64) (*model.User, error) {
+	req := kitex_gen.GetInfoRequest{Uuid: uuid}
+	resp, err := userClient.GetInfo(context.Background(), &req)
+	if err != nil || resp.StatusCode != 0 {
+		return nil, err
+	}
+	userModel := model.User{
+		UUID:          resp.User.Id,
+		Username:      resp.User.Name,
+		FollowCount:   resp.User.FollowCount,
+		FollowerCount: resp.User.FollowerCount,
+	}
+	return &userModel, nil
 }
