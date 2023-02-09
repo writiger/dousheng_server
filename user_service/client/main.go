@@ -7,7 +7,6 @@ import (
 	"github.com/cloudwego/kitex/client"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
-	"time"
 )
 
 func main() {
@@ -16,14 +15,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for {
-		req := kitex_gen.Request{Ping: "Hello server"}
-		resp, err := userClient.Ping(context.Background(), &req)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("Get Pong Message:", resp.Pong)
-		time.Sleep(time.Second)
-	}
+	req := kitex_gen.GetInfoRequest{Uuid: 629648834103869440}
+	resp, err := userClient.GetInfo(context.Background(), &req)
+	log.Println("Get Pong Message:", resp.User)
 
 }

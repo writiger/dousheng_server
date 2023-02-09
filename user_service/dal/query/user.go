@@ -34,3 +34,12 @@ func CheckPassword(name, password string) (*model.User, error) {
 	}
 	return &user, err
 }
+
+// GetUser 通过UUID获取用户
+func GetUser(uuid int64) (*model.User, error) {
+	user := model.User{}
+	err := GormClient.Where("uuid = ?", uuid).
+		Select("uuid", "username", "follow_count", "follower_count").
+		Find(&user).Error
+	return &user, err
+}

@@ -55,3 +55,29 @@ func (s *UserCenterImpl) Login(ctx context.Context, req *kitex_gen.LoginRequest)
 		UserId:     userModel.UUID,
 	}, nil
 }
+
+// GetInfo implements the UserCenterImpl interface.
+func (s *UserCenterImpl) GetInfo(ctx context.Context, req *kitex_gen.GetInfoRequest) (*kitex_gen.GetInfoResponse, error) {
+	userModel, err := service.UserCenter{}.GetInfo(req.Uuid)
+	if err != nil {
+		return &kitex_gen.GetInfoResponse{
+			StatusCode: -1,
+			StatusMsg:  "get user failed",
+		}, err
+	}
+	user := &kitex_gen.User{
+		Id:            userModel.UUID,
+		Name:          userModel.Username,
+		FollowCount:   userModel.FollowCount,
+		FollowerCount: userModel.FollowerCount,
+
+		// TODO 判断是否关注
+
+		IsFollow: false,
+	}
+	return &kitex_gen.GetInfoResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+		User:       user,
+	}, nil
+}

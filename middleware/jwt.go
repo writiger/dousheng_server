@@ -16,9 +16,10 @@ var JwtMiddleware *jwt.HertzJWTMiddleware
 func init() {
 	var err error
 	JwtMiddleware, err = jwt.New(&jwt.HertzJWTMiddleware{
-		Key:        []byte("revres_gnehsoud"),
-		Timeout:    time.Hour * 7 * 24,
-		MaxRefresh: time.Hour * 7 * 24,
+		Key:         []byte("revres_gnehsoud"),
+		Timeout:     time.Hour * 7 * 24,
+		MaxRefresh:  time.Hour * 7 * 24,
+		TokenLookup: "query: token, header: Authorization, cookie: jwt",
 		// 解析
 		IdentityHandler: func(ctx context.Context, c *app.RequestContext) interface{} {
 			claims := jwt.ExtractClaims(ctx, c)
@@ -35,6 +36,7 @@ func init() {
 			}
 			return jwt.MapClaims{}
 		},
+		// 验证
 		Authenticator: func(ctx context.Context, c *app.RequestContext) (interface{}, error) {
 			username := c.Query("username")
 			password := c.Query("password")

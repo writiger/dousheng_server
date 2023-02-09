@@ -14,6 +14,7 @@ type Client interface {
 	Ping(ctx context.Context, Req *kitex_gen.Request, callOptions ...callopt.Option) (r *kitex_gen.Response, err error)
 	Register(ctx context.Context, Req *kitex_gen.RegisterRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
 	Login(ctx context.Context, Req *kitex_gen.LoginRequest, callOptions ...callopt.Option) (r *kitex_gen.LoginResponse, err error)
+	GetInfo(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetInfoResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -58,4 +59,9 @@ func (p *kUserCenterClient) Register(ctx context.Context, Req *kitex_gen.Registe
 func (p *kUserCenterClient) Login(ctx context.Context, Req *kitex_gen.LoginRequest, callOptions ...callopt.Option) (r *kitex_gen.LoginResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Login(ctx, Req)
+}
+
+func (p *kUserCenterClient) GetInfo(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetInfoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetInfo(ctx, Req)
 }

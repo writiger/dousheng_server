@@ -60,6 +60,11 @@ func (uc UserCenter) LoginByPassword(userName, password string) (*model.User, er
 	return query.CheckPassword(userName, password)
 }
 
+// GetInfo 通过UUID获取用户信息
+func (uc UserCenter) GetInfo(uuid int64) (*model.User, error) {
+	return query.GetUser(uuid)
+}
+
 func getUUID() (int64, error) {
 	// 1. 通过etcd发现服务
 	r, err := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"}) // r不应重复使用。
