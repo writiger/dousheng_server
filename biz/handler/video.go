@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"dousheng_server/covermaker"
 	"dousheng_server/rpc"
 	usermodel "dousheng_server/user_service/dal/model"
 	"dousheng_server/video_service/dal/model"
@@ -33,10 +34,10 @@ func Publish(ctx context.Context, c *app.RequestContext) {
 		})
 		return
 	}
-	// TODO 保证一致性
 	// 获取文件后缀
 	filenameArr := strings.Split(req.f.Filename, ".")
 	suffix := filenameArr[len(filenameArr)-1]
+
 	// 2. 调用服务
 	uuid, errRpc := rpc.PublishVideo(&model.Video{
 		UserID: user.UUID,
@@ -49,26 +50,24 @@ func Publish(ctx context.Context, c *app.RequestContext) {
 		CommentCount:  0,
 		Title:         req.title,
 	})
-	if errRpc != nil {
-		c.JSON(consts.StatusBadRequest, utils.H{
-			"status_code": -1,
-			"status_msg":  "rpc.PublishVideo wrong",
-		})
-		return
-	}
-	// 3. 保存视频
-	path := fmt.Sprintf("%d.%s", uuid, suffix)
-	file, errSave := os.OpenFile("static/videos/"+path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 066)
+
+	// 3.1 保存视频
+	videoPath := fmt.Sprintf("static/videos/%d.%s", uuid, suffix)
+	coverPath := fmt.Sprintf("static/covers/%d", uuid)
+	file, errSave := os.OpenFile(videoPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 066)
 	defer file.Close()
 	fileSaved, _ := req.f.Open()
 	io.Copy(file, fileSaved)
+	// 3.2 保存封面
+	_, errCover := covermaker.GetSnapshot(videoPath, coverPath, 1)
 	// 4. 失败一个全部回调
-	if errSave != nil || errRpc != nil {
-		_ = os.Remove(path)
+	if errSave != nil || errRpc != nil || errCover != nil {
+		_ = os.Remove(videoPath)
+		_ = os.Remove(coverPath + ".png")
 		_ = rpc.DeleteVideo(uuid)
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
-			"status_msg":  "save action failed , roll back",
+			"status_msg":  "rpc.PublishVideo wrong",
 		})
 	}
 	// 5. 返回

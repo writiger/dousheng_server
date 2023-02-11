@@ -16,7 +16,7 @@
 - [x] 用户注册
 - [x] 用户登录
 - [x] 用户信息
-- [ ] 视频投稿
+- [x] 视频投稿
 - [ ] 发布列表
 
 ## 互动接口
@@ -85,6 +85,25 @@ type User struct {
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 ~~~
+
+### video模型
+
+~~~ golang
+type Video struct {
+	UUID          int64  `json:"id"`
+	UserID        int64  `json:"user_id"`
+	PlayURL       string `json:"play_url"`
+	CoverURL      string `json:"cover_url"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
+	Title         string `json:"title"`
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
+}
+~~~
+
+
 
 ##  优化
 
