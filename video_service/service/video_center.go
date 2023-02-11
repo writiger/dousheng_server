@@ -20,6 +20,7 @@ func (vc VideoCenter) Publish(video *model.Video) (int64, error) {
 	video.UUID = uuid
 	// 2. 保存
 	video.PlayURL = fmt.Sprintf("http://localhost:8080/static/videos/%d.%s", uuid, video.PlayURL)
+	video.CoverURL = fmt.Sprintf("http://localhost:8080/static/covers/%d.%s", uuid, "png")
 	err = query.CreateVideo(video)
 	return uuid, err
 }
