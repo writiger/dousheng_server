@@ -4,6 +4,8 @@
 
 # 运行方法
 
+修改`dousheng_server/video_service/service/video_center.go`中的saverIp
+
 ~~~ cmd
 
 ~~~

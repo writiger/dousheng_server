@@ -5,6 +5,7 @@ import (
 	"dousheng_server/video_service/dal/model"
 	"dousheng_server/video_service/dal/query"
 	"fmt"
+	"time"
 )
 
 type VideoCenter struct {
@@ -19,8 +20,9 @@ func (vc VideoCenter) Publish(video *model.Video) (int64, error) {
 	}
 	video.UUID = uuid
 	// 2. 保存
-	video.PlayURL = fmt.Sprintf("http://localhost:8080/static/videos/%d.%s", uuid, video.PlayURL)
-	video.CoverURL = fmt.Sprintf("http://localhost:8080/static/covers/%d.%s", uuid, "png")
+	saverIp := "http://192.168.31.84:8080"
+	video.PlayURL = fmt.Sprintf(saverIp+"/static/videos/%d.%s", uuid, video.PlayURL)
+	video.CoverURL = fmt.Sprintf(saverIp+"/static/covers/%d.%s", uuid, "png")
 	err = query.CreateVideo(video)
 	return uuid, err
 }
@@ -28,4 +30,10 @@ func (vc VideoCenter) Publish(video *model.Video) (int64, error) {
 // Delete 删除视频
 func (vc VideoCenter) Delete(uuid int64) error {
 	return query.DeleteVideo(uuid)
+}
+
+// Feed 获取视频
+func (vc VideoCenter) Feed(timeStamp int64) (*[]model.Video, error) {
+	lastTime := time.UnixMilli(timeStamp)
+	return query.Feed(lastTime)
 }

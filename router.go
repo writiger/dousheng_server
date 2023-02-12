@@ -17,10 +17,10 @@ func customizedRegister(r *server.Hertz) {
 	auth := r.Group("/douyin")
 	auth.Use(middleware.JwtMiddleware.MiddlewareFunc())
 
+	dy.GET("/feed/", handler.Feed)
 	dy.POST("/user/register/", handler.Register)
 	dy.POST("/user/login/", handler.CheckUser)
 	auth.GET("/user/", handler.Info)
-
 	auth.POST("/publish/action/", handler.Publish)
 
 }

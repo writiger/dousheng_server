@@ -13,6 +13,7 @@ import (
 type Client interface {
 	Publish(ctx context.Context, Req *kitex_gen.PublishRequest, callOptions ...callopt.Option) (r *kitex_gen.PublishResponse, err error)
 	Delete(ctx context.Context, Req *kitex_gen.DeleteRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
+	Feed(ctx context.Context, Req *kitex_gen.FeedRequest, callOptions ...callopt.Option) (r *kitex_gen.FeedResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +53,9 @@ func (p *kVideoCenterClient) Publish(ctx context.Context, Req *kitex_gen.Publish
 func (p *kVideoCenterClient) Delete(ctx context.Context, Req *kitex_gen.DeleteRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Delete(ctx, Req)
+}
+
+func (p *kVideoCenterClient) Feed(ctx context.Context, Req *kitex_gen.FeedRequest, callOptions ...callopt.Option) (r *kitex_gen.FeedResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Feed(ctx, Req)
 }

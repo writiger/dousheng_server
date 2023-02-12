@@ -26,7 +26,28 @@ message DeleteRequest{
   int64 uuid = 1;
 }
 
+
+message FeedRequest{
+  int64 last_time = 1;
+}
+
+message FeedResponse{
+  repeated Video videos = 1;
+}
+
 service VideoCenter {
   rpc Publish(PublishRequest) returns (PublishResponse);
   rpc Delete(DeleteRequest) returns (BasicResponse);
+  rpc Feed(FeedRequest) returns (FeedResponse);
+}
+
+message Video {
+  int64  uuid           = 1;
+  int64  user_id        = 2;
+  string play_url       = 3;
+  string cover_url      = 4;
+  int64  favorite_count = 5;
+  int64  comment_count  = 6;
+  string title          = 7;
+  int64  create_time    = 8;
 }

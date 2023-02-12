@@ -3,7 +3,9 @@ package dal
 import (
 	"dousheng_server/video_service/dal/model"
 	"dousheng_server/video_service/dal/query"
+	"fmt"
 	"testing"
+	"time"
 )
 
 func TestCreateVideo(t *testing.T) {
@@ -30,6 +32,20 @@ func TestDeleteVideo(t *testing.T) {
 		if err != nil {
 			t.Fatalf(err.Error())
 			return
+		}
+	})
+}
+
+func TestFeed(t *testing.T) {
+	t.Run("Feed测试", func(t *testing.T) {
+		lastTime := time.Now()
+		videos, err := query.Feed(lastTime)
+		if err != nil {
+			t.Fatalf(err.Error())
+			return
+		}
+		for _, item := range *videos {
+			fmt.Println(item)
 		}
 	})
 }

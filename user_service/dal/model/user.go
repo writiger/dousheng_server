@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	UUID          int64         `gorm:"primaryKey" json:"id"`
-	Username      string        `json:"username"`
+	Username      string        `json:"name"`
 	Password      string        `json:"password"`
 	FollowCount   int64         `json:"follow_count"`
 	FollowerCount int64         `json:"follower_count"`
