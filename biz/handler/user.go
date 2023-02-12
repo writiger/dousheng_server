@@ -4,7 +4,6 @@ import (
 	"context"
 	"dousheng_server/middleware"
 	"dousheng_server/rpc"
-	"dousheng_server/user_service/dal/model"
 	"errors"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
@@ -46,17 +45,16 @@ func Register(ctx context.Context, c *app.RequestContext) {
 // Info 用户信息
 func Info(ctx context.Context, c *app.RequestContext) {
 	// 1. 验证参数
-	userGet, _ := c.Get("identity")
-	user := userGet.(*model.User)
-	if strconv.FormatInt(user.UUID, 10) != c.Query("user_id") {
+	idStr := c.Query("user_id")
+	parseInt, err := strconv.ParseInt(idStr, 10, 60)
+	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,
-			"status_msg":  errors.New("wrong user_id or token"),
+			"status_msg":  "wrong request param",
 		})
 		return
 	}
-
-	userModel, err := rpc.GetUserInfo(user.UUID)
+	userModel, err := rpc.GetUserInfo(parseInt)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,
