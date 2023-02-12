@@ -37,7 +37,6 @@ func (s *VideoCenterImpl) Publish(ctx context.Context, req *kitex_gen.PublishReq
 
 // Delete implements the VideoCenterImpl interface.
 func (s *VideoCenterImpl) Delete(ctx context.Context, req *kitex_gen.DeleteRequest) (*kitex_gen.BasicResponse, error) {
-
 	err := service.VideoCenter{}.Delete(req.Uuid)
 	if err != nil {
 		return &kitex_gen.BasicResponse{
@@ -49,4 +48,27 @@ func (s *VideoCenterImpl) Delete(ctx context.Context, req *kitex_gen.DeleteReque
 		StatusCode: 0,
 		StatusMsg:  "success",
 	}, nil
+}
+
+// Feed implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) Feed(ctx context.Context, req *kitex_gen.FeedRequest) (*kitex_gen.FeedResponse, error) {
+	videos, err := service.VideoCenter{}.Feed(req.LastTime)
+	if err != nil {
+		return &kitex_gen.FeedResponse{Videos: nil}, err
+	}
+	var videoList []*kitex_gen.Video
+	for _, item := range *videos {
+		createTime := item.CreatedAt.UnixMilli()
+		videoList = append(videoList, &kitex_gen.Video{
+			Uuid:          item.UUID,
+			UserId:        item.UserID,
+			PlayUrl:       item.PlayURL,
+			CoverUrl:      item.CoverURL,
+			FavoriteCount: item.FavoriteCount,
+			CommentCount:  item.CommentCount,
+			Title:         item.Title,
+			CreateTime:    createTime,
+		})
+	}
+	return &kitex_gen.FeedResponse{Videos: videoList}, nil
 }

@@ -5,6 +5,7 @@ import (
 	"dousheng_server/middleware"
 	"dousheng_server/rpc"
 	"errors"
+	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -44,13 +45,18 @@ func Register(ctx context.Context, c *app.RequestContext) {
 
 // Info 用户信息
 func Info(ctx context.Context, c *app.RequestContext) {
+	// TODO 判断是否关注
+
 	// 1. 验证参数
 	idStr := c.Query("user_id")
-	parseInt, err := strconv.ParseInt(idStr, 10, 60)
+	requester, _ := c.Get("identity")
+	fmt.Println(requester)
+
+	parseInt, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,
-			"status_msg":  "wrong request param",
+			"status_msg":  "wrong request param" + err.Error(),
 		})
 		return
 	}
