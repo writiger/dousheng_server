@@ -4,10 +4,29 @@
 
 # 运行方法
 
-修改`dousheng_server/video_service/service/video_center.go`中的saverIp
+## 配置
+
+* 修改`dousheng_server/video_service/service/video_center.go`中的saverIp(后续可能会使用配置文件)
+
+* 调整各个服务下的etcd地址（main.go中）
+* 调整各个服务中的MySQL地址（dal/query/init.go）
+* 执行query中的测试
 
 ~~~ cmd
-
+# wsl情况下
+# 启动mysql
+service mysql start
+# 启动etcd
+etcd
+# 进入项目目录
+# 启动uuid生成服务
+sh snowflake_service/build.sh && sh snowflake_service/output/bootstrap.sh
+# 启动用户服务
+sh user_service/build.sh && sh user_service/output/bootstrap.sh
+# 启动video服务
+sh video_service/build.sh && sh video_service/output/bootstrap.sh
+# 启动hertz
+go build -o dousheng_server && ./dousheng_server
 ~~~
 
 # TODO List
@@ -21,7 +40,7 @@
 - [x] 视频投稿
 - [x] 发布列表
 
-## 互动接口
+## 互动接口 
 
 - [ ] 赞
 - [ ] 喜欢列表

@@ -37,7 +37,7 @@ func TestCheckPassword(t *testing.T) {
 		{
 			name: "1. 正确测试",
 			args: args{
-				name:     "hello",
+				name:     "test",
 				password: "test",
 			},
 			wantRes: true,
@@ -45,7 +45,7 @@ func TestCheckPassword(t *testing.T) {
 		{
 			name: "2. 错误测试",
 			args: args{
-				name:     "hello",
+				name:     "test",
 				password: "world",
 			},
 			wantRes: false,
