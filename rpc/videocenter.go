@@ -58,12 +58,20 @@ func PublishVideo(video *model.Video) (int64, error) {
 	return resp.Uuid, nil
 }
 
+// DeleteVideo .
+func DeleteVideo(uuid int64) error {
+	req := kitex_gen.DeleteRequest{Uuid: uuid}
+	_, err := videoClient.Delete(context.Background(), &req)
+	return err
+}
+
 // Feed  返回视频列表和最早时间戳
 func Feed(timeStamp int64) ([]VideoWithUser, int64, error) {
 	// TODO 判断是否喜欢
 
 	var res []VideoWithUser
 	timestamp := time.Now().UnixMilli()
+
 	req := kitex_gen.FeedRequest{
 		LastTime: timeStamp,
 	}
@@ -71,6 +79,7 @@ func Feed(timeStamp int64) ([]VideoWithUser, int64, error) {
 	if err != nil || resp == nil {
 		return nil, 0, err
 	}
+	// 修饰返回值
 	for _, item := range resp.Videos {
 		if item.CreateTime < timestamp {
 			timestamp = item.CreateTime
@@ -93,9 +102,30 @@ func Feed(timeStamp int64) ([]VideoWithUser, int64, error) {
 	return res, timestamp, nil
 }
 
-// DeleteVideo .
-func DeleteVideo(uuid int64) error {
-	req := kitex_gen.DeleteRequest{Uuid: uuid}
-	_, err := videoClient.Delete(context.Background(), &req)
-	return err
+// VideoList .
+func VideoList(userId int64) ([]VideoWithUser, error) {
+	var res []VideoWithUser
+	req := kitex_gen.ListRequest{UserId: userId}
+	resp, err := videoClient.List(context.Background(), &req)
+	if err != nil || resp == nil {
+		return nil, err
+	}
+	// 修饰返回值
+	for _, item := range resp.Videos {
+		// 替换用户信息
+		userInfo, err := GetUserInfo(item.UserId)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, VideoWithUser{
+			UUID:          item.Uuid,
+			UserInfo:      *userInfo,
+			PlayURL:       item.PlayUrl,
+			CoverURL:      item.CoverUrl,
+			FavoriteCount: item.FavoriteCount,
+			CommentCount:  item.CommentCount,
+			Title:         item.Title,
+		})
+	}
+	return res, nil
 }

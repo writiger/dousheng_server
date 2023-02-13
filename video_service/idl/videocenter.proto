@@ -35,10 +35,19 @@ message FeedResponse{
   repeated Video videos = 1;
 }
 
+message ListRequest {
+  int64 user_id = 1;
+}
+
+message ListResponse{
+  repeated Video videos = 1;
+}
+
 service VideoCenter {
   rpc Publish(PublishRequest) returns (PublishResponse);
   rpc Delete(DeleteRequest) returns (BasicResponse);
   rpc Feed(FeedRequest) returns (FeedResponse);
+  rpc List(ListRequest) returns (ListResponse);
 }
 
 message Video {

@@ -54,21 +54,16 @@ func (s *VideoCenterImpl) Delete(ctx context.Context, req *kitex_gen.DeleteReque
 func (s *VideoCenterImpl) Feed(ctx context.Context, req *kitex_gen.FeedRequest) (*kitex_gen.FeedResponse, error) {
 	videos, err := service.VideoCenter{}.Feed(req.LastTime)
 	if err != nil {
-		return &kitex_gen.FeedResponse{Videos: nil}, err
+		return nil, err
 	}
-	var videoList []*kitex_gen.Video
-	for _, item := range *videos {
-		createTime := item.CreatedAt.UnixMilli()
-		videoList = append(videoList, &kitex_gen.Video{
-			Uuid:          item.UUID,
-			UserId:        item.UserID,
-			PlayUrl:       item.PlayURL,
-			CoverUrl:      item.CoverURL,
-			FavoriteCount: item.FavoriteCount,
-			CommentCount:  item.CommentCount,
-			Title:         item.Title,
-			CreateTime:    createTime,
-		})
+	return &kitex_gen.FeedResponse{Videos: videos}, nil
+}
+
+// List implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) List(ctx context.Context, req *kitex_gen.ListRequest) (*kitex_gen.ListResponse, error) {
+	videos, err := service.VideoCenter{}.List(req.UserId)
+	if err != nil {
+		return nil, err
 	}
-	return &kitex_gen.FeedResponse{Videos: videoList}, nil
+	return &kitex_gen.ListResponse{Videos: videos}, nil
 }
