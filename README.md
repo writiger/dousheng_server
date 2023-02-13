@@ -42,8 +42,8 @@ go build -o dousheng_server && ./dousheng_server
 
 ## 互动接口 
 
-- [ ] 赞
-- [ ] 喜欢列表
+- [x] 赞
+- [x] 喜欢列表
 - [ ] 评论
 - [ ] 视频评论列表
 
@@ -124,6 +124,15 @@ type Video struct {
 }
 ~~~
 
+### favorite模型
+
+~~~ golang
+type Favorite struct {
+	UserId  int64 `json:"user_id"`
+	VideoId int64 `json:"video_id"`
+}
+~~~
+
 
 
 ##  优化
@@ -131,3 +140,4 @@ type Video struct {
 * UUID使用雪花算法生成
 * 使用etcd的lease机制维护雪花算法的生成ID
 * 密码使用bcrypt加盐
+
