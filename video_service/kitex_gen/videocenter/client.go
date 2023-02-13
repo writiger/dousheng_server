@@ -14,7 +14,10 @@ type Client interface {
 	Publish(ctx context.Context, Req *kitex_gen.PublishRequest, callOptions ...callopt.Option) (r *kitex_gen.PublishResponse, err error)
 	Delete(ctx context.Context, Req *kitex_gen.DeleteRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
 	Feed(ctx context.Context, Req *kitex_gen.FeedRequest, callOptions ...callopt.Option) (r *kitex_gen.FeedResponse, err error)
-	List(ctx context.Context, Req *kitex_gen.ListRequest, callOptions ...callopt.Option) (r *kitex_gen.ListResponse, err error)
+	VideoList(ctx context.Context, Req *kitex_gen.VideoListRequest, callOptions ...callopt.Option) (r *kitex_gen.VideoListResponse, err error)
+	Like(ctx context.Context, Req *kitex_gen.LikeRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
+	GetVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetVideoResponse, err error)
+	GetFavoriteVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetFavoriteVideosResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -61,7 +64,22 @@ func (p *kVideoCenterClient) Feed(ctx context.Context, Req *kitex_gen.FeedReques
 	return p.kClient.Feed(ctx, Req)
 }
 
-func (p *kVideoCenterClient) List(ctx context.Context, Req *kitex_gen.ListRequest, callOptions ...callopt.Option) (r *kitex_gen.ListResponse, err error) {
+func (p *kVideoCenterClient) VideoList(ctx context.Context, Req *kitex_gen.VideoListRequest, callOptions ...callopt.Option) (r *kitex_gen.VideoListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.List(ctx, Req)
+	return p.kClient.VideoList(ctx, Req)
+}
+
+func (p *kVideoCenterClient) Like(ctx context.Context, Req *kitex_gen.LikeRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Like(ctx, Req)
+}
+
+func (p *kVideoCenterClient) GetVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetVideoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetVideo(ctx, Req)
+}
+
+func (p *kVideoCenterClient) GetFavoriteVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetFavoriteVideosResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetFavoriteVideo(ctx, Req)
 }

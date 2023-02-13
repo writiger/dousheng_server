@@ -351,7 +351,7 @@ func (x *FeedResponse) GetVideos() []*Video {
 	return nil
 }
 
-type ListRequest struct {
+type VideoListRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -359,8 +359,8 @@ type ListRequest struct {
 	UserId int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 }
 
-func (x *ListRequest) Reset() {
-	*x = ListRequest{}
+func (x *VideoListRequest) Reset() {
+	*x = VideoListRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_idl_videocenter_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -368,13 +368,13 @@ func (x *ListRequest) Reset() {
 	}
 }
 
-func (x *ListRequest) String() string {
+func (x *VideoListRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListRequest) ProtoMessage() {}
+func (*VideoListRequest) ProtoMessage() {}
 
-func (x *ListRequest) ProtoReflect() protoreflect.Message {
+func (x *VideoListRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_idl_videocenter_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -386,19 +386,19 @@ func (x *ListRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListRequest.ProtoReflect.Descriptor instead.
-func (*ListRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use VideoListRequest.ProtoReflect.Descriptor instead.
+func (*VideoListRequest) Descriptor() ([]byte, []int) {
 	return file_idl_videocenter_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *ListRequest) GetUserId() int64 {
+func (x *VideoListRequest) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
 	return 0
 }
 
-type ListResponse struct {
+type VideoListResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -406,8 +406,8 @@ type ListResponse struct {
 	Videos []*Video `protobuf:"bytes,1,rep,name=videos,proto3" json:"videos,omitempty"`
 }
 
-func (x *ListResponse) Reset() {
-	*x = ListResponse{}
+func (x *VideoListResponse) Reset() {
+	*x = VideoListResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_idl_videocenter_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -415,13 +415,13 @@ func (x *ListResponse) Reset() {
 	}
 }
 
-func (x *ListResponse) String() string {
+func (x *VideoListResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListResponse) ProtoMessage() {}
+func (*VideoListResponse) ProtoMessage() {}
 
-func (x *ListResponse) ProtoReflect() protoreflect.Message {
+func (x *VideoListResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_idl_videocenter_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -433,12 +433,216 @@ func (x *ListResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListResponse.ProtoReflect.Descriptor instead.
-func (*ListResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use VideoListResponse.ProtoReflect.Descriptor instead.
+func (*VideoListResponse) Descriptor() ([]byte, []int) {
 	return file_idl_videocenter_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *ListResponse) GetVideos() []*Video {
+func (x *VideoListResponse) GetVideos() []*Video {
+	if x != nil {
+		return x.Videos
+	}
+	return nil
+}
+
+type LikeRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId     int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	VideoId    int64 `protobuf:"varint,2,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	ActionType int32 `protobuf:"varint,3,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"`
+}
+
+func (x *LikeRequest) Reset() {
+	*x = LikeRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_videocenter_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LikeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LikeRequest) ProtoMessage() {}
+
+func (x *LikeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_videocenter_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LikeRequest.ProtoReflect.Descriptor instead.
+func (*LikeRequest) Descriptor() ([]byte, []int) {
+	return file_idl_videocenter_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *LikeRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *LikeRequest) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+func (x *LikeRequest) GetActionType() int32 {
+	if x != nil {
+		return x.ActionType
+	}
+	return 0
+}
+
+type GetVideoRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Uuid int64 `protobuf:"varint,1,opt,name=uuid,proto3" json:"uuid,omitempty"`
+}
+
+func (x *GetVideoRequest) Reset() {
+	*x = GetVideoRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_videocenter_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetVideoRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVideoRequest) ProtoMessage() {}
+
+func (x *GetVideoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_videocenter_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVideoRequest.ProtoReflect.Descriptor instead.
+func (*GetVideoRequest) Descriptor() ([]byte, []int) {
+	return file_idl_videocenter_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetVideoRequest) GetUuid() int64 {
+	if x != nil {
+		return x.Uuid
+	}
+	return 0
+}
+
+type GetVideoResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Video *Video `protobuf:"bytes,1,opt,name=video,proto3" json:"video,omitempty"`
+}
+
+func (x *GetVideoResponse) Reset() {
+	*x = GetVideoResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_videocenter_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetVideoResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVideoResponse) ProtoMessage() {}
+
+func (x *GetVideoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_videocenter_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVideoResponse.ProtoReflect.Descriptor instead.
+func (*GetVideoResponse) Descriptor() ([]byte, []int) {
+	return file_idl_videocenter_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetVideoResponse) GetVideo() *Video {
+	if x != nil {
+		return x.Video
+	}
+	return nil
+}
+
+type GetFavoriteVideosResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Videos []*Video `protobuf:"bytes,1,rep,name=videos,proto3" json:"videos,omitempty"`
+}
+
+func (x *GetFavoriteVideosResponse) Reset() {
+	*x = GetFavoriteVideosResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_videocenter_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFavoriteVideosResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFavoriteVideosResponse) ProtoMessage() {}
+
+func (x *GetFavoriteVideosResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_videocenter_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFavoriteVideosResponse.ProtoReflect.Descriptor instead.
+func (*GetFavoriteVideosResponse) Descriptor() ([]byte, []int) {
+	return file_idl_videocenter_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetFavoriteVideosResponse) GetVideos() []*Video {
 	if x != nil {
 		return x.Videos
 	}
@@ -463,7 +667,7 @@ type Video struct {
 func (x *Video) Reset() {
 	*x = Video{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_idl_videocenter_proto_msgTypes[8]
+		mi := &file_idl_videocenter_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -476,7 +680,7 @@ func (x *Video) String() string {
 func (*Video) ProtoMessage() {}
 
 func (x *Video) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_videocenter_proto_msgTypes[8]
+	mi := &file_idl_videocenter_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -489,7 +693,7 @@ func (x *Video) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Video.ProtoReflect.Descriptor instead.
 func (*Video) Descriptor() ([]byte, []int) {
-	return file_idl_videocenter_proto_rawDescGZIP(), []int{8}
+	return file_idl_videocenter_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *Video) GetUuid() int64 {
@@ -580,10 +784,27 @@ var file_idl_videocenter_proto_rawDesc = []byte{
 	0x22, 0x34, 0x0a, 0x0c, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x12, 0x24, 0x0a, 0x06, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
 	0x32, 0x0c, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x06,
-	0x76, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x22, 0x26, 0x0a, 0x0b, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x34,
-	0x0a, 0x0c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24,
+	0x76, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x22, 0x2b, 0x0a, 0x10, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x4c,
+	0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73,
+	0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65,
+	0x72, 0x49, 0x64, 0x22, 0x39, 0x0a, 0x11, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24, 0x0a, 0x06, 0x76, 0x69, 0x64, 0x65,
+	0x6f, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f,
+	0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x06, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x22, 0x62,
+	0x0a, 0x0b, 0x4c, 0x69, 0x6b, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a,
+	0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06,
+	0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x49,
+	0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0a, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79,
+	0x70, 0x65, 0x22, 0x25, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x75, 0x75, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x04, 0x75, 0x75, 0x69, 0x64, 0x22, 0x36, 0x0a, 0x10, 0x47, 0x65, 0x74,
+	0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a,
+	0x05, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x76,
+	0x69, 0x64, 0x65, 0x6f, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x05, 0x76, 0x69, 0x64, 0x65,
+	0x6f, 0x22, 0x41, 0x0a, 0x19, 0x47, 0x65, 0x74, 0x46, 0x61, 0x76, 0x6f, 0x72, 0x69, 0x74, 0x65,
+	0x56, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24,
 	0x0a, 0x06, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c,
 	0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x06, 0x76, 0x69,
 	0x64, 0x65, 0x6f, 0x73, 0x22, 0xef, 0x01, 0x0a, 0x05, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x12,
@@ -601,7 +822,7 @@ var file_idl_videocenter_proto_rawDesc = []byte{
 	0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
 	0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x5f,
 	0x74, 0x69, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x61,
-	0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x32, 0xdf, 0x01, 0x0a, 0x0b, 0x56, 0x69, 0x64, 0x65, 0x6f,
+	0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x32, 0xab, 0x03, 0x0a, 0x0b, 0x56, 0x69, 0x64, 0x65, 0x6f,
 	0x43, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x38, 0x0a, 0x07, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x73,
 	0x68, 0x12, 0x15, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x73,
 	0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f,
@@ -612,13 +833,26 @@ var file_idl_videocenter_proto_rawDesc = []byte{
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2f, 0x0a, 0x04, 0x46, 0x65, 0x65, 0x64, 0x12, 0x12,
 	0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65,
 	0x73, 0x74, 0x1a, 0x13, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x46, 0x65, 0x65, 0x64, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2f, 0x0a, 0x04, 0x4c, 0x69, 0x73, 0x74, 0x12,
-	0x12, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x4c, 0x69, 0x73, 0x74,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x29, 0x5a, 0x27, 0x64, 0x6f, 0x75, 0x73,
-	0x68, 0x65, 0x6e, 0x67, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x76, 0x69, 0x64, 0x65,
-	0x6f, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f,
-	0x67, 0x65, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e, 0x0a, 0x09, 0x56, 0x69, 0x64, 0x65, 0x6f,
+	0x4c, 0x69, 0x73, 0x74, 0x12, 0x17, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x56, 0x69, 0x64,
+	0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e,
+	0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x30, 0x0a, 0x04, 0x4c, 0x69, 0x6b, 0x65, 0x12,
+	0x12, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x4c, 0x69, 0x6b, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x42, 0x61, 0x73, 0x69,
+	0x63, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x08, 0x47, 0x65, 0x74,
+	0x56, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x16, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x47, 0x65,
+	0x74, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e,
+	0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4c, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x46, 0x61, 0x76,
+	0x6f, 0x72, 0x69, 0x74, 0x65, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x16, 0x2e, 0x76, 0x69, 0x64,
+	0x65, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x20, 0x2e, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x46, 0x61,
+	0x76, 0x6f, 0x72, 0x69, 0x74, 0x65, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x42, 0x29, 0x5a, 0x27, 0x64, 0x6f, 0x75, 0x73, 0x68, 0x65, 0x6e, 0x67,
+	0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x5f, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -633,34 +867,46 @@ func file_idl_videocenter_proto_rawDescGZIP() []byte {
 	return file_idl_videocenter_proto_rawDescData
 }
 
-var file_idl_videocenter_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_idl_videocenter_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_idl_videocenter_proto_goTypes = []interface{}{
-	(*BasicResponse)(nil),   // 0: video.BasicResponse
-	(*PublishRequest)(nil),  // 1: video.PublishRequest
-	(*PublishResponse)(nil), // 2: video.PublishResponse
-	(*DeleteRequest)(nil),   // 3: video.DeleteRequest
-	(*FeedRequest)(nil),     // 4: video.FeedRequest
-	(*FeedResponse)(nil),    // 5: video.FeedResponse
-	(*ListRequest)(nil),     // 6: video.ListRequest
-	(*ListResponse)(nil),    // 7: video.ListResponse
-	(*Video)(nil),           // 8: video.Video
+	(*BasicResponse)(nil),             // 0: video.BasicResponse
+	(*PublishRequest)(nil),            // 1: video.PublishRequest
+	(*PublishResponse)(nil),           // 2: video.PublishResponse
+	(*DeleteRequest)(nil),             // 3: video.DeleteRequest
+	(*FeedRequest)(nil),               // 4: video.FeedRequest
+	(*FeedResponse)(nil),              // 5: video.FeedResponse
+	(*VideoListRequest)(nil),          // 6: video.VideoListRequest
+	(*VideoListResponse)(nil),         // 7: video.VideoListResponse
+	(*LikeRequest)(nil),               // 8: video.LikeRequest
+	(*GetVideoRequest)(nil),           // 9: video.GetVideoRequest
+	(*GetVideoResponse)(nil),          // 10: video.GetVideoResponse
+	(*GetFavoriteVideosResponse)(nil), // 11: video.GetFavoriteVideosResponse
+	(*Video)(nil),                     // 12: video.Video
 }
 var file_idl_videocenter_proto_depIdxs = []int32{
-	8, // 0: video.FeedResponse.videos:type_name -> video.Video
-	8, // 1: video.ListResponse.videos:type_name -> video.Video
-	1, // 2: video.VideoCenter.Publish:input_type -> video.PublishRequest
-	3, // 3: video.VideoCenter.Delete:input_type -> video.DeleteRequest
-	4, // 4: video.VideoCenter.Feed:input_type -> video.FeedRequest
-	6, // 5: video.VideoCenter.List:input_type -> video.ListRequest
-	2, // 6: video.VideoCenter.Publish:output_type -> video.PublishResponse
-	0, // 7: video.VideoCenter.Delete:output_type -> video.BasicResponse
-	5, // 8: video.VideoCenter.Feed:output_type -> video.FeedResponse
-	7, // 9: video.VideoCenter.List:output_type -> video.ListResponse
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	12, // 0: video.FeedResponse.videos:type_name -> video.Video
+	12, // 1: video.VideoListResponse.videos:type_name -> video.Video
+	12, // 2: video.GetVideoResponse.video:type_name -> video.Video
+	12, // 3: video.GetFavoriteVideosResponse.videos:type_name -> video.Video
+	1,  // 4: video.VideoCenter.Publish:input_type -> video.PublishRequest
+	3,  // 5: video.VideoCenter.Delete:input_type -> video.DeleteRequest
+	4,  // 6: video.VideoCenter.Feed:input_type -> video.FeedRequest
+	6,  // 7: video.VideoCenter.VideoList:input_type -> video.VideoListRequest
+	8,  // 8: video.VideoCenter.Like:input_type -> video.LikeRequest
+	9,  // 9: video.VideoCenter.GetVideo:input_type -> video.GetVideoRequest
+	9,  // 10: video.VideoCenter.GetFavoriteVideo:input_type -> video.GetVideoRequest
+	2,  // 11: video.VideoCenter.Publish:output_type -> video.PublishResponse
+	0,  // 12: video.VideoCenter.Delete:output_type -> video.BasicResponse
+	5,  // 13: video.VideoCenter.Feed:output_type -> video.FeedResponse
+	7,  // 14: video.VideoCenter.VideoList:output_type -> video.VideoListResponse
+	0,  // 15: video.VideoCenter.Like:output_type -> video.BasicResponse
+	10, // 16: video.VideoCenter.GetVideo:output_type -> video.GetVideoResponse
+	11, // 17: video.VideoCenter.GetFavoriteVideo:output_type -> video.GetFavoriteVideosResponse
+	11, // [11:18] is the sub-list for method output_type
+	4,  // [4:11] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_idl_videocenter_proto_init() }
@@ -742,7 +988,7 @@ func file_idl_videocenter_proto_init() {
 			}
 		}
 		file_idl_videocenter_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListRequest); i {
+			switch v := v.(*VideoListRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -754,7 +1000,7 @@ func file_idl_videocenter_proto_init() {
 			}
 		}
 		file_idl_videocenter_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListResponse); i {
+			switch v := v.(*VideoListResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -766,6 +1012,54 @@ func file_idl_videocenter_proto_init() {
 			}
 		}
 		file_idl_videocenter_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LikeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_videocenter_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetVideoRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_videocenter_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetVideoResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_videocenter_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFavoriteVideosResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_videocenter_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Video); i {
 			case 0:
 				return &v.state
@@ -784,7 +1078,7 @@ func file_idl_videocenter_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_idl_videocenter_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -806,5 +1100,8 @@ type VideoCenter interface {
 	Publish(ctx context.Context, req *PublishRequest) (res *PublishResponse, err error)
 	Delete(ctx context.Context, req *DeleteRequest) (res *BasicResponse, err error)
 	Feed(ctx context.Context, req *FeedRequest) (res *FeedResponse, err error)
-	List(ctx context.Context, req *ListRequest) (res *ListResponse, err error)
+	VideoList(ctx context.Context, req *VideoListRequest) (res *VideoListResponse, err error)
+	Like(ctx context.Context, req *LikeRequest) (res *BasicResponse, err error)
+	GetVideo(ctx context.Context, req *GetVideoRequest) (res *GetVideoResponse, err error)
+	GetFavoriteVideo(ctx context.Context, req *GetVideoRequest) (res *GetFavoriteVideosResponse, err error)
 }

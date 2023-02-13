@@ -22,9 +22,16 @@ func Feed(lastTime time.Time) (*[]model.Video, error) {
 	return &videos, err
 }
 
-// List 获取用户投稿过的视频列表
-func List(userId int64) (*[]model.Video, error) {
+// VideoList 获取用户投稿过的视频列表
+func VideoList(userId int64) (*[]model.Video, error) {
 	var videos []model.Video
 	err := GormClient.Where("user_id = ?", userId).Find(&videos).Error
 	return &videos, err
+}
+
+// GetVideo 通过uuid获取vide
+func GetVideo(uuid int64) (*model.Video, error) {
+	var res model.Video
+	err := GormClient.Where("uuid = ?", uuid).Find(&res).Error
+	return &res, err
 }

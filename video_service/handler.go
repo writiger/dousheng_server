@@ -59,11 +59,41 @@ func (s *VideoCenterImpl) Feed(ctx context.Context, req *kitex_gen.FeedRequest) 
 	return &kitex_gen.FeedResponse{Videos: videos}, nil
 }
 
-// List implements the VideoCenterImpl interface.
-func (s *VideoCenterImpl) List(ctx context.Context, req *kitex_gen.ListRequest) (*kitex_gen.ListResponse, error) {
-	videos, err := service.VideoCenter{}.List(req.UserId)
+// VideoList implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) VideoList(ctx context.Context, req *kitex_gen.VideoListRequest) (resp *kitex_gen.VideoListResponse, err error) {
+	videos, err := service.VideoCenter{}.VideoList(req.UserId)
 	if err != nil {
 		return nil, err
 	}
-	return &kitex_gen.ListResponse{Videos: videos}, nil
+	return &kitex_gen.VideoListResponse{Videos: videos}, nil
+}
+
+// Like implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) Like(ctx context.Context, req *kitex_gen.LikeRequest) (*kitex_gen.BasicResponse, error) {
+	err := service.VideoCenter{}.Like(req.UserId, req.VideoId, req.ActionType)
+	if err != nil {
+		return nil, err
+	}
+	return &kitex_gen.BasicResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+	}, nil
+}
+
+// GetVideo implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) GetVideo(ctx context.Context, req *kitex_gen.GetVideoRequest) (resp *kitex_gen.GetVideoResponse, err error) {
+	video, err := service.VideoCenter{}.GetVideo(req.Uuid)
+	if err != nil {
+		return nil, err
+	}
+	return &kitex_gen.GetVideoResponse{Video: video}, nil
+}
+
+// GetFavoriteVideo implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) GetFavoriteVideo(ctx context.Context, req *kitex_gen.GetVideoRequest) (*kitex_gen.GetFavoriteVideosResponse, error) {
+	videos, err := service.VideoCenter{}.FavoriteList(req.Uuid)
+	if err != nil {
+		return nil, err
+	}
+	return &kitex_gen.GetFavoriteVideosResponse{Videos: videos}, nil
 }
