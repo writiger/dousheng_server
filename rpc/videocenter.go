@@ -6,6 +6,7 @@ import (
 	"dousheng_server/video_service/dal/model"
 	"dousheng_server/video_service/kitex_gen"
 	"dousheng_server/video_service/kitex_gen/videocenter"
+	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -105,8 +106,76 @@ func Feed(timeStamp int64) ([]VideoWithUser, int64, error) {
 // VideoList .
 func VideoList(userId int64) ([]VideoWithUser, error) {
 	var res []VideoWithUser
-	req := kitex_gen.ListRequest{UserId: userId}
-	resp, err := videoClient.List(context.Background(), &req)
+	req := kitex_gen.VideoListRequest{UserId: userId}
+	resp, err := videoClient.VideoList(context.Background(), &req)
+	if err != nil || resp == nil {
+		return nil, err
+	}
+	// 修饰返回值
+	for _, item := range resp.Videos {
+		// 替换用户信息
+		userInfo, err := GetUserInfo(item.UserId)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, VideoWithUser{
+			UUID:          item.Uuid,
+			UserInfo:      *userInfo,
+			PlayURL:       item.PlayUrl,
+			CoverURL:      item.CoverUrl,
+			FavoriteCount: item.FavoriteCount,
+			CommentCount:  item.CommentCount,
+			Title:         item.Title,
+		})
+	}
+	return res, nil
+}
+
+// LikeVideo .
+func LikeVideo(userId, videoId int64, actionType int32) error {
+	req := kitex_gen.LikeRequest{
+		UserId:     userId,
+		VideoId:    videoId,
+		ActionType: actionType,
+	}
+	_, err := videoClient.Like(context.Background(), &req)
+	return err
+}
+
+// GetVideo 使用uuid获取视频
+func GetVideo(videoId int64) (*VideoWithUser, error) {
+	req := kitex_gen.GetVideoRequest{Uuid: videoId}
+	resp, err := videoClient.GetVideo(context.Background(), &req)
+	if err != nil {
+		return nil, err
+	}
+	// 替换用户信息
+	userInfo, err := GetUserInfo(resp.Video.UserId)
+	res := &VideoWithUser{
+		UUID:          resp.Video.Uuid,
+		UserInfo:      *userInfo,
+		PlayURL:       resp.Video.PlayUrl,
+		CoverURL:      resp.Video.CoverUrl,
+		FavoriteCount: resp.Video.FavoriteCount,
+		CommentCount:  resp.Video.CommentCount,
+		Title:         resp.Video.Title,
+
+		// TODO IsFavorite
+
+		IsFavorite: false,
+	}
+	return res, nil
+}
+
+// FavoriteVideoList .
+func FavoriteVideoList(userId int64) ([]VideoWithUser, error) {
+	var res []VideoWithUser
+	req := kitex_gen.GetVideoRequest{Uuid: userId}
+	resp, err := videoClient.GetFavoriteVideo(context.Background(), &req)
+	fmt.Println("resp", resp)
+	if err != nil {
+		return nil, err
+	}
 	if err != nil || resp == nil {
 		return nil, err
 	}

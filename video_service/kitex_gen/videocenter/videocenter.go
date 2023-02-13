@@ -22,10 +22,13 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "VideoCenter"
 	handlerType := (*kitex_gen.VideoCenter)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"Publish": kitex.NewMethodInfo(publishHandler, newPublishArgs, newPublishResult, false),
-		"Delete":  kitex.NewMethodInfo(deleteHandler, newDeleteArgs, newDeleteResult, false),
-		"Feed":    kitex.NewMethodInfo(feedHandler, newFeedArgs, newFeedResult, false),
-		"List":    kitex.NewMethodInfo(listHandler, newListArgs, newListResult, false),
+		"Publish":          kitex.NewMethodInfo(publishHandler, newPublishArgs, newPublishResult, false),
+		"Delete":           kitex.NewMethodInfo(deleteHandler, newDeleteArgs, newDeleteResult, false),
+		"Feed":             kitex.NewMethodInfo(feedHandler, newFeedArgs, newFeedResult, false),
+		"VideoList":        kitex.NewMethodInfo(videoListHandler, newVideoListArgs, newVideoListResult, false),
+		"Like":             kitex.NewMethodInfo(likeHandler, newLikeArgs, newLikeResult, false),
+		"GetVideo":         kitex.NewMethodInfo(getVideoHandler, newGetVideoArgs, newGetVideoResult, false),
+		"GetFavoriteVideo": kitex.NewMethodInfo(getFavoriteVideoHandler, newGetFavoriteVideoArgs, newGetFavoriteVideoResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -476,73 +479,73 @@ func (p *FeedResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func listHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+func videoListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(kitex_gen.ListRequest)
+		req := new(kitex_gen.VideoListRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
-		resp, err := handler.(kitex_gen.VideoCenter).List(ctx, req)
+		resp, err := handler.(kitex_gen.VideoCenter).VideoList(ctx, req)
 		if err != nil {
 			return err
 		}
 		if err := st.SendMsg(resp); err != nil {
 			return err
 		}
-	case *ListArgs:
-		success, err := handler.(kitex_gen.VideoCenter).List(ctx, s.Req)
+	case *VideoListArgs:
+		success, err := handler.(kitex_gen.VideoCenter).VideoList(ctx, s.Req)
 		if err != nil {
 			return err
 		}
-		realResult := result.(*ListResult)
+		realResult := result.(*VideoListResult)
 		realResult.Success = success
 	}
 	return nil
 }
-func newListArgs() interface{} {
-	return &ListArgs{}
+func newVideoListArgs() interface{} {
+	return &VideoListArgs{}
 }
 
-func newListResult() interface{} {
-	return &ListResult{}
+func newVideoListResult() interface{} {
+	return &VideoListResult{}
 }
 
-type ListArgs struct {
-	Req *kitex_gen.ListRequest
+type VideoListArgs struct {
+	Req *kitex_gen.VideoListRequest
 }
 
-func (p *ListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *VideoListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(kitex_gen.ListRequest)
+		p.Req = new(kitex_gen.VideoListRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
 
-func (p *ListArgs) FastWrite(buf []byte) (n int) {
+func (p *VideoListArgs) FastWrite(buf []byte) (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.FastWrite(buf)
 }
 
-func (p *ListArgs) Size() (n int) {
+func (p *VideoListArgs) Size() (n int) {
 	if !p.IsSetReq() {
 		return 0
 	}
 	return p.Req.Size()
 }
 
-func (p *ListArgs) Marshal(out []byte) ([]byte, error) {
+func (p *VideoListArgs) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetReq() {
-		return out, fmt.Errorf("No req in ListArgs")
+		return out, fmt.Errorf("No req in VideoListArgs")
 	}
 	return proto.Marshal(p.Req)
 }
 
-func (p *ListArgs) Unmarshal(in []byte) error {
-	msg := new(kitex_gen.ListRequest)
+func (p *VideoListArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.VideoListRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -550,55 +553,55 @@ func (p *ListArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var ListArgs_Req_DEFAULT *kitex_gen.ListRequest
+var VideoListArgs_Req_DEFAULT *kitex_gen.VideoListRequest
 
-func (p *ListArgs) GetReq() *kitex_gen.ListRequest {
+func (p *VideoListArgs) GetReq() *kitex_gen.VideoListRequest {
 	if !p.IsSetReq() {
-		return ListArgs_Req_DEFAULT
+		return VideoListArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-func (p *ListArgs) IsSetReq() bool {
+func (p *VideoListArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-type ListResult struct {
-	Success *kitex_gen.ListResponse
+type VideoListResult struct {
+	Success *kitex_gen.VideoListResponse
 }
 
-var ListResult_Success_DEFAULT *kitex_gen.ListResponse
+var VideoListResult_Success_DEFAULT *kitex_gen.VideoListResponse
 
-func (p *ListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+func (p *VideoListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(kitex_gen.ListResponse)
+		p.Success = new(kitex_gen.VideoListResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
 
-func (p *ListResult) FastWrite(buf []byte) (n int) {
+func (p *VideoListResult) FastWrite(buf []byte) (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.FastWrite(buf)
 }
 
-func (p *ListResult) Size() (n int) {
+func (p *VideoListResult) Size() (n int) {
 	if !p.IsSetSuccess() {
 		return 0
 	}
 	return p.Success.Size()
 }
 
-func (p *ListResult) Marshal(out []byte) ([]byte, error) {
+func (p *VideoListResult) Marshal(out []byte) ([]byte, error) {
 	if !p.IsSetSuccess() {
-		return out, fmt.Errorf("No req in ListResult")
+		return out, fmt.Errorf("No req in VideoListResult")
 	}
 	return proto.Marshal(p.Success)
 }
 
-func (p *ListResult) Unmarshal(in []byte) error {
-	msg := new(kitex_gen.ListResponse)
+func (p *VideoListResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.VideoListResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -606,18 +609,453 @@ func (p *ListResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *ListResult) GetSuccess() *kitex_gen.ListResponse {
+func (p *VideoListResult) GetSuccess() *kitex_gen.VideoListResponse {
 	if !p.IsSetSuccess() {
-		return ListResult_Success_DEFAULT
+		return VideoListResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-func (p *ListResult) SetSuccess(x interface{}) {
-	p.Success = x.(*kitex_gen.ListResponse)
+func (p *VideoListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.VideoListResponse)
 }
 
-func (p *ListResult) IsSetSuccess() bool {
+func (p *VideoListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func likeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.LikeRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.VideoCenter).Like(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *LikeArgs:
+		success, err := handler.(kitex_gen.VideoCenter).Like(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*LikeResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newLikeArgs() interface{} {
+	return &LikeArgs{}
+}
+
+func newLikeResult() interface{} {
+	return &LikeResult{}
+}
+
+type LikeArgs struct {
+	Req *kitex_gen.LikeRequest
+}
+
+func (p *LikeArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.LikeRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *LikeArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *LikeArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *LikeArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in LikeArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *LikeArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.LikeRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var LikeArgs_Req_DEFAULT *kitex_gen.LikeRequest
+
+func (p *LikeArgs) GetReq() *kitex_gen.LikeRequest {
+	if !p.IsSetReq() {
+		return LikeArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *LikeArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type LikeResult struct {
+	Success *kitex_gen.BasicResponse
+}
+
+var LikeResult_Success_DEFAULT *kitex_gen.BasicResponse
+
+func (p *LikeResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.BasicResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *LikeResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *LikeResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *LikeResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in LikeResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *LikeResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.BasicResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *LikeResult) GetSuccess() *kitex_gen.BasicResponse {
+	if !p.IsSetSuccess() {
+		return LikeResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *LikeResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.BasicResponse)
+}
+
+func (p *LikeResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func getVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.GetVideoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.VideoCenter).GetVideo(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetVideoArgs:
+		success, err := handler.(kitex_gen.VideoCenter).GetVideo(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetVideoResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetVideoArgs() interface{} {
+	return &GetVideoArgs{}
+}
+
+func newGetVideoResult() interface{} {
+	return &GetVideoResult{}
+}
+
+type GetVideoArgs struct {
+	Req *kitex_gen.GetVideoRequest
+}
+
+func (p *GetVideoArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.GetVideoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetVideoArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetVideoArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetVideoArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetVideoArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetVideoArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetVideoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetVideoArgs_Req_DEFAULT *kitex_gen.GetVideoRequest
+
+func (p *GetVideoArgs) GetReq() *kitex_gen.GetVideoRequest {
+	if !p.IsSetReq() {
+		return GetVideoArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetVideoArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetVideoResult struct {
+	Success *kitex_gen.GetVideoResponse
+}
+
+var GetVideoResult_Success_DEFAULT *kitex_gen.GetVideoResponse
+
+func (p *GetVideoResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.GetVideoResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetVideoResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetVideoResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetVideoResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetVideoResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetVideoResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetVideoResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetVideoResult) GetSuccess() *kitex_gen.GetVideoResponse {
+	if !p.IsSetSuccess() {
+		return GetVideoResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetVideoResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.GetVideoResponse)
+}
+
+func (p *GetVideoResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func getFavoriteVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.GetVideoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.VideoCenter).GetFavoriteVideo(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetFavoriteVideoArgs:
+		success, err := handler.(kitex_gen.VideoCenter).GetFavoriteVideo(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetFavoriteVideoResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetFavoriteVideoArgs() interface{} {
+	return &GetFavoriteVideoArgs{}
+}
+
+func newGetFavoriteVideoResult() interface{} {
+	return &GetFavoriteVideoResult{}
+}
+
+type GetFavoriteVideoArgs struct {
+	Req *kitex_gen.GetVideoRequest
+}
+
+func (p *GetFavoriteVideoArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.GetVideoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetFavoriteVideoArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetFavoriteVideoArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetFavoriteVideoArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetFavoriteVideoArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetFavoriteVideoArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetVideoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetFavoriteVideoArgs_Req_DEFAULT *kitex_gen.GetVideoRequest
+
+func (p *GetFavoriteVideoArgs) GetReq() *kitex_gen.GetVideoRequest {
+	if !p.IsSetReq() {
+		return GetFavoriteVideoArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetFavoriteVideoArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetFavoriteVideoResult struct {
+	Success *kitex_gen.GetFavoriteVideosResponse
+}
+
+var GetFavoriteVideoResult_Success_DEFAULT *kitex_gen.GetFavoriteVideosResponse
+
+func (p *GetFavoriteVideoResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.GetFavoriteVideosResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetFavoriteVideoResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetFavoriteVideoResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetFavoriteVideoResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetFavoriteVideoResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetFavoriteVideoResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetFavoriteVideosResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetFavoriteVideoResult) GetSuccess() *kitex_gen.GetFavoriteVideosResponse {
+	if !p.IsSetSuccess() {
+		return GetFavoriteVideoResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetFavoriteVideoResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.GetFavoriteVideosResponse)
+}
+
+func (p *GetFavoriteVideoResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
@@ -661,11 +1099,41 @@ func (p *kClient) Feed(ctx context.Context, Req *kitex_gen.FeedRequest) (r *kite
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) List(ctx context.Context, Req *kitex_gen.ListRequest) (r *kitex_gen.ListResponse, err error) {
-	var _args ListArgs
+func (p *kClient) VideoList(ctx context.Context, Req *kitex_gen.VideoListRequest) (r *kitex_gen.VideoListResponse, err error) {
+	var _args VideoListArgs
 	_args.Req = Req
-	var _result ListResult
-	if err = p.c.Call(ctx, "List", &_args, &_result); err != nil {
+	var _result VideoListResult
+	if err = p.c.Call(ctx, "VideoList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Like(ctx context.Context, Req *kitex_gen.LikeRequest) (r *kitex_gen.BasicResponse, err error) {
+	var _args LikeArgs
+	_args.Req = Req
+	var _result LikeResult
+	if err = p.c.Call(ctx, "Like", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest) (r *kitex_gen.GetVideoResponse, err error) {
+	var _args GetVideoArgs
+	_args.Req = Req
+	var _result GetVideoResult
+	if err = p.c.Call(ctx, "GetVideo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetFavoriteVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest) (r *kitex_gen.GetFavoriteVideosResponse, err error) {
+	var _args GetFavoriteVideoArgs
+	_args.Req = Req
+	var _result GetFavoriteVideoResult
+	if err = p.c.Call(ctx, "GetFavoriteVideo", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

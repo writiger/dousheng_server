@@ -153,3 +153,70 @@ func VideoList(ctx context.Context, c *app.RequestContext) {
 		"video_list":  videos,
 	})
 }
+
+// VideoLike 点赞或取消点赞
+func VideoLike(ctx context.Context, c *app.RequestContext) {
+	// 1. 验证参数
+	userGet, _ := c.Get("identity")
+	videoGet := c.Query("video_id")
+	actionTypeGet := c.Query("action_type")
+	userId := userGet.(*usermodel.User).UUID
+	videoId, err := strconv.ParseInt(videoGet, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong param : video_id",
+		})
+		return
+	}
+	actionType, err := strconv.ParseInt(actionTypeGet, 10, 32)
+	if err != nil || (actionType != 1 && actionType != 2) {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong param : action_type",
+		})
+		return
+	}
+	// 2. 调用rpc服务
+	err = rpc.LikeVideo(userId, videoId, int32(actionType))
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "rpc.LikeVideo wrong",
+		})
+		return
+	}
+	// 3. 返回
+	c.JSON(consts.StatusOK, utils.H{
+		"status_code": 0,
+		"status_msg":  "success",
+	})
+}
+
+// FavoriteList .
+func FavoriteList(ctx context.Context, c *app.RequestContext) {
+	// 1. 验证参数
+	userIdStr := c.Query("user_id")
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong param : video_id",
+		})
+		return
+	}
+	// 2. 请求服务
+	videos, err := rpc.FavoriteVideoList(userId)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "rpc.FavoriteVideoList wrong",
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"status_code": 0,
+		"status_msg":  "success",
+		"video_list":  videos,
+	})
+}

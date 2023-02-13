@@ -52,7 +52,7 @@ func TestFeed(t *testing.T) {
 
 func TestList(t *testing.T) {
 	t.Run("测试投稿列表", func(t *testing.T) {
-		list, err := query.List(629648834103869440)
+		list, err := query.VideoList(629648834103869440)
 		if err != nil {
 			t.Fatalf(err.Error())
 			return
@@ -60,5 +60,47 @@ func TestList(t *testing.T) {
 		for _, item := range *list {
 			fmt.Println(item)
 		}
+	})
+}
+
+func TestCreateFavorite(t *testing.T) {
+	t.Run("点赞", func(t *testing.T) {
+		err := query.Favorite(629648834103869440, 631256877056917504)
+		if err != nil {
+			t.Fatalf(err.Error())
+			return
+		}
+	})
+}
+
+func TestUndoFavorite(t *testing.T) {
+	t.Run("取消点赞", func(t *testing.T) {
+		err := query.UndoFavorite(629648834103869440, 631256877056917504)
+		if err != nil {
+			t.Fatalf(err.Error())
+			return
+		}
+	})
+}
+
+func TestIsLiked(t *testing.T) {
+	t.Run("是否点赞", func(t *testing.T) {
+		res, err := query.IsLiked(629648834103869440, 631256877056917504)
+		if err != nil {
+			t.Fatalf(err.Error())
+			return
+		}
+		fmt.Println(res)
+	})
+}
+
+func TestFavoriteList(t *testing.T) {
+	t.Run("喜欢列表测试", func(t *testing.T) {
+		list, err := query.FavoriteList(629648834103869440)
+		if err != nil {
+			t.Fatalf(err.Error())
+			return
+		}
+		fmt.Println(list)
 	})
 }

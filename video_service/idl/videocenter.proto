@@ -35,11 +35,29 @@ message FeedResponse{
   repeated Video videos = 1;
 }
 
-message ListRequest {
+message VideoListRequest {
   int64 user_id = 1;
 }
 
-message ListResponse{
+message VideoListResponse{
+  repeated Video videos = 1;
+}
+
+message LikeRequest{
+  int64 user_id     = 1;
+  int64 video_id    = 2;
+  int32 action_type = 3;
+}
+
+message GetVideoRequest {
+  int64 uuid = 1;
+}
+
+message GetVideoResponse {
+  Video video = 1;
+}
+
+message GetFavoriteVideosResponse{
   repeated Video videos = 1;
 }
 
@@ -47,7 +65,10 @@ service VideoCenter {
   rpc Publish(PublishRequest) returns (PublishResponse);
   rpc Delete(DeleteRequest) returns (BasicResponse);
   rpc Feed(FeedRequest) returns (FeedResponse);
-  rpc List(ListRequest) returns (ListResponse);
+  rpc VideoList(VideoListRequest) returns (VideoListResponse);
+  rpc Like(LikeRequest) returns (BasicResponse);
+  rpc GetVideo(GetVideoRequest) returns (GetVideoResponse);
+  rpc GetFavoriteVideo(GetVideoRequest) returns (GetFavoriteVideosResponse);
 }
 
 message Video {
