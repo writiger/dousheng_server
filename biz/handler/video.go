@@ -127,3 +127,29 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 		"video_list":  videos,
 	})
 }
+
+// VideoList .
+func VideoList(ctx context.Context, c *app.RequestContext) {
+	userIdStr := c.Query("user_id")
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong param",
+		})
+		return
+	}
+	videos, err := rpc.VideoList(userId)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"status_code": 0,
+		"status_msg":  "success",
+		"video_list":  videos,
+	})
+}

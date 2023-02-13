@@ -25,6 +25,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"Publish": kitex.NewMethodInfo(publishHandler, newPublishArgs, newPublishResult, false),
 		"Delete":  kitex.NewMethodInfo(deleteHandler, newDeleteArgs, newDeleteResult, false),
 		"Feed":    kitex.NewMethodInfo(feedHandler, newFeedArgs, newFeedResult, false),
+		"List":    kitex.NewMethodInfo(listHandler, newListArgs, newListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -475,6 +476,151 @@ func (p *FeedResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func listHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.ListRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.VideoCenter).List(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *ListArgs:
+		success, err := handler.(kitex_gen.VideoCenter).List(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*ListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newListArgs() interface{} {
+	return &ListArgs{}
+}
+
+func newListResult() interface{} {
+	return &ListResult{}
+}
+
+type ListArgs struct {
+	Req *kitex_gen.ListRequest
+}
+
+func (p *ListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.ListRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *ListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *ListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *ListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in ListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *ListArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.ListRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var ListArgs_Req_DEFAULT *kitex_gen.ListRequest
+
+func (p *ListArgs) GetReq() *kitex_gen.ListRequest {
+	if !p.IsSetReq() {
+		return ListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *ListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type ListResult struct {
+	Success *kitex_gen.ListResponse
+}
+
+var ListResult_Success_DEFAULT *kitex_gen.ListResponse
+
+func (p *ListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.ListResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *ListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *ListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *ListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in ListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *ListResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.ListResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *ListResult) GetSuccess() *kitex_gen.ListResponse {
+	if !p.IsSetSuccess() {
+		return ListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *ListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.ListResponse)
+}
+
+func (p *ListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -510,6 +656,16 @@ func (p *kClient) Feed(ctx context.Context, Req *kitex_gen.FeedRequest) (r *kite
 	_args.Req = Req
 	var _result FeedResult
 	if err = p.c.Call(ctx, "Feed", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) List(ctx context.Context, Req *kitex_gen.ListRequest) (r *kitex_gen.ListResponse, err error) {
+	var _args ListArgs
+	_args.Req = Req
+	var _result ListResult
+	if err = p.c.Call(ctx, "List", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

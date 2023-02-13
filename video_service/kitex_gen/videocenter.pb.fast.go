@@ -227,6 +227,61 @@ func (x *FeedResponse) fastReadField1(buf []byte, _type int8) (offset int, err e
 	return offset, nil
 }
 
+func (x *ListRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_ListRequest[number], err)
+}
+
+func (x *ListRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *ListResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_ListResponse[number], err)
+}
+
+func (x *ListResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v Video
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.Videos = append(x.Videos, &v)
+	return offset, nil
+}
+
 func (x *Video) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -474,6 +529,40 @@ func (x *FeedResponse) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *ListRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *ListRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	return offset
+}
+
+func (x *ListResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *ListResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.Videos == nil {
+		return offset
+	}
+	for i := range x.Videos {
+		offset += fastpb.WriteMessage(buf[offset:], 1, x.Videos[i])
+	}
+	return offset
+}
+
 func (x *Video) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -705,6 +794,40 @@ func (x *FeedResponse) sizeField1() (n int) {
 	return n
 }
 
+func (x *ListRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *ListRequest) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.UserId)
+	return n
+}
+
+func (x *ListResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *ListResponse) sizeField1() (n int) {
+	if x.Videos == nil {
+		return n
+	}
+	for i := range x.Videos {
+		n += fastpb.SizeMessage(1, x.Videos[i])
+	}
+	return n
+}
+
 func (x *Video) Size() (n int) {
 	if x == nil {
 		return n
@@ -811,6 +934,14 @@ var fieldIDToName_FeedRequest = map[int32]string{
 }
 
 var fieldIDToName_FeedResponse = map[int32]string{
+	1: "Videos",
+}
+
+var fieldIDToName_ListRequest = map[int32]string{
+	1: "UserId",
+}
+
+var fieldIDToName_ListResponse = map[int32]string{
 	1: "Videos",
 }
 

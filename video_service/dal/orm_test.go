@@ -49,3 +49,16 @@ func TestFeed(t *testing.T) {
 		}
 	})
 }
+
+func TestList(t *testing.T) {
+	t.Run("测试投稿列表", func(t *testing.T) {
+		list, err := query.List(629648834103869440)
+		if err != nil {
+			t.Fatalf(err.Error())
+			return
+		}
+		for _, item := range *list {
+			fmt.Println(item)
+		}
+	})
+}

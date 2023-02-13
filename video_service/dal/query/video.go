@@ -21,3 +21,10 @@ func Feed(lastTime time.Time) (*[]model.Video, error) {
 	err := GormClient.Limit(3).Order("created_at desc").Where("created_at < ?", lastTime).Find(&videos).Error
 	return &videos, err
 }
+
+// List 获取用户投稿过的视频列表
+func List(userId int64) (*[]model.Video, error) {
+	var videos []model.Video
+	err := GormClient.Where("user_id = ?", userId).Find(&videos).Error
+	return &videos, err
+}

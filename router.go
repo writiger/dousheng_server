@@ -22,5 +22,5 @@ func customizedRegister(r *server.Hertz) {
 	dy.POST("/user/login/", handler.CheckUser)
 	auth.GET("/user/", handler.Info)
 	auth.POST("/publish/action/", handler.Publish)
-
+	auth.GET("/publish/list/", handler.VideoList)
 }
