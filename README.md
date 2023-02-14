@@ -1,6 +1,6 @@
 # dousheng_server
 
-字节跳动青训营大作业
+-- 字节跳动青训营大作业
 
 # 运行方法
 
@@ -148,6 +148,6 @@ type Comment struct {
 ##  优化
 
 * UUID使用雪花算法生成
-* 使用etcd的lease机制维护雪花算法的生成ID
+* 使用etcd的lease机制维护雪花算法
 * 密码使用bcrypt加盐
 
