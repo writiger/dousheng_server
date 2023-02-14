@@ -45,7 +45,7 @@ go build -o dousheng_server && ./dousheng_server
 - [x] 赞
 - [x] 喜欢列表
 - [x] 评论
-- [ ] 视频评论列表
+- [x] 视频评论列表
 
 ## 社交接口
 

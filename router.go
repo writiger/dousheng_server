@@ -29,4 +29,5 @@ func customizedRegister(r *server.Hertz) {
 	auth.POST("/favorite/action/", handler.VideoLike)
 	auth.GET("/favorite/list/", handler.FavoriteList)
 	auth.POST("/comment/action/", handler.CommentAction)
+	auth.GET("/comment/list/", handler.GetComment)
 }

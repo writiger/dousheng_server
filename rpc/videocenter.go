@@ -233,3 +233,26 @@ func DeleteComment(uuid int64) error {
 	_, err := videoClient.DeleteComment(context.Background(), &req)
 	return err
 }
+
+// GetComment .
+func GetComment(uuid int64) ([]CommentWithUser, error) {
+	var res []CommentWithUser
+	req := kitex_gen.GetCommentRequest{VideoId: uuid}
+	resp, err := videoClient.GetComment(context.Background(), &req)
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range resp.Comments {
+		userInfo, err := GetUserInfo(item.UserId)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, CommentWithUser{
+			UUID:       item.Uuid,
+			UserInfo:   *userInfo,
+			Content:    item.Content,
+			CreateDate: item.CreateDate,
+		})
+	}
+	return res, nil
+}

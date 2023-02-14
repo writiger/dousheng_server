@@ -532,6 +532,61 @@ func (x *DeleteCommentRequest) fastReadField1(buf []byte, _type int8) (offset in
 	return offset, err
 }
 
+func (x *GetCommentRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetCommentRequest[number], err)
+}
+
+func (x *GetCommentRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetCommentResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetCommentResponse[number], err)
+}
+
+func (x *GetCommentResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v Comment
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.Comments = append(x.Comments, &v)
+	return offset, nil
+}
+
 func (x *Comment) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -1046,6 +1101,40 @@ func (x *DeleteCommentRequest) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *GetCommentRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *GetCommentRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.VideoId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.VideoId)
+	return offset
+}
+
+func (x *GetCommentResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *GetCommentResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.Comments == nil {
+		return offset
+	}
+	for i := range x.Comments {
+		offset += fastpb.WriteMessage(buf[offset:], 1, x.Comments[i])
+	}
+	return offset
+}
+
 func (x *Comment) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1531,6 +1620,40 @@ func (x *DeleteCommentRequest) sizeField1() (n int) {
 	return n
 }
 
+func (x *GetCommentRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *GetCommentRequest) sizeField1() (n int) {
+	if x.VideoId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.VideoId)
+	return n
+}
+
+func (x *GetCommentResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *GetCommentResponse) sizeField1() (n int) {
+	if x.Comments == nil {
+		return n
+	}
+	for i := range x.Comments {
+		n += fastpb.SizeMessage(1, x.Comments[i])
+	}
+	return n
+}
+
 func (x *Comment) Size() (n int) {
 	if x == nil {
 		return n
@@ -1732,6 +1855,14 @@ var fieldIDToName_PostCommentResponse = map[int32]string{
 
 var fieldIDToName_DeleteCommentRequest = map[int32]string{
 	1: "Uuid",
+}
+
+var fieldIDToName_GetCommentRequest = map[int32]string{
+	1: "VideoId",
+}
+
+var fieldIDToName_GetCommentResponse = map[int32]string{
+	1: "Comments",
 }
 
 var fieldIDToName_Comment = map[int32]string{

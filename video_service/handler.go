@@ -108,3 +108,12 @@ func (s *VideoCenterImpl) DeleteComment(ctx context.Context, req *kitex_gen.Dele
 		StatusMsg:  "success",
 	}, nil
 }
+
+// GetComment implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) GetComment(ctx context.Context, req *kitex_gen.GetCommentRequest) (*kitex_gen.GetCommentResponse, error) {
+	comments, err := service.VideoCenter{}.GetComment(req.VideoId)
+	if err != nil {
+		return nil, err
+	}
+	return &kitex_gen.GetCommentResponse{Comments: comments}, nil
+}

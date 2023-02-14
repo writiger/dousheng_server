@@ -76,6 +76,14 @@ message DeleteCommentRequest {
   int64 uuid = 1;
 }
 
+message GetCommentRequest{
+  int64 video_id = 1;
+}
+
+message GetCommentResponse{
+  repeated Comment comments = 1;
+}
+
 service VideoCenter {
   rpc Publish(PublishRequest) returns (PublishResponse);
   rpc Delete(DeleteRequest) returns (BasicResponse);
@@ -86,6 +94,7 @@ service VideoCenter {
   rpc GetFavoriteVideo(GetVideoRequest) returns (GetFavoriteVideosResponse);
   rpc PostComment(PostCommentRequest) returns (PostCommentResponse);
   rpc DeleteComment(DeleteCommentRequest) returns (BasicResponse);
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
 }
 
 message Comment {
