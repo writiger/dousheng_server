@@ -29,6 +29,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"Like":             kitex.NewMethodInfo(likeHandler, newLikeArgs, newLikeResult, false),
 		"GetVideo":         kitex.NewMethodInfo(getVideoHandler, newGetVideoArgs, newGetVideoResult, false),
 		"GetFavoriteVideo": kitex.NewMethodInfo(getFavoriteVideoHandler, newGetFavoriteVideoArgs, newGetFavoriteVideoResult, false),
+		"PostComment":      kitex.NewMethodInfo(postCommentHandler, newPostCommentArgs, newPostCommentResult, false),
+		"DeleteComment":    kitex.NewMethodInfo(deleteCommentHandler, newDeleteCommentArgs, newDeleteCommentResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -1059,6 +1061,296 @@ func (p *GetFavoriteVideoResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func postCommentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.PostCommentRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.VideoCenter).PostComment(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *PostCommentArgs:
+		success, err := handler.(kitex_gen.VideoCenter).PostComment(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*PostCommentResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newPostCommentArgs() interface{} {
+	return &PostCommentArgs{}
+}
+
+func newPostCommentResult() interface{} {
+	return &PostCommentResult{}
+}
+
+type PostCommentArgs struct {
+	Req *kitex_gen.PostCommentRequest
+}
+
+func (p *PostCommentArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.PostCommentRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *PostCommentArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *PostCommentArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *PostCommentArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in PostCommentArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *PostCommentArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.PostCommentRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var PostCommentArgs_Req_DEFAULT *kitex_gen.PostCommentRequest
+
+func (p *PostCommentArgs) GetReq() *kitex_gen.PostCommentRequest {
+	if !p.IsSetReq() {
+		return PostCommentArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *PostCommentArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type PostCommentResult struct {
+	Success *kitex_gen.PostCommentResponse
+}
+
+var PostCommentResult_Success_DEFAULT *kitex_gen.PostCommentResponse
+
+func (p *PostCommentResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.PostCommentResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *PostCommentResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *PostCommentResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *PostCommentResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in PostCommentResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *PostCommentResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.PostCommentResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *PostCommentResult) GetSuccess() *kitex_gen.PostCommentResponse {
+	if !p.IsSetSuccess() {
+		return PostCommentResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *PostCommentResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.PostCommentResponse)
+}
+
+func (p *PostCommentResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func deleteCommentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.DeleteCommentRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.VideoCenter).DeleteComment(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *DeleteCommentArgs:
+		success, err := handler.(kitex_gen.VideoCenter).DeleteComment(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*DeleteCommentResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newDeleteCommentArgs() interface{} {
+	return &DeleteCommentArgs{}
+}
+
+func newDeleteCommentResult() interface{} {
+	return &DeleteCommentResult{}
+}
+
+type DeleteCommentArgs struct {
+	Req *kitex_gen.DeleteCommentRequest
+}
+
+func (p *DeleteCommentArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.DeleteCommentRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *DeleteCommentArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *DeleteCommentArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *DeleteCommentArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in DeleteCommentArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *DeleteCommentArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.DeleteCommentRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var DeleteCommentArgs_Req_DEFAULT *kitex_gen.DeleteCommentRequest
+
+func (p *DeleteCommentArgs) GetReq() *kitex_gen.DeleteCommentRequest {
+	if !p.IsSetReq() {
+		return DeleteCommentArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *DeleteCommentArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type DeleteCommentResult struct {
+	Success *kitex_gen.BasicResponse
+}
+
+var DeleteCommentResult_Success_DEFAULT *kitex_gen.BasicResponse
+
+func (p *DeleteCommentResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.BasicResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *DeleteCommentResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *DeleteCommentResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *DeleteCommentResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in DeleteCommentResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *DeleteCommentResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.BasicResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *DeleteCommentResult) GetSuccess() *kitex_gen.BasicResponse {
+	if !p.IsSetSuccess() {
+		return DeleteCommentResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *DeleteCommentResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.BasicResponse)
+}
+
+func (p *DeleteCommentResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -1134,6 +1426,26 @@ func (p *kClient) GetFavoriteVideo(ctx context.Context, Req *kitex_gen.GetVideoR
 	_args.Req = Req
 	var _result GetFavoriteVideoResult
 	if err = p.c.Call(ctx, "GetFavoriteVideo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) PostComment(ctx context.Context, Req *kitex_gen.PostCommentRequest) (r *kitex_gen.PostCommentResponse, err error) {
+	var _args PostCommentArgs
+	_args.Req = Req
+	var _result PostCommentResult
+	if err = p.c.Call(ctx, "PostComment", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DeleteComment(ctx context.Context, Req *kitex_gen.DeleteCommentRequest) (r *kitex_gen.BasicResponse, err error) {
+	var _args DeleteCommentArgs
+	_args.Req = Req
+	var _result DeleteCommentResult
+	if err = p.c.Call(ctx, "DeleteComment", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

@@ -18,6 +18,8 @@ type Client interface {
 	Like(ctx context.Context, Req *kitex_gen.LikeRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
 	GetVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetVideoResponse, err error)
 	GetFavoriteVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetFavoriteVideosResponse, err error)
+	PostComment(ctx context.Context, Req *kitex_gen.PostCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.PostCommentResponse, err error)
+	DeleteComment(ctx context.Context, Req *kitex_gen.DeleteCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -82,4 +84,14 @@ func (p *kVideoCenterClient) GetVideo(ctx context.Context, Req *kitex_gen.GetVid
 func (p *kVideoCenterClient) GetFavoriteVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetFavoriteVideosResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetFavoriteVideo(ctx, Req)
+}
+
+func (p *kVideoCenterClient) PostComment(ctx context.Context, Req *kitex_gen.PostCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.PostCommentResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.PostComment(ctx, Req)
+}
+
+func (p *kVideoCenterClient) DeleteComment(ctx context.Context, Req *kitex_gen.DeleteCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteComment(ctx, Req)
 }
