@@ -23,9 +23,10 @@ message PublishResponse{
 }
 
 message DeleteRequest{
-  int64 uuid = 1;
+  int64  user_id = 1;
+  int64  video_id = 2;
+  string content = 3;
 }
-
 
 message FeedRequest{
   int64 last_time = 1;
@@ -61,6 +62,20 @@ message GetFavoriteVideosResponse{
   repeated Video videos = 1;
 }
 
+message PostCommentRequest {
+  int64  user_id  = 1;
+  int64  video_id = 2;
+  string content  = 3;
+}
+
+message PostCommentResponse{
+  Comment comment = 1;
+}
+
+message DeleteCommentRequest {
+  int64 uuid = 1;
+}
+
 service VideoCenter {
   rpc Publish(PublishRequest) returns (PublishResponse);
   rpc Delete(DeleteRequest) returns (BasicResponse);
@@ -69,6 +84,16 @@ service VideoCenter {
   rpc Like(LikeRequest) returns (BasicResponse);
   rpc GetVideo(GetVideoRequest) returns (GetVideoResponse);
   rpc GetFavoriteVideo(GetVideoRequest) returns (GetFavoriteVideosResponse);
+  rpc PostComment(PostCommentRequest) returns (PostCommentResponse);
+  rpc DeleteComment(DeleteCommentRequest) returns (BasicResponse);
+}
+
+message Comment {
+  int64  uuid        = 1;
+  int64  user_id     = 2;
+  int64  video_id    = 3;
+  string create_date = 4;
+  string content     = 5;
 }
 
 message Video {

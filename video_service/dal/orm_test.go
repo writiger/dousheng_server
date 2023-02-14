@@ -104,3 +104,30 @@ func TestFavoriteList(t *testing.T) {
 		fmt.Println(list)
 	})
 }
+
+func TestCreateComment(t *testing.T) {
+	t.Run("发表评论测试", func(t *testing.T) {
+		comment, err := query.CreateComment(&model.Comment{
+			CommentId:  629648834103869442,
+			UserId:     629648834103869440,
+			VideoId:    631256877056917504,
+			Content:    "发表评论测试1",
+			CreateDate: time.Now().Format("01-02"),
+		})
+		if err != nil {
+			t.Fatalf(err.Error())
+			return
+		}
+		fmt.Println(comment)
+	})
+}
+
+func TestDeleteComment(t *testing.T) {
+	t.Run("删除评论测试", func(t *testing.T) {
+		err := query.DeleteComment(629648834103869442)
+		if err != nil {
+			t.Fatalf(err.Error())
+			return
+		}
+	})
+}

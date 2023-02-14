@@ -44,7 +44,7 @@ go build -o dousheng_server && ./dousheng_server
 
 - [x] 赞
 - [x] 喜欢列表
-- [ ] 评论
+- [x] 评论
 - [ ] 视频评论列表
 
 ## 社交接口
@@ -133,7 +133,17 @@ type Favorite struct {
 }
 ~~~
 
+### comment模型
 
+~~~ golang
+type Comment struct {
+	CommentId  int64  `gorm:"primaryKey" json:"comment_id"`
+	UserId     int64  `json:"user_id"`
+	VideoId    int64  `json:"video_id"`
+	Content    string `json:"content"`
+	CreateDate string `json:"create_date"`
+}
+~~~
 
 ##  优化
 

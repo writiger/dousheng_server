@@ -29,7 +29,7 @@ func VideoList(userId int64) (*[]model.Video, error) {
 	return &videos, err
 }
 
-// GetVideo 通过uuid获取vide
+// GetVideo 通过uuid获取video
 func GetVideo(uuid int64) (*model.Video, error) {
 	var res model.Video
 	err := GormClient.Where("uuid = ?", uuid).Find(&res).Error

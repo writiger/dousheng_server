@@ -220,3 +220,79 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 		"video_list":  videos,
 	})
 }
+
+// CommentAction .
+func CommentAction(ctx context.Context, c *app.RequestContext) {
+	// 1. 验证参数
+	userGet, _ := c.Get("identity")
+	user := userGet.(*usermodel.User)
+	videoGet := c.Query("video_id")
+	videoId, err := strconv.ParseInt(videoGet, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "wong param video_id",
+		})
+		return
+	}
+	actionType := c.Query("action_type")
+
+	switch actionType {
+	case "1": // 2.1 发布
+		// 2.2 验证评论文本
+		content := c.Query("comment_text")
+		if content == "" {
+			c.JSON(consts.StatusBadRequest, utils.H{
+				"status_code": -1,
+				"status_msg":  "content is empty",
+			})
+			return
+		}
+		// 2.3 调用rpc
+		comment, err := rpc.PostComment(model.Comment{
+			UserId:  user.UUID,
+			VideoId: videoId,
+			Content: content,
+		})
+		// 2.4 返回
+		if err != nil {
+			c.JSON(consts.StatusBadRequest, utils.H{
+				"status_code": -1,
+				"status_msg":  "rpc.PostComment wrong",
+			})
+			return
+		}
+
+		c.JSON(consts.StatusOK, utils.H{
+			"status_code": 0,
+			"status_msg":  "success",
+			"comment":     comment,
+		})
+
+	case "2": // 2.1 删除
+		// 2.2 验证评论uuid
+		uuidStr := c.Query("comment_id")
+		uuid, err := strconv.ParseInt(uuidStr, 10, 64)
+		// 2.3 调用rpc
+		err = rpc.DeleteComment(uuid)
+		if err != nil {
+			c.JSON(consts.StatusBadRequest, utils.H{
+				"status_code": -1,
+				"status_msg":  "rpc.DeleteComment wrong",
+			})
+			return
+		}
+		c.JSON(consts.StatusOK, utils.H{
+			"status_code": 0,
+			"status_msg":  "success",
+			"comment":     nil,
+		})
+
+	default:
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "wong param action_type",
+		})
+		return
+	}
+}

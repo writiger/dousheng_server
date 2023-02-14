@@ -14,17 +14,23 @@ type VideoCenter struct {
 }
 
 // Publish 投稿视频
-func (vc VideoCenter) Publish(video *model.Video) (int64, error) {
+func (vc VideoCenter) Publish(req *kitex_gen.PublishRequest) (int64, error) {
 	// 1. 申请UUID
 	uuid, err := uuidmaker.GetUUID()
 	if err != nil {
 		return 0, err
 	}
-	video.UUID = uuid
-	// 2. 保存
+	// 2. 生成
 	saverIp := "http://192.168.31.84:8080"
-	video.PlayURL = fmt.Sprintf(saverIp+"/static/videos/%d.%s", uuid, video.PlayURL)
-	video.CoverURL = fmt.Sprintf(saverIp+"/static/covers/%d.%s", uuid, "png")
+	video := &model.Video{
+		UUID:          uuid,
+		UserID:        0,
+		PlayURL:       fmt.Sprintf(saverIp+"/static/videos/%d.%s", uuid, req.PlayUrl),
+		CoverURL:      fmt.Sprintf(saverIp+"/static/covers/%d.%s", uuid, "png"),
+		FavoriteCount: 0,
+		CommentCount:  0,
+		Title:         req.Title,
+	}
 	err = query.CreateVideo(video)
 	return uuid, err
 }
@@ -104,6 +110,41 @@ func (vc VideoCenter) FavoriteList(userId int64) ([]*kitex_gen.Video, error) {
 		res = append(res, temp)
 	}
 	return res, nil
+}
+
+// PostComment 发表评论
+func (vc VideoCenter) PostComment(req *kitex_gen.PostCommentRequest) (*kitex_gen.Comment, error) {
+	// 1. 申请uuid
+	uuid, err := uuidmaker.GetUUID()
+	if err != nil {
+		return nil, err
+	}
+	// 2. 生成comment
+	comment := &model.Comment{
+		CommentId:  uuid,
+		UserId:     req.UserId,
+		VideoId:    req.VideoId,
+		Content:    req.Content,
+		CreateDate: time.Now().Format("01-02"),
+	}
+	// 3. 保存
+	comment, err = query.CreateComment(comment)
+	if err != nil {
+		return nil, err
+	}
+
+	return &kitex_gen.Comment{
+		Uuid:       comment.CommentId,
+		UserId:     comment.UserId,
+		VideoId:    comment.VideoId,
+		CreateDate: comment.CreateDate,
+		Content:    comment.Content,
+	}, nil
+}
+
+// DeleteComment 删除评论
+func (vc VideoCenter) DeleteComment(uuid int64) error {
+	return query.DeleteComment(uuid)
 }
 
 // 将model中的video转换为kitex中生成的video

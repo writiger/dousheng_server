@@ -6,7 +6,6 @@ import (
 	"dousheng_server/video_service/dal/model"
 	"dousheng_server/video_service/kitex_gen"
 	"dousheng_server/video_service/kitex_gen/videocenter"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -44,6 +43,14 @@ type VideoWithUser struct {
 	CreatedAt     time.Time
 }
 
+// CommentWithUser 将用户信息中的user_id替换为user
+type CommentWithUser struct {
+	UUID       int64          `json:"comment_id"`
+	UserInfo   usermodel.User `json:"user"`
+	Content    string         `json:"content"`
+	CreateDate string         `json:"createDate"`
+}
+
 // PublishVideo .
 func PublishVideo(video *model.Video) (int64, error) {
 	req := kitex_gen.PublishRequest{
@@ -61,7 +68,7 @@ func PublishVideo(video *model.Video) (int64, error) {
 
 // DeleteVideo .
 func DeleteVideo(uuid int64) error {
-	req := kitex_gen.DeleteRequest{Uuid: uuid}
+	req := kitex_gen.DeleteRequest{VideoId: uuid}
 	_, err := videoClient.Delete(context.Background(), &req)
 	return err
 }
@@ -172,7 +179,6 @@ func FavoriteVideoList(userId int64) ([]VideoWithUser, error) {
 	var res []VideoWithUser
 	req := kitex_gen.GetVideoRequest{Uuid: userId}
 	resp, err := videoClient.GetFavoriteVideo(context.Background(), &req)
-	fmt.Println("resp", resp)
 	if err != nil {
 		return nil, err
 	}
@@ -197,4 +203,33 @@ func FavoriteVideoList(userId int64) ([]VideoWithUser, error) {
 		})
 	}
 	return res, nil
+}
+
+// PostComment .
+func PostComment(comment model.Comment) (*CommentWithUser, error) {
+	req := kitex_gen.PostCommentRequest{
+		UserId:  comment.UserId,
+		VideoId: comment.VideoId,
+		Content: comment.Content,
+	}
+	resp, err := videoClient.PostComment(context.Background(), &req)
+	if err != nil {
+		return nil, err
+	}
+	// 替换用户信息
+	userInfo, err := GetUserInfo(resp.Comment.UserId)
+	// 转换参数
+	return &CommentWithUser{
+		UUID:       resp.Comment.Uuid,
+		UserInfo:   *userInfo,
+		Content:    resp.Comment.Content,
+		CreateDate: resp.Comment.CreateDate,
+	}, nil
+}
+
+// DeleteComment .
+func DeleteComment(uuid int64) error {
+	req := kitex_gen.DeleteCommentRequest{Uuid: uuid}
+	_, err := videoClient.DeleteComment(context.Background(), &req)
+	return err
 }

@@ -28,4 +28,5 @@ func customizedRegister(r *server.Hertz) {
 	// 互动接口
 	auth.POST("/favorite/action/", handler.VideoLike)
 	auth.GET("/favorite/list/", handler.FavoriteList)
+	auth.POST("/comment/action/", handler.CommentAction)
 }

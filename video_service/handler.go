@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"dousheng_server/video_service/dal/model"
 	kitex_gen "dousheng_server/video_service/kitex_gen"
 	"dousheng_server/video_service/service"
 )
@@ -12,22 +11,10 @@ type VideoCenterImpl struct{}
 
 // Publish implements the VideoCenterImpl interface.
 func (s *VideoCenterImpl) Publish(ctx context.Context, req *kitex_gen.PublishRequest) (*kitex_gen.PublishResponse, error) {
-	videoIn := model.Video{
-		UserID:   req.UserId,
-		PlayURL:  req.PlayUrl,
-		CoverURL: req.CoverUrl,
-		Title:    req.Title,
-	}
-
-	uuid, err := service.VideoCenter{}.Publish(&videoIn)
+	uuid, err := service.VideoCenter{}.Publish(req)
 	if err != nil {
-		return &kitex_gen.PublishResponse{
-			StatusCode: -1,
-			StatusMsg:  "publish action failed",
-			Uuid:       0,
-		}, err
+		return nil, err
 	}
-
 	return &kitex_gen.PublishResponse{
 		StatusCode: 0,
 		StatusMsg:  "success",
@@ -37,7 +24,7 @@ func (s *VideoCenterImpl) Publish(ctx context.Context, req *kitex_gen.PublishReq
 
 // Delete implements the VideoCenterImpl interface.
 func (s *VideoCenterImpl) Delete(ctx context.Context, req *kitex_gen.DeleteRequest) (*kitex_gen.BasicResponse, error) {
-	err := service.VideoCenter{}.Delete(req.Uuid)
+	err := service.VideoCenter{}.Delete(req.VideoId)
 	if err != nil {
 		return &kitex_gen.BasicResponse{
 			StatusCode: -1,
@@ -96,4 +83,28 @@ func (s *VideoCenterImpl) GetFavoriteVideo(ctx context.Context, req *kitex_gen.G
 		return nil, err
 	}
 	return &kitex_gen.GetFavoriteVideosResponse{Videos: videos}, nil
+}
+
+// PostComment implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) PostComment(ctx context.Context, req *kitex_gen.PostCommentRequest) (*kitex_gen.PostCommentResponse, error) {
+	comment, err := service.VideoCenter{}.PostComment(req)
+	if err != nil {
+		return nil, err
+	}
+	return &kitex_gen.PostCommentResponse{Comment: comment}, nil
+}
+
+// DeleteComment implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) DeleteComment(ctx context.Context, req *kitex_gen.DeleteCommentRequest) (*kitex_gen.BasicResponse, error) {
+	err := service.VideoCenter{}.DeleteComment(req.Uuid)
+	if err != nil {
+		return &kitex_gen.BasicResponse{
+			StatusCode: -1,
+			StatusMsg:  "delete comment wrong",
+		}, err
+	}
+	return &kitex_gen.BasicResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+	}, nil
 }
