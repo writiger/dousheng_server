@@ -1,6 +1,6 @@
 # dousheng_server
 
-字节跳动青训营大作业
+---字节跳动青训营大作业
 
 # 运行方法
 
@@ -42,9 +42,9 @@ go build -o dousheng_server && ./dousheng_server
 
 ## 互动接口 
 
-- [x] 赞
-- [x] 喜欢列表
-- [x] 评论
+- [ ] 赞
+- [ ] 喜欢列表
+- [ ] 评论
 - [ ] 视频评论列表
 
 ## 社交接口
@@ -124,30 +124,10 @@ type Video struct {
 }
 ~~~
 
-### favorite模型
 
-~~~ golang
-type Favorite struct {
-	UserId  int64 `json:"user_id"`
-	VideoId int64 `json:"video_id"`
-}
-~~~
-
-### comment模型
-
-~~~ golang
-type Comment struct {
-	CommentId  int64  `gorm:"primaryKey" json:"comment_id"`
-	UserId     int64  `json:"user_id"`
-	VideoId    int64  `json:"video_id"`
-	Content    string `json:"content"`
-	CreateDate string `json:"create_date"`
-}
-~~~
 
 ##  优化
 
 * UUID使用雪花算法生成
 * 使用etcd的lease机制维护雪花算法的生成ID
 * 密码使用bcrypt加盐
-
