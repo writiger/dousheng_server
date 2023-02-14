@@ -20,6 +20,7 @@ type Client interface {
 	GetFavoriteVideo(ctx context.Context, Req *kitex_gen.GetVideoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetFavoriteVideosResponse, err error)
 	PostComment(ctx context.Context, Req *kitex_gen.PostCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.PostCommentResponse, err error)
 	DeleteComment(ctx context.Context, Req *kitex_gen.DeleteCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
+	GetComment(ctx context.Context, Req *kitex_gen.GetCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.GetCommentResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -94,4 +95,9 @@ func (p *kVideoCenterClient) PostComment(ctx context.Context, Req *kitex_gen.Pos
 func (p *kVideoCenterClient) DeleteComment(ctx context.Context, Req *kitex_gen.DeleteCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DeleteComment(ctx, Req)
+}
+
+func (p *kVideoCenterClient) GetComment(ctx context.Context, Req *kitex_gen.GetCommentRequest, callOptions ...callopt.Option) (r *kitex_gen.GetCommentResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetComment(ctx, Req)
 }

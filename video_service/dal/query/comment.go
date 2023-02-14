@@ -39,3 +39,10 @@ func DeleteComment(uuid int64) error {
 		return nil
 	})
 }
+
+// GetComment 查看视频的评论
+func GetComment(uuid int64) (*[]model.Comment, error) {
+	var res []model.Comment
+	err := GormClient.Order("created_at desc").Where("video_id = ?", uuid).Find(&res).Error
+	return &res, err
+}

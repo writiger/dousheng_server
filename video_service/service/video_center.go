@@ -147,6 +147,30 @@ func (vc VideoCenter) DeleteComment(uuid int64) error {
 	return query.DeleteComment(uuid)
 }
 
+// GetComment 获取视频评论
+func (vc VideoCenter) GetComment(uuid int64) ([]*kitex_gen.Comment, error) {
+	comments, err := query.GetComment(uuid)
+	if err != nil {
+		return nil, err
+	}
+	return modelToKitexComment(comments), nil
+}
+
+// 将model中的comment转换为kitex中生成的comment
+func modelToKitexComment(comments *[]model.Comment) []*kitex_gen.Comment {
+	var commentList []*kitex_gen.Comment
+	for _, item := range *comments {
+		commentList = append(commentList, &kitex_gen.Comment{
+			Uuid:       item.CommentId,
+			UserId:     item.UserId,
+			VideoId:    item.VideoId,
+			CreateDate: item.CreateDate,
+			Content:    item.Content,
+		})
+	}
+	return commentList
+}
+
 // 将model中的video转换为kitex中生成的video
 func modelToKitexVideo(videos *[]model.Video) []*kitex_gen.Video {
 	var videoList []*kitex_gen.Video

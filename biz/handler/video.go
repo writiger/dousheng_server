@@ -35,7 +35,7 @@ func Publish(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
-			"status_msg":  "wong param",
+			"status_msg":  "wong param" + err.Error(),
 		})
 		return
 	}
@@ -135,7 +135,7 @@ func VideoList(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
-			"status_msg":  "wrong param",
+			"status_msg":  "wrong param" + err.Error(),
 		})
 		return
 	}
@@ -165,7 +165,7 @@ func VideoLike(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
-			"status_msg":  "wrong param : video_id",
+			"status_msg":  "wrong param : video_id" + err.Error(),
 		})
 		return
 	}
@@ -182,7 +182,7 @@ func VideoLike(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
-			"status_msg":  "rpc.LikeVideo wrong",
+			"status_msg":  "rpc.LikeVideo wrong" + err.Error(),
 		})
 		return
 	}
@@ -201,7 +201,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
-			"status_msg":  "wrong param : video_id",
+			"status_msg":  "wrong param : video_id" + err.Error(),
 		})
 		return
 	}
@@ -210,7 +210,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
-			"status_msg":  "rpc.FavoriteVideoList wrong",
+			"status_msg":  "rpc.FavoriteVideoList wrong" + err.Error(),
 		})
 		return
 	}
@@ -231,7 +231,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
-			"status_msg":  "wong param video_id",
+			"status_msg":  "wong param video_id" + err.Error(),
 		})
 		return
 	}
@@ -244,7 +244,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 		if content == "" {
 			c.JSON(consts.StatusBadRequest, utils.H{
 				"status_code": -1,
-				"status_msg":  "content is empty",
+				"status_msg":  "content is empty" + err.Error(),
 			})
 			return
 		}
@@ -258,7 +258,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 		if err != nil {
 			c.JSON(consts.StatusBadRequest, utils.H{
 				"status_code": -1,
-				"status_msg":  "rpc.PostComment wrong",
+				"status_msg":  "rpc.PostComment wrong" + err.Error(),
 			})
 			return
 		}
@@ -295,4 +295,34 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 		})
 		return
 	}
+}
+
+// GetComment .
+func GetComment(ctx context.Context, c *app.RequestContext) {
+	// 1. 验证参数
+	videoIdStr := c.Query("video_id")
+	videoId, err := strconv.ParseInt(videoIdStr, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong param : video_id",
+		})
+		return
+	}
+	// 2. 调用服务
+	comments, err := rpc.GetComment(videoId)
+	fmt.Println(err)
+	if err != nil {
+		c.JSON(consts.StatusBadRequest, utils.H{
+			"status_code": -1,
+			"status_msg":  "rpc.GetComment wrong" + err.Error(),
+		})
+		return
+	}
+	// 3. 返回
+	c.JSON(consts.StatusOK, utils.H{
+		"status_code":  0,
+		"status_msg":   "success",
+		"comment_list": comments,
+	})
 }
