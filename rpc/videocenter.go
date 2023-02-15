@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"dousheng_server/conf"
 	usermodel "dousheng_server/user_service/dal/model"
 	"dousheng_server/video_service/dal/model"
 	"dousheng_server/video_service/kitex_gen"
@@ -16,7 +17,7 @@ var videoClient videocenter.Client
 
 func init() {
 	// 通过etcd发现服务
-	r, err := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"})
+	r, err := etcd.NewEtcdResolver([]string{conf.Conf.EtcdConfig.Url})
 	if err != nil {
 		panic(err)
 	}

@@ -38,6 +38,7 @@ static/videos/*
 static/covers/*
 !static/videos/bear.mp4
 !static/covers/bear.png
+conf.ini
 *.local.yml
 dumped_hertz_remote_config.json
 

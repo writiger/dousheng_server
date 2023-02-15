@@ -24,7 +24,7 @@ func (vc VideoCenter) Publish(req *kitex_gen.PublishRequest) (int64, error) {
 	saverIp := "http://192.168.31.84:8080"
 	video := &model.Video{
 		UUID:          uuid,
-		UserID:        0,
+		UserID:        req.UserId,
 		PlayURL:       fmt.Sprintf(saverIp+"/static/videos/%d.%s", uuid, req.PlayUrl),
 		CoverURL:      fmt.Sprintf(saverIp+"/static/covers/%d.%s", uuid, "png"),
 		FavoriteCount: 0,
