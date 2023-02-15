@@ -60,3 +60,8 @@ func (uc UserCenter) LoginByPassword(userName, password string) (*model.User, er
 func (uc UserCenter) GetInfo(uuid int64) (*model.User, error) {
 	return query.GetUser(uuid)
 }
+
+// Follow 关注用户
+func (uc UserCenter) Follow(userId, followId int64) error {
+	return query.Follow(userId, followId)
+}

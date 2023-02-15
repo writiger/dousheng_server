@@ -77,12 +77,13 @@ sh build.sh && sh output/bootstrap.sh
 
 ### 服务端口预分配
 
-| 服务 | 端口 |
-| --- | ----------- |
-| hertz | 8080 |
-| user | 8900 |
+| 服务        | 端口   |
+|-----------|------|
+| hertz     | 8080 |
+| user      | 8900 |
 | snowflake | 8901 |
-| video | 8902 |
+| video     | 8902 |
+| promethus | 9090  |
 
 
 

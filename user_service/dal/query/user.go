@@ -4,6 +4,7 @@ import (
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/util"
 	"errors"
+	"gorm.io/gorm"
 )
 
 // CreateUser 添加用户
@@ -42,4 +43,20 @@ func GetUser(uuid int64) (*model.User, error) {
 		Select("uuid", "username", "follow_count", "follower_count").
 		Find(&user).Error
 	return &user, err
+}
+
+// Follow 关注
+func Follow(userId, followId int64) error {
+	err := GormClient.Transaction(func(tx *gorm.DB) error {
+		//tx.Create()
+		// 1. 新增
+
+		// followID 的 follower + 1
+		// 2. 增加
+
+		// userId 的 follow + 1
+		//
+		return nil
+	})
+	return err
 }
