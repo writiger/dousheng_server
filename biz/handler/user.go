@@ -74,3 +74,8 @@ func Info(ctx context.Context, c *app.RequestContext) {
 		"user":        userModel,
 	})
 }
+
+// Follow .
+func Follow(ctx context.Context, c *app.RequestContext) {
+	//rpc.Follow()
+}

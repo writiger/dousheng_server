@@ -76,3 +76,9 @@ func GetUserInfo(uuid int64) (*model.User, error) {
 	}
 	return &userModel, nil
 }
+
+// Follow .
+func Follow(userId, followId int64) error {
+	//userClient.
+	return nil
+}

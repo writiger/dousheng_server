@@ -31,4 +31,7 @@ func customizedRegister(r *server.Hertz) {
 	auth.GET("/favorite/list/", handler.FavoriteList)
 	auth.POST("/comment/action/", handler.CommentAction)
 	auth.GET("/comment/list/", handler.GetComment)
+
+	// 社交接口
+	auth.POST("/relation/action/", handler.Follow)
 }
