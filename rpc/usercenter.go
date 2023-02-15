@@ -4,6 +4,7 @@ package rpc
 
 import (
 	"context"
+	"dousheng_server/conf"
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/kitex_gen/usercenter"
@@ -17,7 +18,7 @@ var userClient usercenter.Client
 
 func init() {
 	// 通过etcd发现服务
-	r, err := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"})
+	r, err := etcd.NewEtcdResolver([]string{conf.Conf.EtcdConfig.Url})
 	if err != nil {
 		panic(err)
 	}

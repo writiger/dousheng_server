@@ -32,6 +32,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"PostComment":      kitex.NewMethodInfo(postCommentHandler, newPostCommentArgs, newPostCommentResult, false),
 		"DeleteComment":    kitex.NewMethodInfo(deleteCommentHandler, newDeleteCommentArgs, newDeleteCommentResult, false),
 		"GetComment":       kitex.NewMethodInfo(getCommentHandler, newGetCommentArgs, newGetCommentResult, false),
+		"IsFavorite":       kitex.NewMethodInfo(isFavoriteHandler, newIsFavoriteArgs, newIsFavoriteResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -1497,6 +1498,151 @@ func (p *GetCommentResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func isFavoriteHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.IsFavoriteRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.VideoCenter).IsFavorite(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *IsFavoriteArgs:
+		success, err := handler.(kitex_gen.VideoCenter).IsFavorite(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*IsFavoriteResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newIsFavoriteArgs() interface{} {
+	return &IsFavoriteArgs{}
+}
+
+func newIsFavoriteResult() interface{} {
+	return &IsFavoriteResult{}
+}
+
+type IsFavoriteArgs struct {
+	Req *kitex_gen.IsFavoriteRequest
+}
+
+func (p *IsFavoriteArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.IsFavoriteRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *IsFavoriteArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *IsFavoriteArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *IsFavoriteArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in IsFavoriteArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *IsFavoriteArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.IsFavoriteRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var IsFavoriteArgs_Req_DEFAULT *kitex_gen.IsFavoriteRequest
+
+func (p *IsFavoriteArgs) GetReq() *kitex_gen.IsFavoriteRequest {
+	if !p.IsSetReq() {
+		return IsFavoriteArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *IsFavoriteArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type IsFavoriteResult struct {
+	Success *kitex_gen.BasicResponse
+}
+
+var IsFavoriteResult_Success_DEFAULT *kitex_gen.BasicResponse
+
+func (p *IsFavoriteResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.BasicResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *IsFavoriteResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *IsFavoriteResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *IsFavoriteResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in IsFavoriteResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *IsFavoriteResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.BasicResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *IsFavoriteResult) GetSuccess() *kitex_gen.BasicResponse {
+	if !p.IsSetSuccess() {
+		return IsFavoriteResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *IsFavoriteResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.BasicResponse)
+}
+
+func (p *IsFavoriteResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -1602,6 +1748,16 @@ func (p *kClient) GetComment(ctx context.Context, Req *kitex_gen.GetCommentReque
 	_args.Req = Req
 	var _result GetCommentResult
 	if err = p.c.Call(ctx, "GetComment", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) IsFavorite(ctx context.Context, Req *kitex_gen.IsFavoriteRequest) (r *kitex_gen.BasicResponse, err error) {
+	var _args IsFavoriteArgs
+	_args.Req = Req
+	var _result IsFavoriteResult
+	if err = p.c.Call(ctx, "IsFavorite", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

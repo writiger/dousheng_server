@@ -4,6 +4,7 @@ import (
 	"context"
 	kitex_gen "dousheng_server/video_service/kitex_gen"
 	"dousheng_server/video_service/service"
+	"fmt"
 )
 
 // VideoCenterImpl implements the last service interface defined in the IDL.
@@ -116,4 +117,14 @@ func (s *VideoCenterImpl) GetComment(ctx context.Context, req *kitex_gen.GetComm
 		return nil, err
 	}
 	return &kitex_gen.GetCommentResponse{Comments: comments}, nil
+}
+
+// IsFavorite implements the VideoCenterImpl interface.
+func (s *VideoCenterImpl) IsFavorite(ctx context.Context, req *kitex_gen.IsFavoriteRequest) (*kitex_gen.BasicResponse, error) {
+	res, err := service.VideoCenter{}.IsFavorite(req.UserId, req.VideoId)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return &kitex_gen.BasicResponse{StatusMsg: fmt.Sprint(res), StatusCode: 0}, nil
 }

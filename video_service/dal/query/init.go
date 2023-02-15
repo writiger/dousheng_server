@@ -1,6 +1,7 @@
 package query
 
 import (
+	"dousheng_server/conf"
 	"dousheng_server/video_service/dal/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -9,7 +10,10 @@ import (
 var GormClient *gorm.DB
 
 func init() {
-	dsn := "root:123456@tcp(127.0.0.1:3306)/dousheng?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := conf.Conf.MysqlConfig.User + ":" +
+		conf.Conf.MysqlConfig.Password + "@tcp(" +
+		conf.Conf.MysqlConfig.Url + ")/" +
+		conf.Conf.MysqlConfig.Database + "?charset=utf8mb4&parseTime=True&loc=Local"
 	var err error
 	GormClient, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {

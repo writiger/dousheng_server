@@ -24,7 +24,7 @@ func (vc VideoCenter) Publish(req *kitex_gen.PublishRequest) (int64, error) {
 	saverIp := "http://192.168.31.84:8080"
 	video := &model.Video{
 		UUID:          uuid,
-		UserID:        0,
+		UserID:        req.UserId,
 		PlayURL:       fmt.Sprintf(saverIp+"/static/videos/%d.%s", uuid, req.PlayUrl),
 		CoverURL:      fmt.Sprintf(saverIp+"/static/covers/%d.%s", uuid, "png"),
 		FavoriteCount: 0,
@@ -76,6 +76,11 @@ func (vc VideoCenter) Like(userId, videoId int64, actionType int32) error {
 		return errors.New("wrong action type")
 	}
 	return nil
+}
+
+// IsFavorite 判断是否点过赞
+func (vc VideoCenter) IsFavorite(userId, videoId int64) (bool, error) {
+	return query.IsLiked(userId, videoId)
 }
 
 // GetVideo 获取视频
