@@ -5,6 +5,8 @@ import (
 	"dousheng_server/snowflake_service/kitex_gen/snowflake"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
+	kServer "github.com/cloudwego/kitex/server"
+	prometheus "github.com/kitex-contrib/monitor-prometheus"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
 	"net"
@@ -20,7 +22,8 @@ func main() {
 	svr := snowflake.NewServer(new(SnowflakeImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: "snowflakeservice"}),
 		server.WithRegistry(r),
-		server.WithServiceAddr(addr))
+		server.WithServiceAddr(addr),
+		kServer.WithTracer(prometheus.NewServerTracer(":9901", "/metrics")))
 
 	err = svr.Run()
 

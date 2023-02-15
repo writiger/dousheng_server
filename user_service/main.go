@@ -5,6 +5,8 @@ import (
 	"dousheng_server/user_service/kitex_gen/usercenter"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
+	kServer "github.com/cloudwego/kitex/server"
+	prometheus "github.com/kitex-contrib/monitor-prometheus"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
 	"net"
@@ -19,7 +21,8 @@ func main() {
 	svr := usercenter.NewServer(new(UserCenterImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: "userservice"}),
 		server.WithRegistry(r),
-		server.WithServiceAddr(addr))
+		server.WithServiceAddr(addr),
+		kServer.WithTracer(prometheus.NewServerTracer(":9900", "/metrics")))
 
 	err = svr.Run()
 

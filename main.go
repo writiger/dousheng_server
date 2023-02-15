@@ -7,6 +7,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"github.com/hertz-contrib/cors"
 	"github.com/hertz-contrib/gzip"
+	"github.com/hertz-contrib/monitor-prometheus"
 )
 
 func main() {
@@ -14,7 +15,9 @@ func main() {
 		server.WithStreamBody(true),
 		server.WithTransport(standard.NewTransporter),
 		server.WithHostPorts("0.0.0.0:8080"),
-		server.WithHandleMethodNotAllowed(true))
+		server.WithHandleMethodNotAllowed(true),
+		server.WithTracer(prometheus.NewServerTracer(":9080", "/metrics")))
+
 	h.Use(cors.New(cors.Config{AllowAllOrigins: true}))
 	h.Use(gzip.Gzip(gzip.DefaultCompression))
 	register(h)

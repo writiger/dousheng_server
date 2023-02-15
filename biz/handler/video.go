@@ -103,7 +103,7 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	videos, nextTime, err := rpc.Feed(lastTimeStamp, uuid)
 	if len(videos) < 3 {
 		// 时间设置为当前时间即可完成循环
-		nextTime = time.Now().UnixMicro()
+		nextTime = time.Now().UnixMilli()
 	}
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{

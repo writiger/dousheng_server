@@ -5,6 +5,8 @@ import (
 	"dousheng_server/video_service/kitex_gen/videocenter"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
+	kServer "github.com/cloudwego/kitex/server"
+	prometheus "github.com/kitex-contrib/monitor-prometheus"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"log"
 	"net"
@@ -19,7 +21,8 @@ func main() {
 	svr := videocenter.NewServer(new(VideoCenterImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: "videoservice"}),
 		server.WithRegistry(r),
-		server.WithServiceAddr(addr))
+		server.WithServiceAddr(addr),
+		kServer.WithTracer(prometheus.NewServerTracer(":9902", "/metrics")))
 
 	err = svr.Run()
 
