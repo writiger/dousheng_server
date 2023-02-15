@@ -1,9 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type Follower struct {
-	gorm.Model
-	User   User
-	UserID uint
+	// UserId 关注了 FollowID
+	UserId   int64 `json:"userId"`
+	FollowId int64 `json:"followerId"`
 }

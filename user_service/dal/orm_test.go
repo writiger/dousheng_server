@@ -99,3 +99,7 @@ func TestForeignKey(t *testing.T) {
 	}
 	fmt.Println(users)
 }
+
+func TestFollow(t *testing.T) {
+	// TODO
+}

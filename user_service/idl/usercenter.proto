@@ -42,11 +42,17 @@ message GetInfoResponse{
   User   user        = 3;
 }
 
+message FollowRequest{
+  int64 user_id   = 1;
+  int64 follow_id = 2;
+}
+
 service UserCenter {
   rpc Ping(Request) returns(Response);
   rpc Register(RegisterRequest) returns (BasicResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc GetInfo(GetInfoRequest)returns(GetInfoResponse);
+  rpc Follow(FollowRequest) returns (BasicResponse);
 }
 
 message User {
