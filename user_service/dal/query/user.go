@@ -50,12 +50,48 @@ func Follow(userId, followId int64) error {
 	err := GormClient.Transaction(func(tx *gorm.DB) error {
 		//tx.Create()
 		// 1. 新增
+		follow := model.Follower{
+			UserId:   userId,
+			FollowId: followId,
+		}
+		if err := tx.Create(&follow).Error; err != nil {
+			return err
+		}
 
 		// followID 的 follower + 1
-		// 2. 增加
-
+		if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
+			Update("follower_count", gorm.Expr("follower_count + 1")).Error; err != nil {
+			return err
+		}
 		// userId 的 follow + 1
-		//
+		if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
+			Update("follow_count", gorm.Expr("follow_count + 1")).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
+}
+
+// Cancel Follow
+func CancelFollow(userId, followId int64) error {
+	err := GormClient.Transaction(func(tx *gorm.DB) error {
+		follow := model.Follower{
+			UserId:   userId,
+			FollowId: followId,
+		}
+		if err := tx.Delete(&follow).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
+			Update("follower_count", gorm.Expr("follower_count - 1")).Error; err != nil {
+			return err
+		}
+		// userId 的 follow + 1
+		if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
+			Update("follow_count", gorm.Expr("follow_count - 1")).Error; err != nil {
+			return err
+		}
 		return nil
 	})
 	return err

@@ -101,5 +101,47 @@ func TestForeignKey(t *testing.T) {
 }
 
 func TestFollow(t *testing.T) {
-	// TODO
+	//asd关注了asdasd
+	var userId int64
+	var followId int64
+	userId = 631992324594860032
+	followId = 632238110008147968
+	err := query.Follow(userId, followId)
+	err2 := query.Follow(followId, userId)
+	if err != nil {
+		fmt.Println("第一步互相关注出错", err)
+		return
+	}
+	if err2 != nil {
+		fmt.Println("第一步互相关注出错", err)
+		return
+	}
+	//test1关注了test123
+	//userId = 631640850035638273
+	//followId = 631640850035638274
+	//err := query.Follow(userId, followId)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+}
+func TestCancelFollow(t *testing.T) {
+	//asd取消关注了asdasd
+	var userId int64
+	var followId int64
+	//userId = 631992324594860032
+	//followId = 632238110008147968
+	//err := query.CancelFollow(userId, followId)
+	//if err != nil {
+	//	fmt.Println("第一步互相关注出错", err)
+	//	return
+	//}
+	//test1取消关注了test123
+	userId = 631640850035638273
+	followId = 631640850035638274
+	err := query.CancelFollow(userId, followId)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
