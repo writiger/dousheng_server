@@ -123,7 +123,6 @@ func (s *VideoCenterImpl) GetComment(ctx context.Context, req *kitex_gen.GetComm
 func (s *VideoCenterImpl) IsFavorite(ctx context.Context, req *kitex_gen.IsFavoriteRequest) (*kitex_gen.BasicResponse, error) {
 	res, err := service.VideoCenter{}.IsFavorite(req.UserId, req.VideoId)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return &kitex_gen.BasicResponse{StatusMsg: fmt.Sprint(res), StatusCode: 0}, nil

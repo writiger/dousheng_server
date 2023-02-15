@@ -73,16 +73,34 @@ kitex -module dousheng_server -service 服务名 idl文件路径
 sh build.sh && sh output/bootstrap.sh
 ~~~
 
+#### prometheus
+
+~~~ cmd
+prometheus --config.file=prometheus.yml
+~~~
+
+#### mysql-export
+
+~~~ cmd
+mysqld_exporter --config.my-cnf=my.cnf
+~~~
+
+#### grafana
+
+~~~ cmd
+sudo systemctl start grafana-server
+~~~
+
 
 
 ### 服务端口预分配
 
 | 服务        | 端口   |
 |-----------|------|
-| hertz     | 8080 |
-| user      | 8900 |
-| snowflake | 8901 |
-| video     | 8902 |
+| hertz     | 8080、9980 |
+| user      | 8900、9900 |
+| snowflake | 8901、9901 |
+| video     | 8902、9902 |
 | promethus | 9090  |
 
 
