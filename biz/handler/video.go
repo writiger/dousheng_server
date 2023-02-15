@@ -99,18 +99,11 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 		claim := jwt.ExtractClaimsFromToken(requesterToken)
 		uuid = int64(claim["identity"].(float64))
 	}
-	// 暂时没找到使用场景
-	fmt.Println(uuid)
-
 	// 5. 返回
-	videos, nextTime, err := rpc.Feed(lastTimeStamp)
+	videos, nextTime, err := rpc.Feed(lastTimeStamp, uuid)
 	if len(videos) < 3 {
-		// 视频到头了 补充
 		// 时间设置为当前时间即可完成循环
-		videosNew, nextTimeNew, errNew := rpc.Feed(time.Now().UnixMilli())
-		videos = append(videos, videosNew...)
-		nextTime = nextTimeNew
-		err = errNew
+		nextTime = time.Now().UnixMicro()
 	}
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{

@@ -78,6 +78,11 @@ func (vc VideoCenter) Like(userId, videoId int64, actionType int32) error {
 	return nil
 }
 
+// IsFavorite 判断是否点过赞
+func (vc VideoCenter) IsFavorite(userId, videoId int64) (bool, error) {
+	return query.IsLiked(userId, videoId)
+}
+
 // GetVideo 获取视频
 func (vc VideoCenter) GetVideo(uuid int64) (*kitex_gen.Video, error) {
 	video, err := query.GetVideo(uuid)

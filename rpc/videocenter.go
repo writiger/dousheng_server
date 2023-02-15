@@ -75,9 +75,7 @@ func DeleteVideo(uuid int64) error {
 }
 
 // Feed  返回视频列表和最早时间戳
-func Feed(timeStamp int64) ([]VideoWithUser, int64, error) {
-	// TODO 判断是否喜欢
-
+func Feed(timeStamp, userId int64) ([]VideoWithUser, int64, error) {
 	var res []VideoWithUser
 	timestamp := time.Now().UnixMilli()
 
@@ -98,6 +96,11 @@ func Feed(timeStamp int64) ([]VideoWithUser, int64, error) {
 		if err != nil {
 			return nil, 0, err
 		}
+		// 判断是否点过赞
+		isFavorite, err := IsFavorite(userId, item.Uuid)
+		if err != nil {
+			return nil, 0, err
+		}
 		res = append(res, VideoWithUser{
 			UUID:          item.Uuid,
 			UserInfo:      *userInfo,
@@ -106,6 +109,7 @@ func Feed(timeStamp int64) ([]VideoWithUser, int64, error) {
 			FavoriteCount: item.FavoriteCount,
 			CommentCount:  item.CommentCount,
 			Title:         item.Title,
+			IsFavorite:    isFavorite,
 		})
 	}
 	return res, timestamp, nil
@@ -201,9 +205,26 @@ func FavoriteVideoList(userId int64) ([]VideoWithUser, error) {
 			FavoriteCount: item.FavoriteCount,
 			CommentCount:  item.CommentCount,
 			Title:         item.Title,
+			IsFavorite:    true,
 		})
 	}
 	return res, nil
+}
+
+// IsFavorite .
+func IsFavorite(userId, videoId int64) (bool, error) {
+	req := kitex_gen.IsFavoriteRequest{
+		UserId:  userId,
+		VideoId: videoId,
+	}
+	resp, err := videoClient.IsFavorite(context.Background(), &req)
+	// 没研究出来为什么
+	// 使用返回值中有false
+	// 返回的resp就是nil
+	if resp.StatusMsg == "true" {
+		return true, err
+	}
+	return false, err
 }
 
 // PostComment .
