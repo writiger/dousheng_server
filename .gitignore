@@ -40,6 +40,8 @@ static/covers/*
 !static/covers/bear.png
 conf.ini
 *.local.yml
+depoly/promethus/server/data/
 dumped_hertz_remote_config.json
 
-		  
+
+/depoly/promethus/server/data/wal/
