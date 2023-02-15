@@ -6,11 +6,8 @@
 
 ## 配置
 
-* 修改`dousheng_server/video_service/service/video_center.go`中的saverIp(后续可能会使用配置文件)
-
-* 调整各个服务下的etcd地址（main.go中）
-* 调整各个服务中的MySQL地址（dal/query/init.go）
-* 执行query中的测试
+* 修改conf.template.ini
+* 重命名为conf.ini
 
 ~~~ cmd
 # wsl情况下
@@ -45,7 +42,7 @@ go build -o dousheng_server && ./dousheng_server
 - [x] 赞
 - [x] 喜欢列表
 - [x] 评论
-- [ ] 视频评论列表
+- [x] 视频评论列表
 
 ## 社交接口
 

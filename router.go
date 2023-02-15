@@ -4,6 +4,7 @@ package main
 
 import (
 	"dousheng_server/biz/handler"
+	"dousheng_server/conf"
 	"dousheng_server/middleware"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
@@ -11,7 +12,7 @@ import (
 // customizeRegister registers customize routers.
 func customizedRegister(r *server.Hertz) {
 	// 静态资源映射
-	r.Static("/static/", "/home/writiger/go/src/github.com/cloudwego/dousheng_server")
+	r.Static("/static/", conf.Conf.StaticConfig.Reflect)
 
 	dy := r.Group("/douyin")
 	auth := r.Group("/douyin")
@@ -29,4 +30,5 @@ func customizedRegister(r *server.Hertz) {
 	auth.POST("/favorite/action/", handler.VideoLike)
 	auth.GET("/favorite/list/", handler.FavoriteList)
 	auth.POST("/comment/action/", handler.CommentAction)
+	auth.GET("/comment/list/", handler.GetComment)
 }

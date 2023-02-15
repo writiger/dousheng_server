@@ -532,6 +532,131 @@ func (x *DeleteCommentRequest) fastReadField1(buf []byte, _type int8) (offset in
 	return offset, err
 }
 
+func (x *GetCommentRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetCommentRequest[number], err)
+}
+
+func (x *GetCommentRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetCommentResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetCommentResponse[number], err)
+}
+
+func (x *GetCommentResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v Comment
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.Comments = append(x.Comments, &v)
+	return offset, nil
+}
+
+func (x *IsFavoriteRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_IsFavoriteRequest[number], err)
+}
+
+func (x *IsFavoriteRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *IsFavoriteRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.VideoId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *IsFavoriteResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_IsFavoriteResponse[number], err)
+}
+
+func (x *IsFavoriteResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.StatusCode, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *IsFavoriteResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.Res, offset, err = fastpb.ReadBool(buf, _type)
+	return offset, err
+}
+
 func (x *Comment) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -1046,6 +1171,90 @@ func (x *DeleteCommentRequest) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *GetCommentRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *GetCommentRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.VideoId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.VideoId)
+	return offset
+}
+
+func (x *GetCommentResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *GetCommentResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.Comments == nil {
+		return offset
+	}
+	for i := range x.Comments {
+		offset += fastpb.WriteMessage(buf[offset:], 1, x.Comments[i])
+	}
+	return offset
+}
+
+func (x *IsFavoriteRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *IsFavoriteRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.UserId)
+	return offset
+}
+
+func (x *IsFavoriteRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.VideoId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.VideoId)
+	return offset
+}
+
+func (x *IsFavoriteResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *IsFavoriteResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.StatusCode == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.StatusCode)
+	return offset
+}
+
+func (x *IsFavoriteResponse) fastWriteField2(buf []byte) (offset int) {
+	if !x.Res {
+		return offset
+	}
+	offset += fastpb.WriteBool(buf[offset:], 2, x.Res)
+	return offset
+}
+
 func (x *Comment) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -1531,6 +1740,90 @@ func (x *DeleteCommentRequest) sizeField1() (n int) {
 	return n
 }
 
+func (x *GetCommentRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *GetCommentRequest) sizeField1() (n int) {
+	if x.VideoId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.VideoId)
+	return n
+}
+
+func (x *GetCommentResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *GetCommentResponse) sizeField1() (n int) {
+	if x.Comments == nil {
+		return n
+	}
+	for i := range x.Comments {
+		n += fastpb.SizeMessage(1, x.Comments[i])
+	}
+	return n
+}
+
+func (x *IsFavoriteRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *IsFavoriteRequest) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.UserId)
+	return n
+}
+
+func (x *IsFavoriteRequest) sizeField2() (n int) {
+	if x.VideoId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(2, x.VideoId)
+	return n
+}
+
+func (x *IsFavoriteResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *IsFavoriteResponse) sizeField1() (n int) {
+	if x.StatusCode == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.StatusCode)
+	return n
+}
+
+func (x *IsFavoriteResponse) sizeField2() (n int) {
+	if !x.Res {
+		return n
+	}
+	n += fastpb.SizeBool(2, x.Res)
+	return n
+}
+
 func (x *Comment) Size() (n int) {
 	if x == nil {
 		return n
@@ -1732,6 +2025,24 @@ var fieldIDToName_PostCommentResponse = map[int32]string{
 
 var fieldIDToName_DeleteCommentRequest = map[int32]string{
 	1: "Uuid",
+}
+
+var fieldIDToName_GetCommentRequest = map[int32]string{
+	1: "VideoId",
+}
+
+var fieldIDToName_GetCommentResponse = map[int32]string{
+	1: "Comments",
+}
+
+var fieldIDToName_IsFavoriteRequest = map[int32]string{
+	1: "UserId",
+	2: "VideoId",
+}
+
+var fieldIDToName_IsFavoriteResponse = map[int32]string{
+	1: "StatusCode",
+	2: "Res",
 }
 
 var fieldIDToName_Comment = map[int32]string{
