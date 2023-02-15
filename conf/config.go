@@ -33,6 +33,10 @@ func init() {
 	err := ini.MapTo(&Conf, "./conf.ini")
 	if err != nil {
 		// 服务使用的相对路径
+		err = ini.MapTo(&Conf, "../conf.ini")
+	}
+	if err != nil {
+		// 数据库测试使用的相对路径
 		err = ini.MapTo(&Conf, "../../conf.ini")
 	}
 	if err != nil {
