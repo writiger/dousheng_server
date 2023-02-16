@@ -6,7 +6,7 @@ scrape_configs:
 
   - job_name: 'rpc-user'
     static_configs:
-      - targets: [ '127.0.0.1:8900' ]
+      - targets: [ 'localhost:9900' ]
         labels:
           job: rpc-user
           app: rpc-user
@@ -14,7 +14,7 @@ scrape_configs:
 
   - job_name: 'rpc-snowflake'
     static_configs:
-      - targets: ['127.0.0.1:8901']
+      - targets: ['localhost:9901']
         labels:
           job: rpc-snowflake
           app: rpc-snowflake
@@ -22,8 +22,29 @@ scrape_configs:
 
   - job_name: 'rpc-video'
     static_configs:
-      - targets: ['127.0.0.1:8902']
+      - targets: ['localhost:9902']
         labels:
           job: rpc-video
           app: rpc-video
           env: dev
+
+  - job_name: 'api-hertz'
+    static_configs:
+      - targets: ['localhost:9080']
+        labels:
+          job: api-hertz
+          app: api-hertz
+          env: dev
+
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['localhost:9104']
+        labels:
+          job: mysql
+          app: mysql
+
+  - job_name: 'linux'
+    static_configs:
+      - targets: ['localhost:9100']
+        labels:
+          job: linux

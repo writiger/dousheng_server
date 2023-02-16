@@ -13,6 +13,7 @@ type User struct {
 	FollowCount   int64         `json:"follow_count"`
 	FollowerCount int64         `json:"follower_count"`
 	Videos        []model.Video `gorm:"foreignKey:user_id"`
+	Followers     []Follower    `gorm:"foreignKey:user_id" gorm:"foreignKey:follow_id"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`

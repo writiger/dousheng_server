@@ -145,3 +145,36 @@ func TestCancelFollow(t *testing.T) {
 		return
 	}
 }
+func TestFollowList(t *testing.T) {
+
+	user, err := query.FollowList(631640850035638272)
+	if err != nil {
+		fmt.Println("错误")
+	}
+
+	for _, i := range *user {
+		fmt.Println(i)
+	}
+}
+func TestFollowerList(t *testing.T) {
+
+	user, err := query.FollowerList(631640850035638273)
+	if err != nil {
+		fmt.Println("错误")
+	}
+
+	for _, i := range *user {
+		fmt.Println(i)
+	}
+}
+func TestFriendList(t *testing.T) {
+
+	user, err := query.FriendList(631640850035638272)
+	if err != nil {
+		fmt.Println("错误")
+	}
+
+	for _, i := range *user {
+		fmt.Println(i)
+	}
+}

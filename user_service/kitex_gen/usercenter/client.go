@@ -15,6 +15,12 @@ type Client interface {
 	Register(ctx context.Context, Req *kitex_gen.RegisterRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
 	Login(ctx context.Context, Req *kitex_gen.LoginRequest, callOptions ...callopt.Option) (r *kitex_gen.LoginResponse, err error)
 	GetInfo(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetInfoResponse, err error)
+	Follow(ctx context.Context, Req *kitex_gen.FollowRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
+	CancelFollow(ctx context.Context, Req *kitex_gen.FollowRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
+	JudgeFollow(ctx context.Context, Req *kitex_gen.FollowRequest, callOptions ...callopt.Option) (r *kitex_gen.JudgeFollowResponse, err error)
+	FollowList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error)
+	FollowerList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error)
+	FriendList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +70,34 @@ func (p *kUserCenterClient) Login(ctx context.Context, Req *kitex_gen.LoginReque
 func (p *kUserCenterClient) GetInfo(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.GetInfoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetInfo(ctx, Req)
+}
+
+func (p *kUserCenterClient) Follow(ctx context.Context, Req *kitex_gen.FollowRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Follow(ctx, Req)
+}
+
+func (p *kUserCenterClient) CancelFollow(ctx context.Context, Req *kitex_gen.FollowRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CancelFollow(ctx, Req)
+}
+
+func (p *kUserCenterClient) JudgeFollow(ctx context.Context, Req *kitex_gen.FollowRequest, callOptions ...callopt.Option) (r *kitex_gen.JudgeFollowResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.JudgeFollow(ctx, Req)
+}
+
+func (p *kUserCenterClient) FollowList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FollowList(ctx, Req)
+}
+
+func (p *kUserCenterClient) FollowerList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FollowerList(ctx, Req)
+}
+
+func (p *kUserCenterClient) FriendList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FriendList(ctx, Req)
 }
