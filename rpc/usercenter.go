@@ -79,7 +79,7 @@ func LoginByPassword(username, password string) (int64, error) {
 
 // GetUserInfo .
 func GetUserInfo(tokenId, userId int64) (*UserInfo, error) {
-	req := kitex_gen.GetInfoRequest{Uuid: tokenId}
+	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.GetInfo(context.Background(), &req)
 	if err != nil {
 		return nil, err

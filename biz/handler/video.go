@@ -90,7 +90,9 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 
 	// 2. 通过时间戳生成time
 	lastTimeStr := c.Query("latest_time")
-	lastTimeStamp, _ = strconv.ParseInt(lastTimeStr, 10, 64)
+	if lastTimeStr != "" {
+		lastTimeStamp, _ = strconv.ParseInt(lastTimeStr, 10, 64)
+	}
 
 	// 4. 通过token字符串解析uuid
 	tokenString := c.Query("token")
@@ -193,7 +195,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	requester, _ := c.Get("identity")
 
 	userId, err := strconv.ParseInt(userIdStr, 10, 64)
-	tokenId := requester.(usermodel.User).UUID
+	tokenId := requester.(*usermodel.User).UUID
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
@@ -300,7 +302,7 @@ func GetComment(ctx context.Context, c *app.RequestContext) {
 	videoIdStr := c.Query("video_id")
 	requester, _ := c.Get("identity")
 	videoId, err := strconv.ParseInt(videoIdStr, 10, 64)
-	tokenId := requester.(usermodel.User).UUID
+	tokenId := requester.(*usermodel.User).UUID
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,

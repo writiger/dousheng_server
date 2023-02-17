@@ -65,7 +65,7 @@ func Info(ctx context.Context, c *app.RequestContext) {
 		})
 		return
 	}
-	userGet, err := rpc.GetUserInfo(requester.(model.User).UUID, userId)
+	userGet, err := rpc.GetUserInfo(requester.(*model.User).UUID, userId)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,

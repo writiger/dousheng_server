@@ -70,10 +70,7 @@ func (s *UserCenterImpl) GetInfo(ctx context.Context, req *kitex_gen.GetInfoRequ
 		Name:          userModel.Username,
 		FollowCount:   userModel.FollowCount,
 		FollowerCount: userModel.FollowerCount,
-
-		// TODO 判断是否关注
-
-		IsFollow: false,
+		IsFollow:      false,
 	}
 	return &kitex_gen.GetInfoResponse{
 		StatusCode: 0,
