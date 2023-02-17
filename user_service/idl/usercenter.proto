@@ -46,13 +46,25 @@ message FollowRequest{
   int64 user_id   = 1;
   int64 follow_id = 2;
 }
-
+message FollowListResponse{
+  repeated Follower followers = 1;
+}
+message JudgeFollowResponse{
+  int32  status_code  = 1; // 状态码，0-成功，其他值-失败
+  string status_msg   = 2; // 返回状态描述
+  bool is             = 3; // 是否关注
+}
 service UserCenter {
   rpc Ping(Request) returns(Response);
   rpc Register(RegisterRequest) returns (BasicResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc GetInfo(GetInfoRequest)returns(GetInfoResponse);
   rpc Follow(FollowRequest) returns (BasicResponse);
+  rpc CancelFollow(FollowRequest) returns (BasicResponse);
+  rpc JudgeFollow(FollowRequest) returns  (JudgeFollowResponse);
+  rpc FollowList(GetInfoRequest) returns (FollowListResponse);
+  rpc FollowerList(GetInfoRequest) returns (FollowListResponse);
+  rpc FriendList(GetInfoRequest) returns (FollowListResponse);
 }
 
 message User {
@@ -61,4 +73,8 @@ message User {
   int64  follow_count   = 3; // 关注总数
   int64  follower_count = 4; // 粉丝总数
   bool   is_follow      = 5; // true-已关注，false-未关注
+}
+message Follower{
+  int64  UserId         = 1;//粉丝id
+  int64  FollowId       = 2;//被关注者id
 }

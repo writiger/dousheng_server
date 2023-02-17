@@ -22,10 +22,16 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserCenter"
 	handlerType := (*kitex_gen.UserCenter)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"Ping":     kitex.NewMethodInfo(pingHandler, newPingArgs, newPingResult, false),
-		"Register": kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
-		"Login":    kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
-		"GetInfo":  kitex.NewMethodInfo(getInfoHandler, newGetInfoArgs, newGetInfoResult, false),
+		"Ping":         kitex.NewMethodInfo(pingHandler, newPingArgs, newPingResult, false),
+		"Register":     kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
+		"Login":        kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
+		"GetInfo":      kitex.NewMethodInfo(getInfoHandler, newGetInfoArgs, newGetInfoResult, false),
+		"Follow":       kitex.NewMethodInfo(followHandler, newFollowArgs, newFollowResult, false),
+		"CancelFollow": kitex.NewMethodInfo(cancelFollowHandler, newCancelFollowArgs, newCancelFollowResult, false),
+		"JudgeFollow":  kitex.NewMethodInfo(judgeFollowHandler, newJudgeFollowArgs, newJudgeFollowResult, false),
+		"FollowList":   kitex.NewMethodInfo(followListHandler, newFollowListArgs, newFollowListResult, false),
+		"FollowerList": kitex.NewMethodInfo(followerListHandler, newFollowerListArgs, newFollowerListResult, false),
+		"FriendList":   kitex.NewMethodInfo(friendListHandler, newFriendListArgs, newFriendListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -621,6 +627,876 @@ func (p *GetInfoResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func followHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.FollowRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).Follow(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *FollowArgs:
+		success, err := handler.(kitex_gen.UserCenter).Follow(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*FollowResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newFollowArgs() interface{} {
+	return &FollowArgs{}
+}
+
+func newFollowResult() interface{} {
+	return &FollowResult{}
+}
+
+type FollowArgs struct {
+	Req *kitex_gen.FollowRequest
+}
+
+func (p *FollowArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.FollowRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *FollowArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *FollowArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *FollowArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in FollowArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *FollowArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.FollowRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var FollowArgs_Req_DEFAULT *kitex_gen.FollowRequest
+
+func (p *FollowArgs) GetReq() *kitex_gen.FollowRequest {
+	if !p.IsSetReq() {
+		return FollowArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *FollowArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type FollowResult struct {
+	Success *kitex_gen.BasicResponse
+}
+
+var FollowResult_Success_DEFAULT *kitex_gen.BasicResponse
+
+func (p *FollowResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.BasicResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *FollowResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *FollowResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *FollowResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in FollowResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *FollowResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.BasicResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *FollowResult) GetSuccess() *kitex_gen.BasicResponse {
+	if !p.IsSetSuccess() {
+		return FollowResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *FollowResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.BasicResponse)
+}
+
+func (p *FollowResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func cancelFollowHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.FollowRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).CancelFollow(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *CancelFollowArgs:
+		success, err := handler.(kitex_gen.UserCenter).CancelFollow(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*CancelFollowResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newCancelFollowArgs() interface{} {
+	return &CancelFollowArgs{}
+}
+
+func newCancelFollowResult() interface{} {
+	return &CancelFollowResult{}
+}
+
+type CancelFollowArgs struct {
+	Req *kitex_gen.FollowRequest
+}
+
+func (p *CancelFollowArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.FollowRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *CancelFollowArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *CancelFollowArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *CancelFollowArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in CancelFollowArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *CancelFollowArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.FollowRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var CancelFollowArgs_Req_DEFAULT *kitex_gen.FollowRequest
+
+func (p *CancelFollowArgs) GetReq() *kitex_gen.FollowRequest {
+	if !p.IsSetReq() {
+		return CancelFollowArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *CancelFollowArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type CancelFollowResult struct {
+	Success *kitex_gen.BasicResponse
+}
+
+var CancelFollowResult_Success_DEFAULT *kitex_gen.BasicResponse
+
+func (p *CancelFollowResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.BasicResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *CancelFollowResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *CancelFollowResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *CancelFollowResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in CancelFollowResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *CancelFollowResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.BasicResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *CancelFollowResult) GetSuccess() *kitex_gen.BasicResponse {
+	if !p.IsSetSuccess() {
+		return CancelFollowResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *CancelFollowResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.BasicResponse)
+}
+
+func (p *CancelFollowResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func judgeFollowHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.FollowRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).JudgeFollow(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *JudgeFollowArgs:
+		success, err := handler.(kitex_gen.UserCenter).JudgeFollow(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*JudgeFollowResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newJudgeFollowArgs() interface{} {
+	return &JudgeFollowArgs{}
+}
+
+func newJudgeFollowResult() interface{} {
+	return &JudgeFollowResult{}
+}
+
+type JudgeFollowArgs struct {
+	Req *kitex_gen.FollowRequest
+}
+
+func (p *JudgeFollowArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.FollowRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *JudgeFollowArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *JudgeFollowArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *JudgeFollowArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in JudgeFollowArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *JudgeFollowArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.FollowRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var JudgeFollowArgs_Req_DEFAULT *kitex_gen.FollowRequest
+
+func (p *JudgeFollowArgs) GetReq() *kitex_gen.FollowRequest {
+	if !p.IsSetReq() {
+		return JudgeFollowArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *JudgeFollowArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type JudgeFollowResult struct {
+	Success *kitex_gen.JudgeFollowResponse
+}
+
+var JudgeFollowResult_Success_DEFAULT *kitex_gen.JudgeFollowResponse
+
+func (p *JudgeFollowResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.JudgeFollowResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *JudgeFollowResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *JudgeFollowResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *JudgeFollowResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in JudgeFollowResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *JudgeFollowResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.JudgeFollowResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *JudgeFollowResult) GetSuccess() *kitex_gen.JudgeFollowResponse {
+	if !p.IsSetSuccess() {
+		return JudgeFollowResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *JudgeFollowResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.JudgeFollowResponse)
+}
+
+func (p *JudgeFollowResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func followListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.GetInfoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).FollowList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *FollowListArgs:
+		success, err := handler.(kitex_gen.UserCenter).FollowList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*FollowListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newFollowListArgs() interface{} {
+	return &FollowListArgs{}
+}
+
+func newFollowListResult() interface{} {
+	return &FollowListResult{}
+}
+
+type FollowListArgs struct {
+	Req *kitex_gen.GetInfoRequest
+}
+
+func (p *FollowListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.GetInfoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *FollowListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *FollowListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *FollowListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in FollowListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *FollowListArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetInfoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var FollowListArgs_Req_DEFAULT *kitex_gen.GetInfoRequest
+
+func (p *FollowListArgs) GetReq() *kitex_gen.GetInfoRequest {
+	if !p.IsSetReq() {
+		return FollowListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *FollowListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type FollowListResult struct {
+	Success *kitex_gen.FollowListResponse
+}
+
+var FollowListResult_Success_DEFAULT *kitex_gen.FollowListResponse
+
+func (p *FollowListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.FollowListResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *FollowListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *FollowListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *FollowListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in FollowListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *FollowListResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.FollowListResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *FollowListResult) GetSuccess() *kitex_gen.FollowListResponse {
+	if !p.IsSetSuccess() {
+		return FollowListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *FollowListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.FollowListResponse)
+}
+
+func (p *FollowListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func followerListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.GetInfoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).FollowerList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *FollowerListArgs:
+		success, err := handler.(kitex_gen.UserCenter).FollowerList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*FollowerListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newFollowerListArgs() interface{} {
+	return &FollowerListArgs{}
+}
+
+func newFollowerListResult() interface{} {
+	return &FollowerListResult{}
+}
+
+type FollowerListArgs struct {
+	Req *kitex_gen.GetInfoRequest
+}
+
+func (p *FollowerListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.GetInfoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *FollowerListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *FollowerListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *FollowerListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in FollowerListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *FollowerListArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetInfoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var FollowerListArgs_Req_DEFAULT *kitex_gen.GetInfoRequest
+
+func (p *FollowerListArgs) GetReq() *kitex_gen.GetInfoRequest {
+	if !p.IsSetReq() {
+		return FollowerListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *FollowerListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type FollowerListResult struct {
+	Success *kitex_gen.FollowListResponse
+}
+
+var FollowerListResult_Success_DEFAULT *kitex_gen.FollowListResponse
+
+func (p *FollowerListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.FollowListResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *FollowerListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *FollowerListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *FollowerListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in FollowerListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *FollowerListResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.FollowListResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *FollowerListResult) GetSuccess() *kitex_gen.FollowListResponse {
+	if !p.IsSetSuccess() {
+		return FollowerListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *FollowerListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.FollowListResponse)
+}
+
+func (p *FollowerListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func friendListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.GetInfoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).FriendList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *FriendListArgs:
+		success, err := handler.(kitex_gen.UserCenter).FriendList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*FriendListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newFriendListArgs() interface{} {
+	return &FriendListArgs{}
+}
+
+func newFriendListResult() interface{} {
+	return &FriendListResult{}
+}
+
+type FriendListArgs struct {
+	Req *kitex_gen.GetInfoRequest
+}
+
+func (p *FriendListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.GetInfoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *FriendListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *FriendListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *FriendListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in FriendListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *FriendListArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetInfoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var FriendListArgs_Req_DEFAULT *kitex_gen.GetInfoRequest
+
+func (p *FriendListArgs) GetReq() *kitex_gen.GetInfoRequest {
+	if !p.IsSetReq() {
+		return FriendListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *FriendListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type FriendListResult struct {
+	Success *kitex_gen.FollowListResponse
+}
+
+var FriendListResult_Success_DEFAULT *kitex_gen.FollowListResponse
+
+func (p *FriendListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.FollowListResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *FriendListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *FriendListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *FriendListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in FriendListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *FriendListResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.FollowListResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *FriendListResult) GetSuccess() *kitex_gen.FollowListResponse {
+	if !p.IsSetSuccess() {
+		return FriendListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *FriendListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.FollowListResponse)
+}
+
+func (p *FriendListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -666,6 +1542,66 @@ func (p *kClient) GetInfo(ctx context.Context, Req *kitex_gen.GetInfoRequest) (r
 	_args.Req = Req
 	var _result GetInfoResult
 	if err = p.c.Call(ctx, "GetInfo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Follow(ctx context.Context, Req *kitex_gen.FollowRequest) (r *kitex_gen.BasicResponse, err error) {
+	var _args FollowArgs
+	_args.Req = Req
+	var _result FollowResult
+	if err = p.c.Call(ctx, "Follow", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CancelFollow(ctx context.Context, Req *kitex_gen.FollowRequest) (r *kitex_gen.BasicResponse, err error) {
+	var _args CancelFollowArgs
+	_args.Req = Req
+	var _result CancelFollowResult
+	if err = p.c.Call(ctx, "CancelFollow", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) JudgeFollow(ctx context.Context, Req *kitex_gen.FollowRequest) (r *kitex_gen.JudgeFollowResponse, err error) {
+	var _args JudgeFollowArgs
+	_args.Req = Req
+	var _result JudgeFollowResult
+	if err = p.c.Call(ctx, "JudgeFollow", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FollowList(ctx context.Context, Req *kitex_gen.GetInfoRequest) (r *kitex_gen.FollowListResponse, err error) {
+	var _args FollowListArgs
+	_args.Req = Req
+	var _result FollowListResult
+	if err = p.c.Call(ctx, "FollowList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FollowerList(ctx context.Context, Req *kitex_gen.GetInfoRequest) (r *kitex_gen.FollowListResponse, err error) {
+	var _args FollowerListArgs
+	_args.Req = Req
+	var _result FollowerListResult
+	if err = p.c.Call(ctx, "FollowerList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FriendList(ctx context.Context, Req *kitex_gen.GetInfoRequest) (r *kitex_gen.FollowListResponse, err error) {
+	var _args FriendListArgs
+	_args.Req = Req
+	var _result FriendListResult
+	if err = p.c.Call(ctx, "FriendList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

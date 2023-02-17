@@ -3,6 +3,7 @@ package service
 import (
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/dal/query"
+	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/util"
 	"dousheng_server/uuidmaker"
 	"errors"
@@ -64,4 +65,63 @@ func (uc UserCenter) GetInfo(uuid int64) (*model.User, error) {
 // Follow 关注用户
 func (uc UserCenter) Follow(userId, followId int64) error {
 	return query.Follow(userId, followId)
+}
+
+// Follow 取消关注用户
+func (uc UserCenter) CancelFollow(userId, followId int64) error {
+	return query.CancelFollow(userId, followId)
+}
+
+// Follow 判断用户是否关注
+func (uc UserCenter) JudgeFollow(userId, followId int64) (bool, error) {
+	return query.JudgeFollow(userId, followId)
+}
+
+// GetInfo 通过UUID获取关注列表
+func (uc UserCenter) FollowList(uuid int64) ([]*kitex_gen.Follower, error) {
+	followers, err := query.FollowList(uuid)
+	return modelToKitexFollower(followers), err
+}
+
+// GetInfo 通过UUID获取粉丝列表
+func (uc UserCenter) FollowerList(uuid int64) ([]*kitex_gen.Follower, error) {
+	followers, err := query.FollowerList(uuid)
+	return modelToKitexFollower(followers), err
+}
+
+// GetInfo 通过UUID获取好友列表
+func (uc UserCenter) FriendList(uuid int64) ([]*kitex_gen.Follower, error) {
+	followers, err := query.FriendList(uuid)
+	return modelToKitexFollower(followers), err
+}
+
+// 将model中的follower转换为kitex中生成的follwer
+func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
+	var followerList []*kitex_gen.Follower
+	for _, item := range *follower {
+		followerList = append(followerList, &kitex_gen.Follower{
+			UserId:   item.UserId,
+			FollowId: item.FollowId,
+		})
+	}
+	return followerList
+}
+
+// 发消息
+func SendMessages(FromUser, ToUser int64, message string) error {
+	id, err := uuidmaker.GetUUID()
+	if err != nil {
+		return err
+	}
+	messageModel := &model.Message{
+		Id:         id,
+		Messages:   message,
+		FromUserId: FromUser,
+		ToUserId:   ToUser,
+	}
+	err = query.SendMessage(messageModel)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -45,18 +45,96 @@ func GetUser(uuid int64) (*model.User, error) {
 	return &user, err
 }
 
-// Follow 关注
+// Follow 关注操作
 func Follow(userId, followId int64) error {
 	err := GormClient.Transaction(func(tx *gorm.DB) error {
 		//tx.Create()
 		// 1. 新增
+		follow := model.Follower{
+			UserId:   userId,
+			FollowId: followId,
+		}
+		if err := tx.Create(&follow).Error; err != nil {
+			return err
+		}
 
 		// followID 的 follower + 1
-		// 2. 增加
-
+		if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
+			Update("follower_count", gorm.Expr("follower_count + 1")).Error; err != nil {
+			return err
+		}
 		// userId 的 follow + 1
-		//
+		if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
+			Update("follow_count", gorm.Expr("follow_count + 1")).Error; err != nil {
+			return err
+		}
 		return nil
 	})
 	return err
 }
+
+// Cancel Follow取消关注操作
+func CancelFollow(userId, followId int64) error {
+	err := GormClient.Transaction(func(tx *gorm.DB) error {
+		follow := model.Follower{
+			UserId:   userId,
+			FollowId: followId,
+		}
+		if err := tx.Delete(&follow).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
+			Update("follower_count", gorm.Expr("follower_count - 1")).Error; err != nil {
+			return err
+		}
+		// userId 的 follow + 1
+		if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
+			Update("follow_count", gorm.Expr("follow_count - 1")).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
+}
+
+// 判断userId是否关注followId
+func JudgeFollow(userId, followId int64) (bool, error) {
+	follow := model.Follower{
+		UserId:   userId,
+		FollowId: followId,
+	}
+	result := GormClient.Find(&follow)
+	return result.RowsAffected != 0, result.Error
+}
+
+// 通过uuid查询关注列表
+func FollowList(uuid int64) (*[]model.Follower, error) {
+	followers := []model.Follower{}
+	err := GormClient.Where("user_id = ?", uuid).Find(&followers).Error
+	return &followers, err
+}
+
+// // 通过uuid查询粉丝列表
+func FollowerList(uuid int64) (*[]model.Follower, error) {
+	followers := []model.Follower{}
+	err := GormClient.Where("follow_id = ?", uuid).Find(&followers).Error
+	return &followers, err
+}
+
+// // 通过uuid查询好友列表
+func FriendList(uuid int64) (*[]model.Follower, error) {
+	friends := []model.Follower{}
+	err := GormClient.Raw("SELECT DISTINCT t1.* FROM (SELECT * FROM followers WHERE `user_id` = ?)  AS t1 INNER JOIN followers t2 ON t1.follow_id = t2.user_id", uuid).Scan(&friends).Error
+	return &friends, err
+}
+
+// 发送消息
+func SendMessage(message *model.Message) error {
+	err := GormClient.Transaction(func(tx *gorm.DB) error {
+		tx.Create(&message)
+		return nil
+	})
+	return err
+}
+
+//查询消息列表
