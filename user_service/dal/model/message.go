@@ -12,6 +12,5 @@ type Message struct {
 	FromUserId int64  `gorm:"from_user_id"`
 	ToUserId   int64  `gorm:"to_user_id"`
 	CreatedAt  time.Time
-	UpdatedAt  time.Time
 	DeletedAt  gorm.DeletedAt `gorm:"index"`
 }

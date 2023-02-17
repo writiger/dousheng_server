@@ -32,6 +32,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"FollowList":   kitex.NewMethodInfo(followListHandler, newFollowListArgs, newFollowListResult, false),
 		"FollowerList": kitex.NewMethodInfo(followerListHandler, newFollowerListArgs, newFollowerListResult, false),
 		"FriendList":   kitex.NewMethodInfo(friendListHandler, newFriendListArgs, newFriendListResult, false),
+		"SendMessage":  kitex.NewMethodInfo(sendMessageHandler, newSendMessageArgs, newSendMessageResult, false),
+		"MessageList":  kitex.NewMethodInfo(messageListHandler, newMessageListArgs, newMessageListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -1497,6 +1499,296 @@ func (p *FriendListResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func sendMessageHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.SendMessageRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).SendMessage(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *SendMessageArgs:
+		success, err := handler.(kitex_gen.UserCenter).SendMessage(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*SendMessageResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newSendMessageArgs() interface{} {
+	return &SendMessageArgs{}
+}
+
+func newSendMessageResult() interface{} {
+	return &SendMessageResult{}
+}
+
+type SendMessageArgs struct {
+	Req *kitex_gen.SendMessageRequest
+}
+
+func (p *SendMessageArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.SendMessageRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *SendMessageArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *SendMessageArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *SendMessageArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in SendMessageArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *SendMessageArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.SendMessageRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var SendMessageArgs_Req_DEFAULT *kitex_gen.SendMessageRequest
+
+func (p *SendMessageArgs) GetReq() *kitex_gen.SendMessageRequest {
+	if !p.IsSetReq() {
+		return SendMessageArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *SendMessageArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type SendMessageResult struct {
+	Success *kitex_gen.BasicResponse
+}
+
+var SendMessageResult_Success_DEFAULT *kitex_gen.BasicResponse
+
+func (p *SendMessageResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.BasicResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *SendMessageResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *SendMessageResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *SendMessageResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in SendMessageResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *SendMessageResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.BasicResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *SendMessageResult) GetSuccess() *kitex_gen.BasicResponse {
+	if !p.IsSetSuccess() {
+		return SendMessageResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *SendMessageResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.BasicResponse)
+}
+
+func (p *SendMessageResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func messageListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.MessageListRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).MessageList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *MessageListArgs:
+		success, err := handler.(kitex_gen.UserCenter).MessageList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*MessageListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newMessageListArgs() interface{} {
+	return &MessageListArgs{}
+}
+
+func newMessageListResult() interface{} {
+	return &MessageListResult{}
+}
+
+type MessageListArgs struct {
+	Req *kitex_gen.MessageListRequest
+}
+
+func (p *MessageListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.MessageListRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *MessageListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *MessageListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *MessageListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in MessageListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *MessageListArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.MessageListRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var MessageListArgs_Req_DEFAULT *kitex_gen.MessageListRequest
+
+func (p *MessageListArgs) GetReq() *kitex_gen.MessageListRequest {
+	if !p.IsSetReq() {
+		return MessageListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *MessageListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type MessageListResult struct {
+	Success *kitex_gen.MessageResponse
+}
+
+var MessageListResult_Success_DEFAULT *kitex_gen.MessageResponse
+
+func (p *MessageListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.MessageResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *MessageListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *MessageListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *MessageListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in MessageListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *MessageListResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.MessageResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *MessageListResult) GetSuccess() *kitex_gen.MessageResponse {
+	if !p.IsSetSuccess() {
+		return MessageListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *MessageListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.MessageResponse)
+}
+
+func (p *MessageListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -1602,6 +1894,26 @@ func (p *kClient) FriendList(ctx context.Context, Req *kitex_gen.GetInfoRequest)
 	_args.Req = Req
 	var _result FriendListResult
 	if err = p.c.Call(ctx, "FriendList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) SendMessage(ctx context.Context, Req *kitex_gen.SendMessageRequest) (r *kitex_gen.BasicResponse, err error) {
+	var _args SendMessageArgs
+	_args.Req = Req
+	var _result SendMessageResult
+	if err = p.c.Call(ctx, "SendMessage", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest) (r *kitex_gen.MessageResponse, err error) {
+	var _args MessageListArgs
+	_args.Req = Req
+	var _result MessageListResult
+	if err = p.c.Call(ctx, "MessageList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

@@ -4,6 +4,7 @@ import (
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/util"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -137,4 +138,11 @@ func SendMessage(message *model.Message) error {
 	return err
 }
 
-//查询消息列表
+// 查询消息列表
+func MessageList(FromId, ToId int64) (*[]model.Message, error) {
+	//是否降序有待测试！！！！！
+	var messageList []model.Message
+	fmt.Println("输出代码地址:user1service1dal1model1user.go、MessageList函数排序方式有待测试")
+	err := GormClient.Where("from_user_id = ? AND to_user_id = ? OR from_user_id = ? AND to_user_id = ?", FromId, ToId, ToId, FromId).Order("created_at desc").Find(&messageList).Error
+	return &messageList, err
+}

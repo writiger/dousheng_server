@@ -95,6 +95,31 @@ func (uc UserCenter) FriendList(uuid int64) ([]*kitex_gen.Follower, error) {
 	return modelToKitexFollower(followers), err
 }
 
+// 发消息
+func (uc UserCenter) SendMessage(FromUserId, ToUserId int64, message string) error {
+	id, err := uuidmaker.GetUUID()
+	if err != nil {
+		return err
+	}
+	messageModel := &model.Message{
+		Id:         id,
+		Messages:   message,
+		FromUserId: FromUserId,
+		ToUserId:   ToUserId,
+	}
+	err = query.SendMessage(messageModel)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 获取消息列表
+func (uc UserCenter) MessageList(FromUserId, ToUserId int64) ([]*kitex_gen.Message, error) {
+	messageList, err := query.MessageList(FromUserId, ToUserId)
+	return modelToKitexMessage(messageList), err
+}
+
 // 将model中的follower转换为kitex中生成的follwer
 func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
 	var followerList []*kitex_gen.Follower
@@ -107,21 +132,18 @@ func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
 	return followerList
 }
 
-// 发消息
-func SendMessages(FromUser, ToUser int64, message string) error {
-	id, err := uuidmaker.GetUUID()
-	if err != nil {
-		return err
+// 将model中的message转换为kitex中生成的message
+func modelToKitexMessage(messages *[]model.Message) []*kitex_gen.Message {
+	var messageList []*kitex_gen.Message
+	for _, item := range *messages {
+		createTime := item.CreatedAt.UnixMilli()
+		messageList = append(messageList, &kitex_gen.Message{
+			Id:         item.Id,
+			FromUserId: item.FromUserId,
+			ToUserId:   item.ToUserId,
+			Message:    item.Messages,
+			CreateTime: createTime,
+		})
 	}
-	messageModel := &model.Message{
-		Id:         id,
-		Messages:   message,
-		FromUserId: FromUser,
-		ToUserId:   ToUser,
-	}
-	err = query.SendMessage(messageModel)
-	if err != nil {
-		return err
-	}
-	return nil
+	return messageList
 }
