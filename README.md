@@ -6,8 +6,9 @@
 
 ## 配置
 
+* 新建conf.ini
+* 复制conf.template.ini到conf.ini
 * 修改conf.template.ini
-* 重命名为conf.ini
 
 ~~~ cmd
 # wsl情况下
@@ -46,10 +47,12 @@ go build -o dousheng_server && ./dousheng_server
 
 ## 社交接口
 
-- [ ] 关系操作
-- [ ] 用户关注列表
-- [ ] 用户粉丝列表
-- [ ] 用户好友列表
+- [x] 关系操作
+- [x] 用户关注列表
+- [x] 用户粉丝列表
+- [x] 用户好友列表
+- [ ] 发送消息
+- [ ] 消息列表
 
 
 

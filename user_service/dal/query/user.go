@@ -73,7 +73,7 @@ func Follow(userId, followId int64) error {
 	return err
 }
 
-// Cancel Follow取消关注操作
+// CancelFollow 取消关注操作
 func CancelFollow(userId, followId int64) error {
 	err := GormClient.Transaction(func(tx *gorm.DB) error {
 		follow := model.Follower{
@@ -97,7 +97,7 @@ func CancelFollow(userId, followId int64) error {
 	return err
 }
 
-// 判断userId是否关注followId
+// JudgeFollow 判断userId是否关注followId
 func JudgeFollow(userId, followId int64) (bool, error) {
 	follow := model.Follower{
 		UserId:   userId,
@@ -107,28 +107,28 @@ func JudgeFollow(userId, followId int64) (bool, error) {
 	return result.RowsAffected != 0, result.Error
 }
 
-// 通过uuid查询关注列表
+// FollowList 通过uuid查询关注列表
 func FollowList(uuid int64) (*[]model.Follower, error) {
-	followers := []model.Follower{}
+	var followers []model.Follower
 	err := GormClient.Where("user_id = ?", uuid).Find(&followers).Error
 	return &followers, err
 }
 
-// // 通过uuid查询粉丝列表
+// FollowerList // 通过uuid查询粉丝列表
 func FollowerList(uuid int64) (*[]model.Follower, error) {
-	followers := []model.Follower{}
+	var followers []model.Follower
 	err := GormClient.Where("follow_id = ?", uuid).Find(&followers).Error
 	return &followers, err
 }
 
-// // 通过uuid查询好友列表
+// FriendList // 通过uuid查询好友列表
 func FriendList(uuid int64) (*[]model.Follower, error) {
-	friends := []model.Follower{}
+	var friends []model.Follower
 	err := GormClient.Raw("SELECT DISTINCT t1.* FROM (SELECT * FROM followers WHERE `user_id` = ?)  AS t1 INNER JOIN followers t2 ON t1.follow_id = t2.user_id", uuid).Scan(&friends).Error
 	return &friends, err
 }
 
-// 发送消息
+// SendMessage 发送消息
 func SendMessage(message *model.Message) error {
 	err := GormClient.Transaction(func(tx *gorm.DB) error {
 		tx.Create(&message)

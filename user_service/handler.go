@@ -84,80 +84,72 @@ func (s *UserCenterImpl) GetInfo(ctx context.Context, req *kitex_gen.GetInfoRequ
 
 // Follow implements the UserCenterImpl interface.
 func (s *UserCenterImpl) Follow(ctx context.Context, req *kitex_gen.FollowRequest) (resp *kitex_gen.BasicResponse, err error) {
-	// TODO: Your code here...
 	err = service.UserCenter{}.Follow(req.UserId, req.FollowId)
 	if err != nil {
 		resp = &kitex_gen.BasicResponse{
 			StatusCode: 1,
-			StatusMsg:  "关注失败",
+			StatusMsg:  "follow failed err:" + err.Error(),
 		}
 		return
 	}
 	resp = &kitex_gen.BasicResponse{
 		StatusCode: 0,
-		StatusMsg:  "关注成功",
+		StatusMsg:  "success",
 	}
 	return
 }
 
 // CancelFollow implements the UserCenterImpl interface.
 func (s *UserCenterImpl) CancelFollow(ctx context.Context, req *kitex_gen.FollowRequest) (resp *kitex_gen.BasicResponse, err error) {
-	// TODO: Your code here...
 	err = service.UserCenter{}.CancelFollow(req.UserId, req.FollowId)
 	if err != nil {
 		resp = &kitex_gen.BasicResponse{
 			StatusCode: 1,
-			StatusMsg:  "取消关注失败",
+			StatusMsg:  "cancel follow failed err:" + err.Error(),
 		}
 		return
 	}
 	resp = &kitex_gen.BasicResponse{
 		StatusCode: 0,
-		StatusMsg:  "取消关注成功",
+		StatusMsg:  "success",
 	}
 	return
 }
 
 // FollowList implements the UserCenterImpl interface.
 func (s *UserCenterImpl) FollowList(ctx context.Context, req *kitex_gen.GetInfoRequest) (*kitex_gen.FollowListResponse, error) {
-	// TODO: Your code here...
 	resp, err := service.UserCenter{}.FollowList(req.Uuid)
 	return &kitex_gen.FollowListResponse{Followers: resp}, err
 }
 
 // FollowerList implements the UserCenterImpl interface.
 func (s *UserCenterImpl) FollowerList(ctx context.Context, req *kitex_gen.GetInfoRequest) (*kitex_gen.FollowListResponse, error) {
-	// TODO: Your code here...
 	resp, err := service.UserCenter{}.FollowerList(req.Uuid)
 	return &kitex_gen.FollowListResponse{Followers: resp}, err
-
 }
 
 // FriendList implements the UserCenterImpl interface.
 func (s *UserCenterImpl) FriendList(ctx context.Context, req *kitex_gen.GetInfoRequest) (*kitex_gen.FollowListResponse, error) {
-	// TODO: Your code here...
 	resp, err := service.UserCenter{}.FriendList(req.Uuid)
 	return &kitex_gen.FollowListResponse{Followers: resp}, err
-
 }
 
 // JudgeFollow implements the UserCenterImpl interface.
 func (s *UserCenterImpl) JudgeFollow(ctx context.Context, req *kitex_gen.FollowRequest) (resp *kitex_gen.JudgeFollowResponse, err error) {
-	// TODO: Your code here...
-	var is bool
-	is, err = service.UserCenter{}.JudgeFollow(req.UserId, req.FollowId)
+	var isFollowed bool
+	isFollowed, err = service.UserCenter{}.JudgeFollow(req.UserId, req.FollowId)
 	if err != nil {
 		resp = &kitex_gen.JudgeFollowResponse{
 			StatusCode: 1,
-			StatusMsg:  "关系查询失败",
-			Is:         is,
+			StatusMsg:  "failed followed err:" + err.Error(),
+			Is:         isFollowed,
 		}
 		return
 	}
 	resp = &kitex_gen.JudgeFollowResponse{
 		StatusCode: 0,
-		StatusMsg:  "关系查询成功",
-		Is:         is,
+		StatusMsg:  "success",
+		Is:         isFollowed,
 	}
 	return
 }

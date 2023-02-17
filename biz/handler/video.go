@@ -190,7 +190,10 @@ func VideoLike(ctx context.Context, c *app.RequestContext) {
 func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	// 1. 验证参数
 	userIdStr := c.Query("user_id")
+	requester, _ := c.Get("identity")
+
 	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+	tokenId := requester.(usermodel.User).UUID
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
@@ -199,7 +202,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	// 2. 请求服务
-	videos, err := rpc.FavoriteVideoList(userId)
+	videos, err := rpc.FavoriteVideoList(tokenId, userId)
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
@@ -221,6 +224,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 	user := userGet.(*usermodel.User)
 	videoGet := c.Query("video_id")
 	videoId, err := strconv.ParseInt(videoGet, 10, 64)
+	tokenId := user.UUID
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
@@ -242,7 +246,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 			return
 		}
 		// 2.3 调用rpc
-		comment, err := rpc.PostComment(model.Comment{
+		comment, err := rpc.PostComment(tokenId, model.Comment{
 			UserId:  user.UUID,
 			VideoId: videoId,
 			Content: content,
@@ -294,7 +298,9 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 func GetComment(ctx context.Context, c *app.RequestContext) {
 	// 1. 验证参数
 	videoIdStr := c.Query("video_id")
+	requester, _ := c.Get("identity")
 	videoId, err := strconv.ParseInt(videoIdStr, 10, 64)
+	tokenId := requester.(usermodel.User).UUID
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
@@ -303,8 +309,7 @@ func GetComment(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	// 2. 调用服务
-	comments, err := rpc.GetComment(videoId)
-	fmt.Println(err)
+	comments, err := rpc.GetComment(tokenId, videoId)
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
