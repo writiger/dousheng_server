@@ -133,8 +133,6 @@ func FollowList(userId int64) ([]FollowerUserInfo, error) {
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println("takonid:", userId)
-		fmt.Println("查出来的id:", userInfo.UUID)
 		//is, err := query.JudgeFollow(userId, userInfo.UUID)//关注列表里的人肯定关注了,所以不用判断了
 		if err != nil {
 			return nil, err

@@ -127,3 +127,14 @@ func FriendList(uuid int64) (*[]model.Follower, error) {
 	err := GormClient.Raw("SELECT DISTINCT t1.* FROM (SELECT * FROM followers WHERE `user_id` = ?)  AS t1 INNER JOIN followers t2 ON t1.follow_id = t2.user_id", uuid).Scan(&friends).Error
 	return &friends, err
 }
+
+// 发送消息
+func SendMessage(message *model.Message) error {
+	err := GormClient.Transaction(func(tx *gorm.DB) error {
+		tx.Create(&message)
+		return nil
+	})
+	return err
+}
+
+//查询消息列表

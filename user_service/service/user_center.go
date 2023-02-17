@@ -106,3 +106,22 @@ func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
 	}
 	return followerList
 }
+
+// 发消息
+func SendMessages(FromUser, ToUser int64, message string) error {
+	id, err := uuidmaker.GetUUID()
+	if err != nil {
+		return err
+	}
+	messageModel := &model.Message{
+		Id:         id,
+		Messages:   message,
+		FromUserId: FromUser,
+		ToUserId:   ToUser,
+	}
+	err = query.SendMessage(messageModel)
+	if err != nil {
+		return err
+	}
+	return nil
+}

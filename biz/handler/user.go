@@ -98,16 +98,16 @@ func Follow(ctx context.Context, c *app.RequestContext) {
 		if err != nil {
 			c.JSON(consts.StatusServiceUnavailable, utils.H{
 				"status_code": -1,
-				"status_msg":  "wrong request param" + err.Error(),
+				"status_msg":  "wrong rpc" + err.Error(),
 			})
 			return
 		}
 	case "2":
-		rpc.CancelFollow(userId, followId)
+		err := rpc.CancelFollow(userId, followId)
 		if err != nil {
 			c.JSON(consts.StatusServiceUnavailable, utils.H{
 				"status_code": -1,
-				"status_msg":  "wrong request param" + err.Error(),
+				"status_msg":  "wrong rpc" + err.Error(),
 			})
 			return
 		}
@@ -130,10 +130,16 @@ func FollowList(ctx context.Context, c *app.RequestContext) {
 	Id := c.Query("user_id")
 
 	requester, _ := c.Get("identity")
-	fmt.Println(Id)
+	fmt.Println(requester)
 
-	userId := requester.(*model.User).UUID
-
+	userId, err := strconv.ParseInt(Id, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong request param" + err.Error(),
+		})
+		return
+	}
 	userModel, err := rpc.FollowList(userId)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
@@ -156,10 +162,16 @@ func FollowerList(ctx context.Context, c *app.RequestContext) {
 	Id := c.Query("user_id")
 
 	requester, _ := c.Get("identity")
-	fmt.Println(Id)
+	fmt.Println(requester)
 
-	userId := requester.(*model.User).UUID
-
+	userId, err := strconv.ParseInt(Id, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong request param" + err.Error(),
+		})
+		return
+	}
 	userModel, err := rpc.FollowerList(userId)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
@@ -182,10 +194,16 @@ func FriendList(ctx context.Context, c *app.RequestContext) {
 	Id := c.Query("user_id")
 
 	requester, _ := c.Get("identity")
-	fmt.Println(Id)
+	fmt.Println(requester)
 
-	userId := requester.(*model.User).UUID
-
+	userId, err := strconv.ParseInt(Id, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong request param" + err.Error(),
+		})
+		return
+	}
 	userModel, err := rpc.FriendList(userId)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
