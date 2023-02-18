@@ -1732,14 +1732,14 @@ func (p *MessageListArgs) IsSetReq() bool {
 }
 
 type MessageListResult struct {
-	Success *kitex_gen.MessageResponse
+	Success *kitex_gen.MessageListResponse
 }
 
-var MessageListResult_Success_DEFAULT *kitex_gen.MessageResponse
+var MessageListResult_Success_DEFAULT *kitex_gen.MessageListResponse
 
 func (p *MessageListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(kitex_gen.MessageResponse)
+		p.Success = new(kitex_gen.MessageListResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -1766,7 +1766,7 @@ func (p *MessageListResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *MessageListResult) Unmarshal(in []byte) error {
-	msg := new(kitex_gen.MessageResponse)
+	msg := new(kitex_gen.MessageListResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -1774,7 +1774,7 @@ func (p *MessageListResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *MessageListResult) GetSuccess() *kitex_gen.MessageResponse {
+func (p *MessageListResult) GetSuccess() *kitex_gen.MessageListResponse {
 	if !p.IsSetSuccess() {
 		return MessageListResult_Success_DEFAULT
 	}
@@ -1782,7 +1782,7 @@ func (p *MessageListResult) GetSuccess() *kitex_gen.MessageResponse {
 }
 
 func (p *MessageListResult) SetSuccess(x interface{}) {
-	p.Success = x.(*kitex_gen.MessageResponse)
+	p.Success = x.(*kitex_gen.MessageListResponse)
 }
 
 func (p *MessageListResult) IsSetSuccess() bool {
@@ -1909,7 +1909,7 @@ func (p *kClient) SendMessage(ctx context.Context, Req *kitex_gen.SendMessageReq
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest) (r *kitex_gen.MessageResponse, err error) {
+func (p *kClient) MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest) (r *kitex_gen.MessageListResponse, err error) {
 	var _args MessageListArgs
 	_args.Req = Req
 	var _result MessageListResult

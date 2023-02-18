@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
+	"time"
 )
 
 // CreateUser 添加用户
@@ -139,10 +140,10 @@ func SendMessage(message *model.Message) error {
 }
 
 // 查询消息列表
-func MessageList(FromId, ToId int64) (*[]model.Message, error) {
+func MessageList(FromId, ToId int64, nowTime time.Time) (*[]model.Message, error) {
 	//是否降序有待测试！！！！！
 	var messageList []model.Message
 	fmt.Println("输出代码地址:user1service1dal1model1user.go、MessageList函数排序方式有待测试")
-	err := GormClient.Where("from_user_id = ? AND to_user_id = ? OR from_user_id = ? AND to_user_id = ?", FromId, ToId, ToId, FromId).Order("created_at desc").Find(&messageList).Error
+	err := GormClient.Where("from_user_id = ? AND to_user_id = ? OR from_user_id = ? AND to_user_id = ? AND created_at > ?", FromId, ToId, ToId, FromId, nowTime).Order("created_at desc").Find(&messageList).Error
 	return &messageList, err
 }

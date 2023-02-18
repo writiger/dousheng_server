@@ -22,7 +22,7 @@ type Client interface {
 	FollowerList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error)
 	FriendList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error)
 	SendMessage(ctx context.Context, Req *kitex_gen.SendMessageRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
-	MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest, callOptions ...callopt.Option) (r *kitex_gen.MessageResponse, err error)
+	MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest, callOptions ...callopt.Option) (r *kitex_gen.MessageListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -109,7 +109,7 @@ func (p *kUserCenterClient) SendMessage(ctx context.Context, Req *kitex_gen.Send
 	return p.kClient.SendMessage(ctx, Req)
 }
 
-func (p *kUserCenterClient) MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest, callOptions ...callopt.Option) (r *kitex_gen.MessageResponse, err error) {
+func (p *kUserCenterClient) MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest, callOptions ...callopt.Option) (r *kitex_gen.MessageListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.MessageList(ctx, Req)
 }

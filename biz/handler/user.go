@@ -46,11 +46,14 @@ func Register(ctx context.Context, c *app.RequestContext) {
 
 // Info 用户信息
 func Info(ctx context.Context, c *app.RequestContext) {
+	// TODO 判断是否关注
+
 	// 1. 验证参数
 	idStr := c.Query("user_id")
 	requester, _ := c.Get("identity")
+	fmt.Println(requester)
 
-	userId, err := strconv.ParseInt(idStr, 10, 64)
+	parseInt, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,
@@ -58,14 +61,7 @@ func Info(ctx context.Context, c *app.RequestContext) {
 		})
 		return
 	}
-	if err != nil {
-		c.JSON(consts.StatusServiceUnavailable, utils.H{
-			"status_code": -1,
-			"status_msg":  "wrong request param" + err.Error(),
-		})
-		return
-	}
-	userGet, err := rpc.GetUserInfo(requester.(*model.User).UUID, userId)
+	userModel, err := rpc.GetUserInfo(parseInt)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,
@@ -76,7 +72,7 @@ func Info(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, utils.H{
 		"status_code": 0,
 		"status_msg":  "success",
-		"user":        userGet,
+		"user":        userModel,
 	})
 }
 
@@ -129,9 +125,13 @@ func Follow(ctx context.Context, c *app.RequestContext) {
 	return
 }
 
-// FollowList 关注列表
+// 关注列表
 func FollowList(ctx context.Context, c *app.RequestContext) {
 	Id := c.Query("user_id")
+
+	requester, _ := c.Get("identity")
+	fmt.Println(requester)
+
 	userId, err := strconv.ParseInt(Id, 10, 64)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
@@ -157,9 +157,12 @@ func FollowList(ctx context.Context, c *app.RequestContext) {
 	return
 }
 
-// FollowerList 粉丝列表
+// 粉丝列表
 func FollowerList(ctx context.Context, c *app.RequestContext) {
 	Id := c.Query("user_id")
+
+	requester, _ := c.Get("identity")
+	fmt.Println(requester)
 
 	userId, err := strconv.ParseInt(Id, 10, 64)
 	if err != nil {
@@ -186,9 +189,12 @@ func FollowerList(ctx context.Context, c *app.RequestContext) {
 	return
 }
 
-// FriendList 好友列表
+// 好友列表
 func FriendList(ctx context.Context, c *app.RequestContext) {
 	Id := c.Query("user_id")
+
+	requester, _ := c.Get("identity")
+	fmt.Println(requester)
 
 	userId, err := strconv.ParseInt(Id, 10, 64)
 	if err != nil {
@@ -213,4 +219,9 @@ func FriendList(ctx context.Context, c *app.RequestContext) {
 		"user_list":   userModel,
 	})
 	return
+}
+
+// 发消息
+func SendMeSSQGE(ctx context.Context, c *app.RequestContext) {
+
 }
