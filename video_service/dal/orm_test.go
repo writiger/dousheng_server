@@ -13,8 +13,8 @@ func TestCreateVideo(t *testing.T) {
 		err := query.CreateVideo(&model.Video{
 			UUID:          1,
 			UserID:        629377243281358848,
-			PlayURL:       "http//localhost:8080/static/videos/bear.mp4",
-			CoverURL:      "http//localhost:8080/static/covers/bear.jpg?",
+			PlayURL:       "http://localhost:8080/static/videos/bear.mp4",
+			CoverURL:      "http://localhost:8080/static/covers/bear.png",
 			FavoriteCount: 0,
 			CommentCount:  0,
 			Title:         "测试1",

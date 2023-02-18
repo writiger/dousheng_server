@@ -3,23 +3,22 @@ package dal
 import (
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/dal/query"
+	"dousheng_server/user_service/util"
 	"fmt"
 	"testing"
 )
 
 func TestCreateUser(t *testing.T) {
+	passwd, _ := util.HashAndSalt("test")
 	user := model.User{
 		Username:      "test",
-		Password:      "test",
+		Password:      passwd,
 		FollowCount:   0,
 		FollowerCount: 0,
 	}
-	for i := 0; i < 10; i++ {
-		err := query.CreateUser(&user)
-
-		if err != nil {
-			return
-		}
+	err := query.CreateUser(&user)
+	if err != nil {
+		return
 	}
 }
 
@@ -125,6 +124,7 @@ func TestFollow(t *testing.T) {
 	//	return
 	//}
 }
+
 func TestCancelFollow(t *testing.T) {
 	//asd取消关注了asdasd
 	var userId int64
@@ -145,6 +145,7 @@ func TestCancelFollow(t *testing.T) {
 		return
 	}
 }
+
 func TestFollowList(t *testing.T) {
 
 	user, err := query.FollowList(631640850035638272)
@@ -156,6 +157,7 @@ func TestFollowList(t *testing.T) {
 		fmt.Println(i)
 	}
 }
+
 func TestFollowerList(t *testing.T) {
 
 	user, err := query.FollowerList(631640850035638273)
@@ -167,6 +169,7 @@ func TestFollowerList(t *testing.T) {
 		fmt.Println(i)
 	}
 }
+
 func TestFriendList(t *testing.T) {
 
 	user, err := query.FriendList(631640850035638272)

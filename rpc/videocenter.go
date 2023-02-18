@@ -3,7 +3,6 @@ package rpc
 import (
 	"context"
 	"dousheng_server/conf"
-	usermodel "dousheng_server/user_service/dal/model"
 	"dousheng_server/video_service/dal/model"
 	"dousheng_server/video_service/kitex_gen"
 	"dousheng_server/video_service/kitex_gen/videocenter"
@@ -33,23 +32,23 @@ func init() {
 
 // VideoWithUser 将用户信息中的user_id替换为user
 type VideoWithUser struct {
-	UUID          int64          `json:"id"`
-	UserInfo      usermodel.User `json:"author"`
-	PlayURL       string         `json:"play_url"`
-	CoverURL      string         `json:"cover_url"`
-	FavoriteCount int64          `json:"favorite_count"`
-	CommentCount  int64          `json:"comment_count"`
-	Title         string         `json:"title"`
-	IsFavorite    bool           `json:"is_favorite"`
+	UUID          int64    `json:"id"`
+	UserInfo      UserInfo `json:"author"`
+	PlayURL       string   `json:"play_url"`
+	CoverURL      string   `json:"cover_url"`
+	FavoriteCount int64    `json:"favorite_count"`
+	CommentCount  int64    `json:"comment_count"`
+	Title         string   `json:"title"`
+	IsFavorite    bool     `json:"is_favorite"`
 	CreatedAt     time.Time
 }
 
 // CommentWithUser 将用户信息中的user_id替换为user
 type CommentWithUser struct {
-	UUID       int64          `json:"comment_id"`
-	UserInfo   usermodel.User `json:"user"`
-	Content    string         `json:"content"`
-	CreateDate string         `json:"createDate"`
+	UUID       int64    `json:"comment_id"`
+	UserInfo   UserInfo `json:"user"`
+	Content    string   `json:"content"`
+	CreateDate string   `json:"createDate"`
 }
 
 // PublishVideo .
@@ -92,7 +91,7 @@ func Feed(timeStamp, userId int64) ([]VideoWithUser, int64, error) {
 			timestamp = item.CreateTime
 		}
 		// 替换用户信息
-		userInfo, err := GetUserInfo(item.UserId)
+		userInfo, err := GetUserInfo(userId, item.UserId)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -126,7 +125,8 @@ func VideoList(userId int64) ([]VideoWithUser, error) {
 	// 修饰返回值
 	for _, item := range resp.Videos {
 		// 替换用户信息
-		userInfo, err := GetUserInfo(item.UserId)
+		// 不能关注自己
+		userInfo, err := GetUserInfo(0, item.UserId)
 		if err != nil {
 			return nil, err
 		}
@@ -154,33 +154,8 @@ func LikeVideo(userId, videoId int64, actionType int32) error {
 	return err
 }
 
-// GetVideo 使用uuid获取视频
-func GetVideo(videoId int64) (*VideoWithUser, error) {
-	req := kitex_gen.GetVideoRequest{Uuid: videoId}
-	resp, err := videoClient.GetVideo(context.Background(), &req)
-	if err != nil {
-		return nil, err
-	}
-	// 替换用户信息
-	userInfo, err := GetUserInfo(resp.Video.UserId)
-	res := &VideoWithUser{
-		UUID:          resp.Video.Uuid,
-		UserInfo:      *userInfo,
-		PlayURL:       resp.Video.PlayUrl,
-		CoverURL:      resp.Video.CoverUrl,
-		FavoriteCount: resp.Video.FavoriteCount,
-		CommentCount:  resp.Video.CommentCount,
-		Title:         resp.Video.Title,
-
-		// TODO IsFavorite
-
-		IsFavorite: false,
-	}
-	return res, nil
-}
-
 // FavoriteVideoList .
-func FavoriteVideoList(userId int64) ([]VideoWithUser, error) {
+func FavoriteVideoList(tokenId, userId int64) ([]VideoWithUser, error) {
 	var res []VideoWithUser
 	req := kitex_gen.GetVideoRequest{Uuid: userId}
 	resp, err := videoClient.GetFavoriteVideo(context.Background(), &req)
@@ -193,7 +168,7 @@ func FavoriteVideoList(userId int64) ([]VideoWithUser, error) {
 	// 修饰返回值
 	for _, item := range resp.Videos {
 		// 替换用户信息
-		userInfo, err := GetUserInfo(item.UserId)
+		userInfo, err := GetUserInfo(tokenId, item.UserId)
 		if err != nil {
 			return nil, err
 		}
@@ -228,7 +203,7 @@ func IsFavorite(userId, videoId int64) (bool, error) {
 }
 
 // PostComment .
-func PostComment(comment model.Comment) (*CommentWithUser, error) {
+func PostComment(tokenId int64, comment model.Comment) (*CommentWithUser, error) {
 	req := kitex_gen.PostCommentRequest{
 		UserId:  comment.UserId,
 		VideoId: comment.VideoId,
@@ -239,7 +214,7 @@ func PostComment(comment model.Comment) (*CommentWithUser, error) {
 		return nil, err
 	}
 	// 替换用户信息
-	userInfo, err := GetUserInfo(resp.Comment.UserId)
+	userInfo, err := GetUserInfo(tokenId, resp.Comment.UserId)
 	// 转换参数
 	return &CommentWithUser{
 		UUID:       resp.Comment.Uuid,
@@ -257,7 +232,7 @@ func DeleteComment(uuid int64) error {
 }
 
 // GetComment .
-func GetComment(uuid int64) ([]CommentWithUser, error) {
+func GetComment(tokenId, uuid int64) ([]CommentWithUser, error) {
 	var res []CommentWithUser
 	req := kitex_gen.GetCommentRequest{VideoId: uuid}
 	resp, err := videoClient.GetComment(context.Background(), &req)
@@ -265,7 +240,7 @@ func GetComment(uuid int64) ([]CommentWithUser, error) {
 		return nil, err
 	}
 	for _, item := range resp.Comments {
-		userInfo, err := GetUserInfo(item.UserId)
+		userInfo, err := GetUserInfo(tokenId, item.UserId)
 		if err != nil {
 			return nil, err
 		}
