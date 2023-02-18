@@ -6,7 +6,6 @@ import (
 	"dousheng_server/rpc"
 	"dousheng_server/user_service/dal/model"
 	"errors"
-	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -86,7 +85,6 @@ func Follow(ctx context.Context, c *app.RequestContext) {
 	toId := c.Query("to_user_id")
 	actionType := c.Query("action_type")
 	requester, _ := c.Get("identity")
-	fmt.Println(requester)
 	userId := requester.(*model.User).UUID
 	followId, err := strconv.ParseInt(toId, 10, 64)
 	if err != nil {
@@ -213,4 +211,83 @@ func FriendList(ctx context.Context, c *app.RequestContext) {
 		"user_list":   userModel,
 	})
 	return
+}
+
+// 发送消息
+func SendMessage(ctx context.Context, c *app.RequestContext) {
+	Id := c.Query("to_user_id")
+	toUserId, err := strconv.ParseInt(Id, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong request param" + err.Error(),
+		})
+		return
+	}
+	message := c.Query("content")
+	actionType := c.Query("action_type")
+	requester, _ := c.Get("identity")
+	fromUserId := requester.(*model.User).UUID
+	switch actionType {
+	case "1":
+		err := rpc.SendMessage(fromUserId, toUserId, message)
+		if err != nil {
+			c.JSON(consts.StatusServiceUnavailable, utils.H{
+				"status_code": -1,
+				"status_msg":  "wrong rpc" + err.Error(),
+			})
+			return
+		}
+	default:
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong request param" + err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"status_code": 0,
+		"status_msg":  "success",
+	})
+
+}
+
+// 获取消息列表
+func MessageList(ctx context.Context, c *app.RequestContext) {
+	Id := c.Query("to_user_id")
+	toUserId, err := strconv.ParseInt(Id, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong request param" + err.Error(),
+		})
+		return
+	}
+	lastTimeTemp := c.Query("pre_msg_time")
+	lastTime, err := strconv.ParseInt(lastTimeTemp, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong request param" + err.Error(),
+		})
+		return
+	}
+	requester, _ := c.Get("identity")
+	fromUserId := requester.(*model.User).UUID
+	messageList, err := rpc.MessageList(fromUserId, toUserId, lastTime)
+	if err != nil {
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code":  -1,
+			"status_msg":   err.Error(),
+			"message_list": nil,
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"status_code":  0,
+		"status_msg":   "success",
+		"message_list": messageList,
+	})
+	return
+
 }

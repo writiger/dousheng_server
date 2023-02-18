@@ -5,13 +5,14 @@ package rpc
 import (
 	"context"
 	"dousheng_server/conf"
-	"dousheng_server/user_service/dal/query"
+	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/kitex_gen/usercenter"
 	"errors"
 	"github.com/cloudwego/kitex/client"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"time"
 )
 
 var userClient usercenter.Client
@@ -32,20 +33,18 @@ func init() {
 	}
 }
 
-type FollowerUserInfo struct {
-	UUID          int64  `json:"uuid"`
-	UserName      string `json:"username"`
-	FollowCount   int64  `json:"follow_count"`
-	FollowerCount int64  `json:"follower_count"`
-	isFollow      bool
-}
-
 type UserInfo struct {
-	UUID          int64  `gorm:"primaryKey" json:"id"`
-	Username      string `json:"name"`
-	FollowCount   int64  `json:"follow_count"`
-	FollowerCount int64  `json:"follower_count"`
-	IsFollow      bool   `json:"is_follow"`
+	UUID            int64  `gorm:"primaryKey" json:"id"`
+	UserName        string `json:"name"`
+	FollowCount     int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorited  string `json:"total_favorited"`
+	WorkCount       string `json:"work_count"`
+	FavoriteCount   string `json:"favorite_count"`
 }
 
 // Register .
@@ -93,11 +92,17 @@ func GetUserInfo(tokenId, userId int64) (*UserInfo, error) {
 		}
 	}
 	userInfo := UserInfo{
-		UUID:          resp.User.Id,
-		Username:      resp.User.Name,
-		FollowCount:   resp.User.FollowCount,
-		FollowerCount: resp.User.FollowerCount,
-		IsFollow:      isFollowed,
+		UUID:            resp.User.Id,
+		UserName:        resp.User.Name,
+		FollowCount:     resp.User.FollowCount,
+		FollowerCount:   resp.User.FollowerCount,
+		IsFollow:        isFollowed,
+		Avatar:          "http://192.168.101.112:8080/static/covers/img.png",
+		BackgroundImage: "http://192.168.101.112:8080/static/covers/img.png",
+		Signature:       "个人简介为空",
+		TotalFavorited:  "100",
+		WorkCount:       "100",
+		FavoriteCount:   "100",
 	}
 	return &userInfo, nil
 }
@@ -123,8 +128,8 @@ func CancelFollow(userId, followId int64) error {
 }
 
 // FollowList 关注列表
-func FollowList(userId int64) ([]FollowerUserInfo, error) {
-	var res []FollowerUserInfo
+func FollowList(userId int64) ([]UserInfo, error) {
+	var res []UserInfo
 	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.FollowList(context.Background(), &req)
 	if err != nil {
@@ -140,20 +145,14 @@ func FollowList(userId int64) ([]FollowerUserInfo, error) {
 		if err != nil {
 			return nil, err
 		}
-		res = append(res, FollowerUserInfo{
-			UUID:          userInfo.UUID,
-			UserName:      userInfo.Username,
-			FollowCount:   userInfo.FollowCount,
-			FollowerCount: userInfo.FollowerCount,
-			isFollow:      true,
-		})
+		res = append(res, *userInfo)
 	}
 	return res, nil
 }
 
 // FollowerList 粉丝列表
-func FollowerList(userId int64) ([]FollowerUserInfo, error) {
-	var res []FollowerUserInfo
+func FollowerList(userId int64) ([]UserInfo, error) {
+	var res []UserInfo
 	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.FollowerList(context.Background(), &req)
 	if err != nil {
@@ -164,24 +163,17 @@ func FollowerList(userId int64) ([]FollowerUserInfo, error) {
 		if err != nil {
 			return nil, err
 		}
-		is, err := query.JudgeFollow(userId, userInfo.UUID)
 		if err != nil {
 			return nil, err
 		}
-		res = append(res, FollowerUserInfo{
-			UUID:          userInfo.UUID,
-			UserName:      userInfo.Username,
-			FollowCount:   userInfo.FollowCount,
-			FollowerCount: userInfo.FollowerCount,
-			isFollow:      is,
-		})
+		res = append(res, *userInfo)
 	}
 	return res, nil
 }
 
 // FriendList 好友列表
-func FriendList(userId int64) ([]FollowerUserInfo, error) {
-	var res []FollowerUserInfo
+func FriendList(userId int64) ([]UserInfo, error) {
+	var res []UserInfo
 	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.FriendList(context.Background(), &req)
 	if err != nil {
@@ -203,17 +195,10 @@ func FriendList(userId int64) ([]FollowerUserInfo, error) {
 			}
 		}
 
-		is, err := query.JudgeFollow(userId, userInfo.UUID)
 		if err != nil {
 			return nil, err
 		}
-		res = append(res, FollowerUserInfo{
-			UUID:          userInfo.UUID,
-			UserName:      userInfo.Username,
-			FollowCount:   userInfo.FollowCount,
-			FollowerCount: userInfo.FollowerCount,
-			isFollow:      is,
-		})
+		res = append(res, *userInfo)
 	}
 	return res, nil
 }
@@ -226,4 +211,47 @@ func IsFollowed(userId, followId int64) (bool, error) {
 		return false, err
 	}
 	return resp.Is, nil
+}
+
+// 发送消息
+func SendMessage(fromUserId, ToUserId int64, message string) error {
+	req := kitex_gen.SendMessageRequest{
+		UserId:  fromUserId,
+		ToId:    ToUserId,
+		Message: message,
+	}
+	_, err := userClient.SendMessage(context.Background(), &req)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 消息列表
+func MessageList(fromUserId, ToUserId, lastTime int64) ([]model.Message, error) {
+	var messageList []model.Message
+	req := kitex_gen.MessageListRequest{
+		UserId:   fromUserId,
+		ToId:     ToUserId,
+		LastTime: lastTime,
+	}
+	resp, err := userClient.MessageList(context.Background(), &req)
+	if err != nil {
+		return nil, err
+	}
+	if resp == nil {
+		return nil, err
+	}
+	for _, item := range resp.MessageList {
+		createAt := time.UnixMilli(item.CreateTime)
+		messageList = append(messageList, model.Message{
+			Id:         item.Id,
+			Messages:   item.Content,
+			FromUserId: item.FromUserId,
+			ToUserId:   item.ToUserId,
+			CreatedAt:  createAt,
+		})
+	}
+
+	return messageList, err
 }

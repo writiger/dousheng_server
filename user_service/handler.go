@@ -116,19 +116,52 @@ func (s *UserCenterImpl) CancelFollow(ctx context.Context, req *kitex_gen.Follow
 // FollowList implements the UserCenterImpl interface.
 func (s *UserCenterImpl) FollowList(ctx context.Context, req *kitex_gen.GetInfoRequest) (*kitex_gen.FollowListResponse, error) {
 	resp, err := service.UserCenter{}.FollowList(req.Uuid)
-	return &kitex_gen.FollowListResponse{Followers: resp}, err
+	if err != nil {
+		return &kitex_gen.FollowListResponse{
+			StatusCode: 1,
+			StatusMsg:  "follow list query failed",
+			Followers:  nil,
+		}, err
+	}
+	return &kitex_gen.FollowListResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+		Followers:  resp,
+	}, err
 }
 
 // FollowerList implements the UserCenterImpl interface.
 func (s *UserCenterImpl) FollowerList(ctx context.Context, req *kitex_gen.GetInfoRequest) (*kitex_gen.FollowListResponse, error) {
 	resp, err := service.UserCenter{}.FollowerList(req.Uuid)
-	return &kitex_gen.FollowListResponse{Followers: resp}, err
+	if err != nil {
+		return &kitex_gen.FollowListResponse{
+			StatusCode: 1,
+			StatusMsg:  "follower list query failed",
+			Followers:  nil,
+		}, err
+	}
+	return &kitex_gen.FollowListResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+		Followers:  resp,
+	}, err
 }
 
 // FriendList implements the UserCenterImpl interface.
 func (s *UserCenterImpl) FriendList(ctx context.Context, req *kitex_gen.GetInfoRequest) (*kitex_gen.FollowListResponse, error) {
 	resp, err := service.UserCenter{}.FriendList(req.Uuid)
-	return &kitex_gen.FollowListResponse{Followers: resp}, err
+	if err != nil {
+		return &kitex_gen.FollowListResponse{
+			StatusCode: 1,
+			StatusMsg:  "friend list query failed",
+			Followers:  nil,
+		}, err
+	}
+	return &kitex_gen.FollowListResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+		Followers:  resp,
+	}, err
 }
 
 // JudgeFollow implements the UserCenterImpl interface.
@@ -147,6 +180,42 @@ func (s *UserCenterImpl) JudgeFollow(ctx context.Context, req *kitex_gen.FollowR
 		StatusCode: 0,
 		StatusMsg:  "success",
 		Is:         isFollowed,
+	}
+	return
+}
+
+// SendMessage implements the UserCenterImpl interface.
+func (s *UserCenterImpl) SendMessage(ctx context.Context, req *kitex_gen.SendMessageRequest) (resp *kitex_gen.BasicResponse, err error) {
+	err = service.UserCenter{}.SendMessages(req.UserId, req.ToId, req.Message)
+	if err != nil {
+		resp = &kitex_gen.BasicResponse{
+			StatusCode: 1,
+			StatusMsg:  "failed send-message err:" + err.Error(),
+		}
+		return
+	}
+	resp = &kitex_gen.BasicResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+	}
+	return
+}
+
+// MessageList implements the UserCenterImpl interface.
+func (s *UserCenterImpl) MessageList(ctx context.Context, req *kitex_gen.MessageListRequest) (resp *kitex_gen.MessageListResponse, err error) {
+	messageList, err := service.UserCenter{}.MessageList(req.UserId, req.ToId, req.LastTime)
+	if err != nil {
+		resp = &kitex_gen.MessageListResponse{
+			StatusCode:  1,
+			StatusMsg:   "message list query failed",
+			MessageList: nil,
+		}
+		return
+	}
+	resp = &kitex_gen.MessageListResponse{
+		StatusCode:  0,
+		StatusMsg:   "success",
+		MessageList: messageList,
 	}
 	return
 }

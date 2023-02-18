@@ -4,7 +4,9 @@ import (
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/util"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
+	"time"
 )
 
 // CreateUser 添加用户
@@ -54,21 +56,22 @@ func Follow(userId, followId int64) error {
 			UserId:   userId,
 			FollowId: followId,
 		}
-		if err := tx.Create(&follow).Error; err != nil {
+		err := tx.Create(&follow).Error
+		if err != nil {
 			return err
+		} else {
+			// followID 的 follower + 1
+			if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
+				Update("follower_count", gorm.Expr("follower_count + 1")).Error; err != nil {
+				return err
+			}
+			// userId 的 follow + 1
+			if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
+				Update("follow_count", gorm.Expr("follow_count + 1")).Error; err != nil {
+				return err
+			}
+			return nil
 		}
-
-		// followID 的 follower + 1
-		if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
-			Update("follower_count", gorm.Expr("follower_count + 1")).Error; err != nil {
-			return err
-		}
-		// userId 的 follow + 1
-		if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
-			Update("follow_count", gorm.Expr("follow_count + 1")).Error; err != nil {
-			return err
-		}
-		return nil
 	})
 	return err
 }
@@ -80,19 +83,21 @@ func CancelFollow(userId, followId int64) error {
 			UserId:   userId,
 			FollowId: followId,
 		}
-		if err := tx.Delete(&follow).Error; err != nil {
+		err := tx.Delete(&follow).Error
+		if err != nil {
 			return err
+		} else {
+			if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
+				Update("follower_count", gorm.Expr("follower_count - 1")).Error; err != nil {
+				return err
+			}
+			// userId 的 follow + 1
+			if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
+				Update("follow_count", gorm.Expr("follow_count - 1")).Error; err != nil {
+				return err
+			}
+			return nil
 		}
-		if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
-			Update("follower_count", gorm.Expr("follower_count - 1")).Error; err != nil {
-			return err
-		}
-		// userId 的 follow + 1
-		if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
-			Update("follow_count", gorm.Expr("follow_count - 1")).Error; err != nil {
-			return err
-		}
-		return nil
 	})
 	return err
 }
@@ -137,4 +142,11 @@ func SendMessage(message *model.Message) error {
 	return err
 }
 
-//查询消息列表
+// 查询消息列表
+func MessageList(FromId, ToId int64, nowTime time.Time) (*[]model.Message, error) {
+	//是否降序有待测试！！！！！
+	var messageList []model.Message
+	fmt.Println("输出代码地址:user1service1dal1model1user.go、MessageList函数排序方式有待测试")
+	err := GormClient.Where("from_user_id = ? AND to_user_id = ? OR from_user_id = ? AND to_user_id = ? AND created_at > ?", FromId, ToId, ToId, FromId, nowTime).Order("created_at desc").Find(&messageList).Error
+	return &messageList, err
+}

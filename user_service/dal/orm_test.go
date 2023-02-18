@@ -181,3 +181,44 @@ func TestFriendList(t *testing.T) {
 		fmt.Println(i)
 	}
 }
+
+// 测试发送消息
+func TestSendMessage(t *testing.T) {
+	message1 := model.Message{
+		Id:         1,
+		Messages:   "asd对asdasd说的我要测试",
+		FromUserId: 631992324594860032,
+		ToUserId:   632238110008147968,
+	}
+	message2 := model.Message{
+		Id:         2,
+		Messages:   "asdasd对asd说的我要测试",
+		FromUserId: 632238110008147968,
+		ToUserId:   631992324594860032,
+	}
+	error := query.SendMessage(&message1)
+	if error != nil {
+		fmt.Println(error)
+	}
+	error = query.SendMessage(&message2)
+	if error != nil {
+		fmt.Println(error)
+	}
+
+}
+
+// 测试消息列表
+func TestMessageList(t *testing.T) {
+
+	//var FromId int64
+	//var ToId int64
+	//FromId = 631992324594860032
+	//ToId = 632238110008147968
+	//r, err := query.MessageList(FromId, ToId)
+	//if err != nil {
+	//	fmt.Println("错误", err)
+	//}
+	//for _, i := range *r {
+	//	fmt.Println("测试", i)
+	//}
+}
