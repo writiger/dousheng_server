@@ -67,36 +67,36 @@ func (uc UserCenter) Follow(userId, followId int64) error {
 	return query.Follow(userId, followId)
 }
 
-// Follow 取消关注用户
+// CancelFollow 取消关注用户
 func (uc UserCenter) CancelFollow(userId, followId int64) error {
 	return query.CancelFollow(userId, followId)
 }
 
-// Follow 判断用户是否关注
+// JudgeFollow 判断用户是否关注
 func (uc UserCenter) JudgeFollow(userId, followId int64) (bool, error) {
 	return query.JudgeFollow(userId, followId)
 }
 
-// GetInfo 通过UUID获取关注列表
+// FollowList 通过UUID获取关注列表
 func (uc UserCenter) FollowList(uuid int64) ([]*kitex_gen.Follower, error) {
 	followers, err := query.FollowList(uuid)
 	return modelToKitexFollower(followers), err
 }
 
-// GetInfo 通过UUID获取粉丝列表
+// FollowerList 通过UUID获取粉丝列表
 func (uc UserCenter) FollowerList(uuid int64) ([]*kitex_gen.Follower, error) {
 	followers, err := query.FollowerList(uuid)
 	return modelToKitexFollower(followers), err
 }
 
-// GetInfo 通过UUID获取好友列表
+// FriendList  通过UUID获取好友列表
 func (uc UserCenter) FriendList(uuid int64) ([]*kitex_gen.Follower, error) {
 	followers, err := query.FriendList(uuid)
 	return modelToKitexFollower(followers), err
 }
 
-// 发消息
-func (uc UserCenter) SendMessage(FromUserId, ToUserId int64, message string) error {
+// SendMessages 发消息
+func SendMessages(FromUser, ToUser int64, message string) error {
 	id, err := uuidmaker.GetUUID()
 	if err != nil {
 		return err
@@ -104,8 +104,8 @@ func (uc UserCenter) SendMessage(FromUserId, ToUserId int64, message string) err
 	messageModel := &model.Message{
 		Id:         id,
 		Messages:   message,
-		FromUserId: FromUserId,
-		ToUserId:   ToUserId,
+		FromUserId: FromUser,
+		ToUserId:   ToUser,
 	}
 	err = query.SendMessage(messageModel)
 	if err != nil {
@@ -114,13 +114,7 @@ func (uc UserCenter) SendMessage(FromUserId, ToUserId int64, message string) err
 	return nil
 }
 
-// 获取消息列表
-func (uc UserCenter) MessageList(FromUserId, ToUserId int64) ([]*kitex_gen.Message, error) {
-	messageList, err := query.MessageList(FromUserId, ToUserId)
-	return modelToKitexMessage(messageList), err
-}
-
-// 将model中的follower转换为kitex中生成的follwer
+// 将model中的follower转换为kitex中生成的follower
 func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
 	var followerList []*kitex_gen.Follower
 	for _, item := range *follower {
@@ -130,20 +124,4 @@ func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
 		})
 	}
 	return followerList
-}
-
-// 将model中的message转换为kitex中生成的message
-func modelToKitexMessage(messages *[]model.Message) []*kitex_gen.Message {
-	var messageList []*kitex_gen.Message
-	for _, item := range *messages {
-		createTime := item.CreatedAt.UnixMilli()
-		messageList = append(messageList, &kitex_gen.Message{
-			Id:         item.Id,
-			FromUserId: item.FromUserId,
-			ToUserId:   item.ToUserId,
-			Message:    item.Messages,
-			CreateTime: createTime,
-		})
-	}
-	return messageList
 }
