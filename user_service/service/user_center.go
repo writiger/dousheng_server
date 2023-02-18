@@ -135,7 +135,7 @@ func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
 	return followerList
 }
 
-// 将model中的follower转换为kitex中生成的follower
+// 将model中的Message转换为kitex中生成的Message
 func modelToKitexMessage(message *[]model.Message) []*kitex_gen.Message {
 	var messageList []*kitex_gen.Message
 	for _, item := range *message {

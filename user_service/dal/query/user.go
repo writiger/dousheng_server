@@ -56,21 +56,22 @@ func Follow(userId, followId int64) error {
 			UserId:   userId,
 			FollowId: followId,
 		}
-		if err := tx.Create(&follow).Error; err != nil {
+		err := tx.Create(&follow).Error
+		if err != nil {
 			return err
+		} else {
+			// followID 的 follower + 1
+			if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
+				Update("follower_count", gorm.Expr("follower_count + 1")).Error; err != nil {
+				return err
+			}
+			// userId 的 follow + 1
+			if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
+				Update("follow_count", gorm.Expr("follow_count + 1")).Error; err != nil {
+				return err
+			}
+			return nil
 		}
-
-		// followID 的 follower + 1
-		if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
-			Update("follower_count", gorm.Expr("follower_count + 1")).Error; err != nil {
-			return err
-		}
-		// userId 的 follow + 1
-		if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
-			Update("follow_count", gorm.Expr("follow_count + 1")).Error; err != nil {
-			return err
-		}
-		return nil
 	})
 	return err
 }
@@ -82,19 +83,21 @@ func CancelFollow(userId, followId int64) error {
 			UserId:   userId,
 			FollowId: followId,
 		}
-		if err := tx.Delete(&follow).Error; err != nil {
+		err := tx.Delete(&follow).Error
+		if err != nil {
 			return err
+		} else {
+			if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
+				Update("follower_count", gorm.Expr("follower_count - 1")).Error; err != nil {
+				return err
+			}
+			// userId 的 follow + 1
+			if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
+				Update("follow_count", gorm.Expr("follow_count - 1")).Error; err != nil {
+				return err
+			}
+			return nil
 		}
-		if err := tx.Model(&model.User{}).Where("uuid = ?", followId).
-			Update("follower_count", gorm.Expr("follower_count - 1")).Error; err != nil {
-			return err
-		}
-		// userId 的 follow + 1
-		if err := tx.Model(&model.User{}).Where("uuid = ?", userId).
-			Update("follow_count", gorm.Expr("follow_count - 1")).Error; err != nil {
-			return err
-		}
-		return nil
 	})
 	return err
 }

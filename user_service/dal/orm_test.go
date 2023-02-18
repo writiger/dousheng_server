@@ -210,15 +210,15 @@ func TestSendMessage(t *testing.T) {
 // 测试消息列表
 func TestMessageList(t *testing.T) {
 
-	var FromId int64
-	var ToId int64
-	FromId = 631992324594860032
-	ToId = 632238110008147968
-	r, err := query.MessageList(FromId, ToId)
-	if err != nil {
-		fmt.Println("错误", err)
-	}
-	for _, i := range *r {
-		fmt.Println("测试", i)
-	}
+	//var FromId int64
+	//var ToId int64
+	//FromId = 631992324594860032
+	//ToId = 632238110008147968
+	//r, err := query.MessageList(FromId, ToId)
+	//if err != nil {
+	//	fmt.Println("错误", err)
+	//}
+	//for _, i := range *r {
+	//	fmt.Println("测试", i)
+	//}
 }

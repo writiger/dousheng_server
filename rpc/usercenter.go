@@ -6,11 +6,9 @@ import (
 	"context"
 	"dousheng_server/conf"
 	"dousheng_server/user_service/dal/model"
-	"dousheng_server/user_service/dal/query"
 	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/kitex_gen/usercenter"
 	"errors"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -35,12 +33,18 @@ func init() {
 	}
 }
 
-type FollowerUserInfo struct {
-	UUID          int64  `json:"uuid"`
-	UserName      string `json:"username"`
-	FollowCount   int64  `json:"follow_count"`
-	FollowerCount int64  `json:"follower_count"`
-	isFollow      bool
+type UserInfo struct {
+	UUID            int64  `gorm:"primaryKey" json:"id"`
+	UserName        string `json:"name"`
+	FollowCount     int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorited  string `json:"total_favorited"`
+	WorkCount       string `json:"work_count"`
+	FavoriteCount   string `json:"favorite_count"`
 }
 
 // Register .
@@ -73,117 +77,103 @@ func LoginByPassword(username, password string) (int64, error) {
 }
 
 // GetUserInfo .
-func GetUserInfo(uuid int64) (*model.User, error) {
-	req := kitex_gen.GetInfoRequest{Uuid: uuid}
+func GetUserInfo(tokenId, userId int64) (*UserInfo, error) {
+	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.GetInfo(context.Background(), &req)
 	if err != nil {
 		return nil, err
 	}
-	userModel := model.User{
-		UUID:          resp.User.Id,
-		Username:      resp.User.Name,
-		FollowCount:   resp.User.FollowCount,
-		FollowerCount: resp.User.FollowerCount,
+	isFollowed := false
+	// 没登陆的用户
+	if tokenId != 0 {
+		isFollowed, err = IsFollowed(tokenId, userId)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return &userModel, nil
+	userInfo := UserInfo{
+		UUID:            resp.User.Id,
+		UserName:        resp.User.Name,
+		FollowCount:     resp.User.FollowCount,
+		FollowerCount:   resp.User.FollowerCount,
+		IsFollow:        isFollowed,
+		Avatar:          "http://192.168.101.112:8080/static/covers/img.png",
+		BackgroundImage: "http://192.168.101.112:8080/static/covers/img.png",
+		Signature:       "个人简介为空",
+		TotalFavorited:  "100",
+		WorkCount:       "100",
+		FavoriteCount:   "100",
+	}
+	return &userInfo, nil
 }
 
 // Follow 关注
 func Follow(userId, followId int64) error {
-	//userClient.
 	req := kitex_gen.FollowRequest{
 		UserId:   userId,
 		FollowId: followId,
 	}
 	_, err := userClient.Follow(context.Background(), &req)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 // CancelFollow 取消关注
 func CancelFollow(userId, followId int64) error {
-	//userClient.
 	req := kitex_gen.FollowRequest{
 		UserId:   userId,
 		FollowId: followId,
 	}
 	_, err := userClient.CancelFollow(context.Background(), &req)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
-// 关注列表
-func FollowList(userId int64) ([]FollowerUserInfo, error) {
-	var res []FollowerUserInfo
+// FollowList 关注列表
+func FollowList(userId int64) ([]UserInfo, error) {
+	var res []UserInfo
 	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.FollowList(context.Background(), &req)
 	if err != nil {
 		return nil, err
 	}
-	if resp == nil {
-		return nil, err
-	}
 	for _, item := range resp.Followers {
-		userInfo, err := GetUserInfo(item.FollowId)
+		userInfo, err := GetUserInfo(userId, item.FollowId)
 		if err != nil {
 			return nil, err
 		}
-		//is, err := query.JudgeFollow(userId, userInfo.UUID)//关注列表里的人肯定关注了,所以不用判断了
+		//is, err := query.JudgeFollow(userId, userInfo.UUID)
+		//关注列表里的人肯定关注了,所以不用判断了
 		if err != nil {
 			return nil, err
 		}
-		res = append(res, FollowerUserInfo{
-			UUID:          userInfo.UUID,
-			UserName:      userInfo.Username,
-			FollowCount:   userInfo.FollowCount,
-			FollowerCount: userInfo.FollowerCount,
-			isFollow:      true,
-		})
+		res = append(res, *userInfo)
 	}
 	return res, nil
 }
 
-// 粉丝列表
-func FollowerList(userId int64) ([]FollowerUserInfo, error) {
-	var res []FollowerUserInfo
+// FollowerList 粉丝列表
+func FollowerList(userId int64) ([]UserInfo, error) {
+	var res []UserInfo
 	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.FollowerList(context.Background(), &req)
 	if err != nil {
 		return nil, err
 	}
-	if resp == nil {
-		return nil, err
-	}
 	for _, item := range resp.Followers {
-		userInfo, err := GetUserInfo(item.UserId)
+		userInfo, err := GetUserInfo(userId, item.UserId)
 		if err != nil {
 			return nil, err
 		}
-
-		is, err := query.JudgeFollow(userId, userInfo.UUID)
 		if err != nil {
 			return nil, err
 		}
-		res = append(res, FollowerUserInfo{
-			UUID:          userInfo.UUID,
-			UserName:      userInfo.Username,
-			FollowCount:   userInfo.FollowCount,
-			FollowerCount: userInfo.FollowerCount,
-			isFollow:      is,
-		})
+		res = append(res, *userInfo)
 	}
 	return res, nil
 }
 
-// 好友列表
-func FriendList(userId int64) ([]FollowerUserInfo, error) {
-	var res []FollowerUserInfo
+// FriendList 好友列表
+func FriendList(userId int64) ([]UserInfo, error) {
+	var res []UserInfo
 	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.FriendList(context.Background(), &req)
 	if err != nil {
@@ -193,34 +183,34 @@ func FriendList(userId int64) ([]FollowerUserInfo, error) {
 		return nil, err
 	}
 	for _, item := range resp.Followers {
-		userInfo, err := GetUserInfo(item.FollowId)
+		userInfo, err := GetUserInfo(userId, item.FollowId)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println("takonid:", userId)
-		fmt.Println("查出来的id:", userInfo.UUID)
-		//如果关系表userInof中的选取的id等于传进来的userId就说明好友应该获取另一个id
+		//如果关系表userInfo中的选取的id等于传进来的userId就说明好友应该获取另一个id
 		if userId == userInfo.UUID {
-			userInfo, err = GetUserInfo(item.UserId)
-			fmt.Println("真正查出来的id:", userInfo.UUID)
+			userInfo, err = GetUserInfo(userId, item.UserId)
 			if err != nil {
 				return nil, err
 			}
 		}
 
-		is, err := query.JudgeFollow(userId, userInfo.UUID)
 		if err != nil {
 			return nil, err
 		}
-		res = append(res, FollowerUserInfo{
-			UUID:          userInfo.UUID,
-			UserName:      userInfo.Username,
-			FollowCount:   userInfo.FollowCount,
-			FollowerCount: userInfo.FollowerCount,
-			isFollow:      is,
-		})
+		res = append(res, *userInfo)
 	}
 	return res, nil
+}
+
+// IsFollowed 是否关注
+func IsFollowed(userId, followId int64) (bool, error) {
+	req := kitex_gen.FollowRequest{UserId: userId, FollowId: followId}
+	resp, err := userClient.JudgeFollow(context.Background(), &req)
+	if err != nil {
+		return false, err
+	}
+	return resp.Is, nil
 }
 
 // 发送消息
