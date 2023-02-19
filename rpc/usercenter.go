@@ -5,14 +5,12 @@ package rpc
 import (
 	"context"
 	"dousheng_server/conf"
-	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/kitex_gen/usercenter"
 	"errors"
 	"github.com/cloudwego/kitex/client"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	"time"
 )
 
 var userClient usercenter.Client
@@ -45,6 +43,14 @@ type UserInfo struct {
 	TotalFavorited  string `json:"total_favorited"`
 	WorkCount       string `json:"work_count"`
 	FavoriteCount   string `json:"favorite_count"`
+}
+type Message struct {
+	// UserId 关注了 FollowID
+	Id         int64  `json:"id"`
+	ToUserId   int64  `json:"to_user_id"`
+	FromUserId int64  `json:"from_user_id"`
+	Messages   string `json:"content"`
+	CreatedAt  int64  `json:"create_time"`
 }
 
 // Register .
@@ -228,8 +234,8 @@ func SendMessage(fromUserId, ToUserId int64, message string) error {
 }
 
 // 消息列表
-func MessageList(fromUserId, ToUserId, lastTime int64) ([]model.Message, error) {
-	var messageList []model.Message
+func MessageList(fromUserId, ToUserId, lastTime int64) ([]Message, error) {
+	var messageList []Message
 	req := kitex_gen.MessageListRequest{
 		UserId:   fromUserId,
 		ToId:     ToUserId,
@@ -243,13 +249,12 @@ func MessageList(fromUserId, ToUserId, lastTime int64) ([]model.Message, error) 
 		return nil, err
 	}
 	for _, item := range resp.MessageList {
-		createAt := time.UnixMilli(item.CreateTime)
-		messageList = append(messageList, model.Message{
+		messageList = append(messageList, Message{
 			Id:         item.Id,
-			Messages:   item.Content,
 			FromUserId: item.FromUserId,
 			ToUserId:   item.ToUserId,
-			CreatedAt:  createAt,
+			Messages:   item.Content,
+			CreatedAt:  item.CreateTime,
 		})
 	}
 

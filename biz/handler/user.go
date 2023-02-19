@@ -6,6 +6,7 @@ import (
 	"dousheng_server/rpc"
 	"dousheng_server/user_service/dal/model"
 	"errors"
+	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -264,7 +265,9 @@ func MessageList(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	lastTimeTemp := c.Query("pre_msg_time")
+
 	lastTime, err := strconv.ParseInt(lastTimeTemp, 10, 64)
+	fmt.Println("时间戳是:", lastTime)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,

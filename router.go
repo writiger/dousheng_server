@@ -37,4 +37,6 @@ func customizedRegister(r *server.Hertz) {
 	auth.GET("/relation/follow/list/", handler.FollowList)
 	auth.GET("/relation/follower/list/", handler.FollowerList)
 	auth.GET("/relation/friend/list/", handler.FriendList)
+	auth.POST("/message/action/", handler.SendMessage)
+	auth.GET("/message/chat/", handler.MessageList)
 }

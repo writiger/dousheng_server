@@ -7,7 +7,6 @@ import (
 	"dousheng_server/user_service/util"
 	"dousheng_server/uuidmaker"
 	"errors"
-	"time"
 )
 
 type UserCenter struct {
@@ -117,8 +116,7 @@ func (uc UserCenter) SendMessages(FromUser, ToUser int64, message string) error 
 
 // 消息列表
 func (uc UserCenter) MessageList(FromUserId, ToUserId, lastTime int64) ([]*kitex_gen.Message, error) {
-	timeLastTime := time.UnixMilli(lastTime)
-	messageList, err := query.MessageList(FromUserId, ToUserId, timeLastTime)
+	messageList, err := query.MessageList(FromUserId, ToUserId, lastTime)
 	return modelToKitexMessage(messageList), err
 
 }
@@ -139,13 +137,12 @@ func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
 func modelToKitexMessage(message *[]model.Message) []*kitex_gen.Message {
 	var messageList []*kitex_gen.Message
 	for _, item := range *message {
-		createAt := item.CreatedAt.UnixMilli()
 		messageList = append(messageList, &kitex_gen.Message{
 			Id:         item.Id,
 			FromUserId: item.FromUserId,
 			ToUserId:   item.ToUserId,
 			Content:    item.Messages,
-			CreateTime: createAt,
+			CreateTime: item.CreatedAt,
 		})
 	}
 	return messageList

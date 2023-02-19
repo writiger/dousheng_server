@@ -21,7 +21,7 @@ func (vc VideoCenter) Publish(req *kitex_gen.PublishRequest) (int64, error) {
 		return 0, err
 	}
 	// 2. 生成
-	saverIp := "http://192.168.31.84:8080"
+	saverIp := "http://192.168.101.112:8080"
 	video := &model.Video{
 		UUID:          uuid,
 		UserID:        req.UserId,
