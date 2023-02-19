@@ -52,6 +52,11 @@ type Message struct {
 	Messages   string `json:"content"`
 	CreatedAt  int64  `json:"create_time"`
 }
+type Friend struct {
+	Message string `json:"message"`
+	MsgType int64  `json:"msgType"`
+	*UserInfo
+}
 
 // Register .
 func Register(username, password string) error {
@@ -178,8 +183,10 @@ func FollowerList(userId int64) ([]UserInfo, error) {
 }
 
 // FriendList 好友列表
-func FriendList(userId int64) ([]UserInfo, error) {
-	var res []UserInfo
+func FriendList(userId int64) ([]Friend, error) {
+	var res []Friend
+	var msg Message
+	var msgList []Message
 	req := kitex_gen.GetInfoRequest{Uuid: userId}
 	resp, err := userClient.FriendList(context.Background(), &req)
 	if err != nil {
@@ -200,11 +207,25 @@ func FriendList(userId int64) ([]UserInfo, error) {
 				return nil, err
 			}
 		}
-
+		msgList, err = MessageList(userId, userInfo.UUID, 0)
 		if err != nil {
 			return nil, err
 		}
-		res = append(res, *userInfo)
+		var msgType int64
+		msgType = 0
+		content := ""
+		if msgList != nil {
+			msg = msgList[len(msgList)-1]
+			if msg.FromUserId == userId {
+				msgType = 1
+			}
+			content = msg.Messages
+		}
+		res = append(res, Friend{
+			UserInfo: userInfo,
+			Message:  content,
+			MsgType:  msgType,
+		})
 	}
 	return res, nil
 }
@@ -245,7 +266,7 @@ func MessageList(fromUserId, ToUserId, lastTime int64) ([]Message, error) {
 	if err != nil {
 		return nil, err
 	}
-	if resp == nil {
+	if resp == nil || len(resp.MessageList) == 0 {
 		return nil, err
 	}
 	for _, item := range resp.MessageList {
