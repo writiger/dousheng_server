@@ -6,11 +6,11 @@ import (
 	"dousheng_server/rpc"
 	"dousheng_server/user_service/dal/model"
 	"errors"
-	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"strconv"
+	"strings"
 )
 
 // CheckUser 登录校验
@@ -226,6 +226,13 @@ func SendMessage(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	message := c.Query("content")
+	if message == "" || strings.Replace(message, " ", "", -1) == "" {
+		c.JSON(consts.StatusServiceUnavailable, utils.H{
+			"status_code": -1,
+			"status_msg":  "wrong request param:message is null",
+		})
+		return
+	}
 	actionType := c.Query("action_type")
 	requester, _ := c.Get("identity")
 	fromUserId := requester.(*model.User).UUID
@@ -267,7 +274,6 @@ func MessageList(ctx context.Context, c *app.RequestContext) {
 	lastTimeTemp := c.Query("pre_msg_time")
 
 	lastTime, err := strconv.ParseInt(lastTimeTemp, 10, 64)
-	fmt.Println("时间戳是:", lastTime)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,
