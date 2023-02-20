@@ -2,8 +2,9 @@ package handler
 
 import (
 	"context"
-	"dousheng_server/covermaker"
+	zaplog "dousheng_server/deploy/log"
 	"dousheng_server/middleware"
+	"dousheng_server/middleware/covermaker"
 	"dousheng_server/rpc"
 	usermodel "dousheng_server/user_service/dal/model"
 	"dousheng_server/video_service/dal/model"
@@ -74,6 +75,8 @@ func Publish(ctx context.Context, c *app.RequestContext) {
 			"status_code": -1,
 			"status_msg":  "rpc.PublishVideo wrong",
 		})
+		zaplog.ZapLogger.Errorf("save video failed errSave:%v, errRpc:%v, errCover:%v", errSave, errRpc, errCover)
+		return
 	}
 	// 5. 返回
 	c.JSON(consts.StatusOK, utils.H{
@@ -105,13 +108,14 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	videos, nextTime, err := rpc.Feed(lastTimeStamp, uuid)
 	if len(videos) < 3 {
 		// 时间设置为当前时间即可完成循环
-		nextTime = time.Now().UnixMilli()
+		nextTime = time.Now().Unix()
 	}
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{
 			"status_code": -1,
 			"status_msg":  err.Error(),
 		})
+		zaplog.ZapLogger.Errorf("rpc.Feed failed to visit err:%v", err)
 		return
 	}
 
@@ -140,6 +144,7 @@ func VideoList(ctx context.Context, c *app.RequestContext) {
 			"status_code": -1,
 			"status_msg":  err.Error(),
 		})
+		zaplog.ZapLogger.Errorf("rpc.VideoList failed to visit err:%v", err)
 		return
 	}
 	c.JSON(consts.StatusOK, utils.H{
@@ -179,6 +184,7 @@ func VideoLike(ctx context.Context, c *app.RequestContext) {
 			"status_code": -1,
 			"status_msg":  "rpc.LikeVideo wrong" + err.Error(),
 		})
+		zaplog.ZapLogger.Errorf("rpc.LikeVideo failed to visit err:%v", err)
 		return
 	}
 	// 3. 返回
@@ -210,6 +216,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 			"status_code": -1,
 			"status_msg":  "rpc.FavoriteVideoList wrong" + err.Error(),
 		})
+		zaplog.ZapLogger.Errorf("rpc.FavoriteVideoList failed to visit err:%v", err)
 		return
 	}
 	c.JSON(consts.StatusOK, utils.H{
@@ -259,6 +266,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 				"status_code": -1,
 				"status_msg":  "rpc.PostComment wrong" + err.Error(),
 			})
+			zaplog.ZapLogger.Errorf("rpc.postComment failed to visit err:%v", err)
 			return
 		}
 
@@ -317,6 +325,7 @@ func GetComment(ctx context.Context, c *app.RequestContext) {
 			"status_code": -1,
 			"status_msg":  "rpc.GetComment wrong" + err.Error(),
 		})
+		zaplog.ZapLogger.Errorf("rpc.GetComment failed to visit err:%v", err)
 		return
 	}
 	// 3. 返回

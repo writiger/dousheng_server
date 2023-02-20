@@ -3,6 +3,7 @@
 package main
 
 import (
+	zaplog "dousheng_server/deploy/log"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"github.com/hertz-contrib/cors"
@@ -11,6 +12,7 @@ import (
 )
 
 func main() {
+	zaplog.InitLogger()
 	h := server.Default(
 		server.WithStreamBody(true),
 		server.WithTransport(standard.NewTransporter),

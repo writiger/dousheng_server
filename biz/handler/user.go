@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	zaplog "dousheng_server/deploy/log"
 	"dousheng_server/middleware"
 	"dousheng_server/rpc"
 	"dousheng_server/user_service/dal/model"
@@ -16,6 +17,7 @@ import (
 // CheckUser 登录校验
 func CheckUser(ctx context.Context, c *app.RequestContext) {
 	middleware.JwtMiddleware.LoginHandler(ctx, c)
+	zaplog.ZapLogger.Infof("用户:[%s]登陆成功", c.Query("username"))
 }
 
 // Register 注册
@@ -38,6 +40,7 @@ func Register(ctx context.Context, c *app.RequestContext) {
 			"status_code": -1,
 			"status_msg":  err.Error(),
 		})
+		zaplog.ZapLogger.Errorf("rpc.Register failed to visit err:%v", err)
 		return
 	}
 	// 4. 登录
@@ -71,6 +74,7 @@ func Info(ctx context.Context, c *app.RequestContext) {
 			"status_code": -1,
 			"status_msg":  err.Error(),
 		})
+		zaplog.ZapLogger.Errorf("rpc.GetUserInfo failed to visit err:%v", err)
 		return
 	}
 	c.JSON(consts.StatusOK, utils.H{
@@ -82,7 +86,6 @@ func Info(ctx context.Context, c *app.RequestContext) {
 
 // Follow 关注
 func Follow(ctx context.Context, c *app.RequestContext) {
-	//rpc.Follow()
 	toId := c.Query("to_user_id")
 	actionType := c.Query("action_type")
 	requester, _ := c.Get("identity")
@@ -103,6 +106,7 @@ func Follow(ctx context.Context, c *app.RequestContext) {
 				"status_code": -1,
 				"status_msg":  "wrong rpc" + err.Error(),
 			})
+			zaplog.ZapLogger.Errorf("rpc.Follow failed to visit err:%v", err)
 			return
 		}
 	case "2":
@@ -112,6 +116,7 @@ func Follow(ctx context.Context, c *app.RequestContext) {
 				"status_code": -1,
 				"status_msg":  "wrong rpc" + err.Error(),
 			})
+			zaplog.ZapLogger.Errorf("rpc.CancelFollow failed to visit err:%v", err)
 			return
 		}
 	default:
@@ -146,6 +151,7 @@ func FollowList(ctx context.Context, c *app.RequestContext) {
 			"status_msg":  err.Error(),
 			"user_list":   nil,
 		})
+		zaplog.ZapLogger.Errorf("rpc.FollowList failed to visit err:%v", err)
 		return
 	}
 	c.JSON(consts.StatusOK, utils.H{
@@ -169,6 +175,7 @@ func FollowerList(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	userModel, err := rpc.FollowerList(userId)
+	zaplog.ZapLogger.Errorf("rpc.Register failed to visit err:%v", err)
 	if err != nil {
 		c.JSON(consts.StatusServiceUnavailable, utils.H{
 			"status_code": -1,
@@ -204,6 +211,7 @@ func FriendList(ctx context.Context, c *app.RequestContext) {
 			"status_msg":  err.Error(),
 			"user_list":   nil,
 		})
+		zaplog.ZapLogger.Errorf("rpc.FriendList failed to visit err:%v", err)
 		return
 	}
 	c.JSON(consts.StatusOK, utils.H{
@@ -214,7 +222,7 @@ func FriendList(ctx context.Context, c *app.RequestContext) {
 	return
 }
 
-// 发送消息
+// SendMessage 发送消息
 func SendMessage(ctx context.Context, c *app.RequestContext) {
 	Id := c.Query("to_user_id")
 	toUserId, err := strconv.ParseInt(Id, 10, 64)
@@ -244,6 +252,7 @@ func SendMessage(ctx context.Context, c *app.RequestContext) {
 				"status_code": -1,
 				"status_msg":  "wrong rpc" + err.Error(),
 			})
+			zaplog.ZapLogger.Errorf("rpc.SendMessage failed to visit err:%v", err)
 			return
 		}
 	default:
@@ -260,7 +269,7 @@ func SendMessage(ctx context.Context, c *app.RequestContext) {
 
 }
 
-// 获取消息列表
+// MessageList 获取消息列表
 func MessageList(ctx context.Context, c *app.RequestContext) {
 	Id := c.Query("to_user_id")
 	toUserId, err := strconv.ParseInt(Id, 10, 64)
@@ -290,6 +299,7 @@ func MessageList(ctx context.Context, c *app.RequestContext) {
 			"status_msg":   err.Error(),
 			"message_list": nil,
 		})
+		zaplog.ZapLogger.Errorf("rpc.MessageList failed to visit err:%v", err)
 		return
 	}
 	c.JSON(consts.StatusOK, utils.H{
