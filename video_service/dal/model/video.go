@@ -6,7 +6,7 @@ import (
 )
 
 type Video struct {
-	UUID          int64  `json:"id"`
+	UUID          int64  `gorm:"primaryKey" json:"id"`
 	UserID        int64  `json:"user_id"`
 	PlayURL       string `json:"play_url"`
 	CoverURL      string `json:"cover_url"`

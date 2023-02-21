@@ -7,18 +7,23 @@ require (
 	github.com/cloudwego/hertz v0.5.2
 	github.com/cloudwego/kitex v0.4.4
 	github.com/disintegration/imaging v1.6.2
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/hertz-contrib/cors v0.0.0-20220601061225-50f4e582beaf
 	github.com/hertz-contrib/gzip v0.0.1
 	github.com/hertz-contrib/jwt v1.0.2
+	github.com/hertz-contrib/logger/zap v0.0.0-20230206071608-2de215a9fd50
 	github.com/hertz-contrib/monitor-prometheus v0.0.0-20221109015426-47eab4e08245
 	github.com/kitex-contrib/monitor-prometheus v0.0.0-20210817080809-024dd7bd51e1
 	github.com/kitex-contrib/obs-opentelemetry v0.1.0
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/u2takey/ffmpeg-go v0.4.1
+	github.com/yuin/gopher-lua v1.1.0
 	go.etcd.io/etcd/client/v3 v3.5.7
+	go.uber.org/zap v1.23.0
 	golang.org/x/crypto v0.5.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/ini.v1 v1.67.0
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gorm.io/driver/mysql v1.4.5
 	gorm.io/gorm v1.24.5
 )
@@ -39,6 +44,7 @@ require (
 	github.com/cloudwego/thriftgo v0.2.4 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -77,7 +83,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.9.0 // indirect
 	go.uber.org/atomic v1.8.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	go.uber.org/zap v1.17.0 // indirect
 	golang.org/x/arch v0.0.0-20220722155209-00200b7164a7 // indirect
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	golang.org/x/net v0.5.0 // indirect

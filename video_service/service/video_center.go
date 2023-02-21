@@ -1,6 +1,7 @@
 package service
 
 import (
+	zaplog "dousheng_server/deploy/log"
 	"dousheng_server/uuidmaker"
 	"dousheng_server/video_service/dal/model"
 	"dousheng_server/video_service/dal/query"
@@ -18,6 +19,7 @@ func (vc VideoCenter) Publish(req *kitex_gen.PublishRequest) (int64, error) {
 	// 1. 申请UUID
 	uuid, err := uuidmaker.GetUUID()
 	if err != nil {
+		zaplog.ZapLogger.Error("failed when generating uuid err:%v", err)
 		return 0, err
 	}
 	// 2. 生成
@@ -122,6 +124,7 @@ func (vc VideoCenter) PostComment(req *kitex_gen.PostCommentRequest) (*kitex_gen
 	// 1. 申请uuid
 	uuid, err := uuidmaker.GetUUID()
 	if err != nil {
+		zaplog.ZapLogger.Error("failed when generating uuid err:%v", err)
 		return nil, err
 	}
 	// 2. 生成comment

@@ -1,6 +1,7 @@
 package service
 
 import (
+	zaplog "dousheng_server/deploy/log"
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/dal/query"
 	"dousheng_server/user_service/kitex_gen"
@@ -27,6 +28,7 @@ func (uc UserCenter) CreateUser(userName, password string) error {
 	// 获取uuid
 	uuid, err := uuidmaker.GetUUID()
 	if err != nil {
+		zaplog.ZapLogger.Error("failed when generating uuid err:%v", err)
 		return err
 	}
 
@@ -99,6 +101,7 @@ func (uc UserCenter) FriendList(uuid int64) ([]*kitex_gen.Follower, error) {
 func (uc UserCenter) SendMessages(FromUser, ToUser int64, message string) error {
 	id, err := uuidmaker.GetUUID()
 	if err != nil {
+		zaplog.ZapLogger.Error("failed when generating uuid err:%v", err)
 		return err
 	}
 	messageModel := &model.Message{
@@ -114,7 +117,7 @@ func (uc UserCenter) SendMessages(FromUser, ToUser int64, message string) error 
 	return nil
 }
 
-// 消息列表
+// MessageList 消息列表
 func (uc UserCenter) MessageList(FromUserId, ToUserId, lastTime int64) ([]*kitex_gen.Message, error) {
 	messageList, err := query.MessageList(FromUserId, ToUserId, lastTime)
 	return modelToKitexMessage(messageList), err

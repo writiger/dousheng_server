@@ -2,6 +2,7 @@ package query
 
 import (
 	"dousheng_server/conf"
+	zaplog "dousheng_server/deploy/log"
 	"dousheng_server/user_service/dal/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -17,11 +18,13 @@ func init() {
 	var err error
 	GormClient, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
+		zaplog.ZapLogger.Error("failed when opening gorm:%s err:%v", conf.Conf.Database, err)
 		panic(err.Error())
 	}
 
 	err = GormClient.AutoMigrate(&model.User{}, &model.Follower{}, &model.Message{})
 	if err != nil {
+		zaplog.ZapLogger.Error("failed when init gorm table err:%v", err)
 		panic("gorm init table failed ")
 	}
 }
