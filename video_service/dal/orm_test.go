@@ -85,11 +85,8 @@ func TestUndoFavorite(t *testing.T) {
 
 func TestIsLiked(t *testing.T) {
 	t.Run("是否点赞", func(t *testing.T) {
-		res, err := query.IsLiked(629648834103869440, 631256877056917504)
-		if err != nil {
-			t.Fatalf(err.Error())
-			return
-		}
+		res := query.IsLiked(629648834103869440, 631256877056917504)
+
 		fmt.Println(res)
 	})
 }
