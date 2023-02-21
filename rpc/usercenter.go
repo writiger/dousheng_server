@@ -8,7 +8,6 @@ import (
 	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/kitex_gen/usercenter"
 	"errors"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -128,9 +127,6 @@ func GetUserInfo(tokenId, userId int64) (*UserInfo, error) {
 		WorkCount:       workCount,
 		FavoriteCount:   favoriteCount,
 	}
-	fmt.Println("前端作品数:", workCount)
-	fmt.Println("前端喜欢数:", favoriteCount)
-	fmt.Println("前端获赞数:", totalFavorited)
 	return &userInfo, nil
 }
 
