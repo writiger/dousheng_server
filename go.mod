@@ -7,6 +7,7 @@ require (
 	github.com/cloudwego/hertz v0.5.2
 	github.com/cloudwego/kitex v0.4.4
 	github.com/disintegration/imaging v1.6.2
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/hertz-contrib/cors v0.0.0-20220601061225-50f4e582beaf
 	github.com/hertz-contrib/gzip v0.0.1
 	github.com/hertz-contrib/jwt v1.0.2
@@ -16,6 +17,7 @@ require (
 	github.com/kitex-contrib/obs-opentelemetry v0.1.0
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/u2takey/ffmpeg-go v0.4.1
+	github.com/yuin/gopher-lua v1.1.0
 	go.etcd.io/etcd/client/v3 v3.5.7
 	go.uber.org/zap v1.23.0
 	golang.org/x/crypto v0.5.0
@@ -42,6 +44,7 @@ require (
 	github.com/cloudwego/thriftgo v0.2.4 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

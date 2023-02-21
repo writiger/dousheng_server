@@ -4,6 +4,7 @@ package main
 
 import (
 	zaplog "dousheng_server/deploy/log"
+	"dousheng_server/middleware/limiter"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"github.com/hertz-contrib/cors"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+	limiter.InitLimiter()
 	zaplog.InitLogger()
 	h := server.Default(
 		server.WithStreamBody(true),
@@ -20,6 +22,8 @@ func main() {
 		server.WithHandleMethodNotAllowed(true),
 		server.WithTracer(prometheus.NewServerTracer(":9080", "/metrics")))
 
+	// 使用限流中间件
+	h.Use(limiter.LimiterMiddleware())
 	h.Use(cors.New(cors.Config{AllowAllOrigins: true}))
 	h.Use(gzip.Gzip(gzip.DefaultCompression))
 	register(h)
