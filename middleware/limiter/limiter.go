@@ -55,8 +55,8 @@ var limiter *TokenBucketLimiter
 
 func InitLimiter() {
 	limiter = &TokenBucketLimiter{
-		capacity: 3,
-		rate:     3,
+		capacity: 5,
+		rate:     5,
 		client:   rc.RedisClient,
 		script:   redis.NewScript(tokenBucketLimiterTryAcquireRedisScript),
 	}
@@ -91,7 +91,7 @@ func LimiterMiddleware() app.HandlerFunc {
 
 		err := limiter.TryAcquire(context.Background(), "currentTokens")
 		if err != nil {
-			c.AbortWithMsg("too many requests, server traffic limiting", -1)
+			c.AbortWithMsg("too many requests, server traffic limiting", 1)
 		}
 		c.Next(ctx)
 	}

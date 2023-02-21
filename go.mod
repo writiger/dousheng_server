@@ -17,7 +17,6 @@ require (
 	github.com/kitex-contrib/obs-opentelemetry v0.1.0
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/u2takey/ffmpeg-go v0.4.1
-	github.com/yuin/gopher-lua v1.1.0
 	go.etcd.io/etcd/client/v3 v3.5.7
 	go.uber.org/zap v1.23.0
 	golang.org/x/crypto v0.5.0
