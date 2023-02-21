@@ -22,18 +22,21 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserCenter"
 	handlerType := (*kitex_gen.UserCenter)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"Ping":         kitex.NewMethodInfo(pingHandler, newPingArgs, newPingResult, false),
-		"Register":     kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
-		"Login":        kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
-		"GetInfo":      kitex.NewMethodInfo(getInfoHandler, newGetInfoArgs, newGetInfoResult, false),
-		"Follow":       kitex.NewMethodInfo(followHandler, newFollowArgs, newFollowResult, false),
-		"CancelFollow": kitex.NewMethodInfo(cancelFollowHandler, newCancelFollowArgs, newCancelFollowResult, false),
-		"JudgeFollow":  kitex.NewMethodInfo(judgeFollowHandler, newJudgeFollowArgs, newJudgeFollowResult, false),
-		"FollowList":   kitex.NewMethodInfo(followListHandler, newFollowListArgs, newFollowListResult, false),
-		"FollowerList": kitex.NewMethodInfo(followerListHandler, newFollowerListArgs, newFollowerListResult, false),
-		"FriendList":   kitex.NewMethodInfo(friendListHandler, newFriendListArgs, newFriendListResult, false),
-		"SendMessage":  kitex.NewMethodInfo(sendMessageHandler, newSendMessageArgs, newSendMessageResult, false),
-		"MessageList":  kitex.NewMethodInfo(messageListHandler, newMessageListArgs, newMessageListResult, false),
+		"Ping":            kitex.NewMethodInfo(pingHandler, newPingArgs, newPingResult, false),
+		"Register":        kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
+		"Login":           kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
+		"GetInfo":         kitex.NewMethodInfo(getInfoHandler, newGetInfoArgs, newGetInfoResult, false),
+		"Follow":          kitex.NewMethodInfo(followHandler, newFollowArgs, newFollowResult, false),
+		"CancelFollow":    kitex.NewMethodInfo(cancelFollowHandler, newCancelFollowArgs, newCancelFollowResult, false),
+		"JudgeFollow":     kitex.NewMethodInfo(judgeFollowHandler, newJudgeFollowArgs, newJudgeFollowResult, false),
+		"FollowList":      kitex.NewMethodInfo(followListHandler, newFollowListArgs, newFollowListResult, false),
+		"FollowerList":    kitex.NewMethodInfo(followerListHandler, newFollowerListArgs, newFollowerListResult, false),
+		"FriendList":      kitex.NewMethodInfo(friendListHandler, newFriendListArgs, newFriendListResult, false),
+		"SendMessage":     kitex.NewMethodInfo(sendMessageHandler, newSendMessageArgs, newSendMessageResult, false),
+		"MessageList":     kitex.NewMethodInfo(messageListHandler, newMessageListArgs, newMessageListResult, false),
+		"WorkCounts":      kitex.NewMethodInfo(workCountsHandler, newWorkCountsArgs, newWorkCountsResult, false),
+		"FavouriteCounts": kitex.NewMethodInfo(favouriteCountsHandler, newFavouriteCountsArgs, newFavouriteCountsResult, false),
+		"BePraisedCounts": kitex.NewMethodInfo(bePraisedCountsHandler, newBePraisedCountsArgs, newBePraisedCountsResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -1789,6 +1792,441 @@ func (p *MessageListResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func workCountsHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.GetInfoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).WorkCounts(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *WorkCountsArgs:
+		success, err := handler.(kitex_gen.UserCenter).WorkCounts(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*WorkCountsResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newWorkCountsArgs() interface{} {
+	return &WorkCountsArgs{}
+}
+
+func newWorkCountsResult() interface{} {
+	return &WorkCountsResult{}
+}
+
+type WorkCountsArgs struct {
+	Req *kitex_gen.GetInfoRequest
+}
+
+func (p *WorkCountsArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.GetInfoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *WorkCountsArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *WorkCountsArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *WorkCountsArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in WorkCountsArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *WorkCountsArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetInfoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var WorkCountsArgs_Req_DEFAULT *kitex_gen.GetInfoRequest
+
+func (p *WorkCountsArgs) GetReq() *kitex_gen.GetInfoRequest {
+	if !p.IsSetReq() {
+		return WorkCountsArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *WorkCountsArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type WorkCountsResult struct {
+	Success *kitex_gen.CountsResponse
+}
+
+var WorkCountsResult_Success_DEFAULT *kitex_gen.CountsResponse
+
+func (p *WorkCountsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.CountsResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *WorkCountsResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *WorkCountsResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *WorkCountsResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in WorkCountsResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *WorkCountsResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.CountsResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *WorkCountsResult) GetSuccess() *kitex_gen.CountsResponse {
+	if !p.IsSetSuccess() {
+		return WorkCountsResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *WorkCountsResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.CountsResponse)
+}
+
+func (p *WorkCountsResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func favouriteCountsHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.GetInfoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).FavouriteCounts(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *FavouriteCountsArgs:
+		success, err := handler.(kitex_gen.UserCenter).FavouriteCounts(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*FavouriteCountsResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newFavouriteCountsArgs() interface{} {
+	return &FavouriteCountsArgs{}
+}
+
+func newFavouriteCountsResult() interface{} {
+	return &FavouriteCountsResult{}
+}
+
+type FavouriteCountsArgs struct {
+	Req *kitex_gen.GetInfoRequest
+}
+
+func (p *FavouriteCountsArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.GetInfoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *FavouriteCountsArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *FavouriteCountsArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *FavouriteCountsArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in FavouriteCountsArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *FavouriteCountsArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetInfoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var FavouriteCountsArgs_Req_DEFAULT *kitex_gen.GetInfoRequest
+
+func (p *FavouriteCountsArgs) GetReq() *kitex_gen.GetInfoRequest {
+	if !p.IsSetReq() {
+		return FavouriteCountsArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *FavouriteCountsArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type FavouriteCountsResult struct {
+	Success *kitex_gen.CountsResponse
+}
+
+var FavouriteCountsResult_Success_DEFAULT *kitex_gen.CountsResponse
+
+func (p *FavouriteCountsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.CountsResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *FavouriteCountsResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *FavouriteCountsResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *FavouriteCountsResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in FavouriteCountsResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *FavouriteCountsResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.CountsResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *FavouriteCountsResult) GetSuccess() *kitex_gen.CountsResponse {
+	if !p.IsSetSuccess() {
+		return FavouriteCountsResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *FavouriteCountsResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.CountsResponse)
+}
+
+func (p *FavouriteCountsResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func bePraisedCountsHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(kitex_gen.GetInfoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(kitex_gen.UserCenter).BePraisedCounts(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *BePraisedCountsArgs:
+		success, err := handler.(kitex_gen.UserCenter).BePraisedCounts(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*BePraisedCountsResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newBePraisedCountsArgs() interface{} {
+	return &BePraisedCountsArgs{}
+}
+
+func newBePraisedCountsResult() interface{} {
+	return &BePraisedCountsResult{}
+}
+
+type BePraisedCountsArgs struct {
+	Req *kitex_gen.GetInfoRequest
+}
+
+func (p *BePraisedCountsArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(kitex_gen.GetInfoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *BePraisedCountsArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *BePraisedCountsArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *BePraisedCountsArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in BePraisedCountsArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *BePraisedCountsArgs) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.GetInfoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var BePraisedCountsArgs_Req_DEFAULT *kitex_gen.GetInfoRequest
+
+func (p *BePraisedCountsArgs) GetReq() *kitex_gen.GetInfoRequest {
+	if !p.IsSetReq() {
+		return BePraisedCountsArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *BePraisedCountsArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type BePraisedCountsResult struct {
+	Success *kitex_gen.CountsResponse
+}
+
+var BePraisedCountsResult_Success_DEFAULT *kitex_gen.CountsResponse
+
+func (p *BePraisedCountsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(kitex_gen.CountsResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *BePraisedCountsResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *BePraisedCountsResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *BePraisedCountsResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in BePraisedCountsResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *BePraisedCountsResult) Unmarshal(in []byte) error {
+	msg := new(kitex_gen.CountsResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *BePraisedCountsResult) GetSuccess() *kitex_gen.CountsResponse {
+	if !p.IsSetSuccess() {
+		return BePraisedCountsResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *BePraisedCountsResult) SetSuccess(x interface{}) {
+	p.Success = x.(*kitex_gen.CountsResponse)
+}
+
+func (p *BePraisedCountsResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -1914,6 +2352,36 @@ func (p *kClient) MessageList(ctx context.Context, Req *kitex_gen.MessageListReq
 	_args.Req = Req
 	var _result MessageListResult
 	if err = p.c.Call(ctx, "MessageList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) WorkCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest) (r *kitex_gen.CountsResponse, err error) {
+	var _args WorkCountsArgs
+	_args.Req = Req
+	var _result WorkCountsResult
+	if err = p.c.Call(ctx, "WorkCounts", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FavouriteCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest) (r *kitex_gen.CountsResponse, err error) {
+	var _args FavouriteCountsArgs
+	_args.Req = Req
+	var _result FavouriteCountsResult
+	if err = p.c.Call(ctx, "FavouriteCounts", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) BePraisedCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest) (r *kitex_gen.CountsResponse, err error) {
+	var _args BePraisedCountsArgs
+	_args.Req = Req
+	var _result BePraisedCountsResult
+	if err = p.c.Call(ctx, "BePraisedCounts", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

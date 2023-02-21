@@ -73,6 +73,11 @@ message MessageListResponse{
   string status_msg  = 2; // 返回状态描述
   repeated Message message_list =3;
 }
+message CountsResponse{
+  int32  status_code  = 1; // 状态码，0-成功，其他值-失败
+  string status_msg   = 2; // 返回状态描述
+  int64  counts      = 3; // 数量
+}
 service UserCenter {
   rpc Ping(Request) returns(Response);
   rpc Register(RegisterRequest) returns (BasicResponse);
@@ -86,6 +91,9 @@ service UserCenter {
   rpc FriendList(GetInfoRequest) returns (FollowListResponse);
   rpc SendMessage(SendMessageRequest) returns(BasicResponse);
   rpc MessageList(MessageListRequest) returns(MessageListResponse);
+  rpc WorkCounts(GetInfoRequest) returns(CountsResponse);
+  rpc FavouriteCounts(GetInfoRequest) returns(CountsResponse);
+  rpc BePraisedCounts(GetInfoRequest) returns(CountsResponse);
 }
 
 message User {

@@ -8,6 +8,7 @@ import (
 	"dousheng_server/user_service/kitex_gen"
 	"dousheng_server/user_service/kitex_gen/usercenter"
 	"errors"
+	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -40,9 +41,9 @@ type UserInfo struct {
 	Avatar          string `json:"avatar"`
 	BackgroundImage string `json:"background_image"`
 	Signature       string `json:"signature"`
-	TotalFavorited  string `json:"total_favorited"`
-	WorkCount       string `json:"work_count"`
-	FavoriteCount   string `json:"favorite_count"`
+	TotalFavorited  int64  `json:"total_favorited"`
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"`
 }
 type Message struct {
 	// UserId 关注了 FollowID
@@ -102,6 +103,18 @@ func GetUserInfo(tokenId, userId int64) (*UserInfo, error) {
 			return nil, err
 		}
 	}
+	totalFavorited, err := BePraisedCounts(userId)
+	if err != nil {
+		return nil, err
+	}
+	workCount, err := WorkCounts(userId)
+	if err != nil {
+		return nil, err
+	}
+	favoriteCount, err := FavouriteCounts(userId)
+	if err != nil {
+		return nil, err
+	}
 	userInfo := UserInfo{
 		UUID:            resp.User.Id,
 		UserName:        resp.User.Name,
@@ -111,10 +124,13 @@ func GetUserInfo(tokenId, userId int64) (*UserInfo, error) {
 		Avatar:          "http://192.168.101.112:8080/static/covers/img.png",
 		BackgroundImage: "http://192.168.101.112:8080/static/covers/img.png",
 		Signature:       "个人简介为空",
-		TotalFavorited:  "100",
-		WorkCount:       "100",
-		FavoriteCount:   "100",
+		TotalFavorited:  totalFavorited,
+		WorkCount:       workCount,
+		FavoriteCount:   favoriteCount,
 	}
+	fmt.Println("前端作品数:", workCount)
+	fmt.Println("前端喜欢数:", favoriteCount)
+	fmt.Println("前端获赞数:", totalFavorited)
 	return &userInfo, nil
 }
 
@@ -280,4 +296,46 @@ func MessageList(fromUserId, ToUserId, lastTime int64) ([]Message, error) {
 	}
 
 	return messageList, err
+}
+
+// 作品数
+func WorkCounts(uuid int64) (int64, error) {
+	var count int64
+	req := kitex_gen.GetInfoRequest{Uuid: uuid}
+	item, err := userClient.WorkCounts(context.Background(), &req)
+	if err != nil {
+		return 0, err
+	}
+	if item != nil {
+		count = item.Counts
+	}
+	return count, err
+}
+
+// 喜欢数
+func FavouriteCounts(uuid int64) (int64, error) {
+	var count int64
+	req := kitex_gen.GetInfoRequest{Uuid: uuid}
+	item, err := userClient.FavouriteCounts(context.Background(), &req)
+	if err != nil {
+		return 0, err
+	}
+	if item != nil {
+		count = item.Counts
+	}
+	return count, err
+}
+
+// 获赞数
+func BePraisedCounts(uuid int64) (int64, error) {
+	var count int64
+	req := kitex_gen.GetInfoRequest{Uuid: uuid}
+	item, err := userClient.BePraisedCounts(context.Background(), &req)
+	if err != nil {
+		return 0, err
+	}
+	if item != nil {
+		count = item.Counts
+	}
+	return count, err
 }

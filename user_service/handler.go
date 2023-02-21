@@ -219,3 +219,60 @@ func (s *UserCenterImpl) MessageList(ctx context.Context, req *kitex_gen.Message
 	}
 	return
 }
+
+// WorkCounts implements the UserCenterImpl interface.
+func (s *UserCenterImpl) WorkCounts(ctx context.Context, req *kitex_gen.GetInfoRequest) (resp *kitex_gen.CountsResponse, err error) {
+	counts, err := service.UserCenter{}.WorkCounts(req.Uuid)
+	if err != nil {
+		resp = &kitex_gen.CountsResponse{
+			StatusCode: -1,
+			StatusMsg:  "work counts query failed" + err.Error(),
+			Counts:     0,
+		}
+		return
+	}
+	resp = &kitex_gen.CountsResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+		Counts:     counts,
+	}
+	return
+}
+
+// FavouriteCounts implements the UserCenterImpl interface.
+func (s *UserCenterImpl) FavouriteCounts(ctx context.Context, req *kitex_gen.GetInfoRequest) (resp *kitex_gen.CountsResponse, err error) {
+	counts, err := service.UserCenter{}.FavouriteCounts(req.Uuid)
+	if err != nil {
+		resp = &kitex_gen.CountsResponse{
+			StatusCode: -1,
+			StatusMsg:  "favourite counts query failed" + err.Error(),
+			Counts:     0,
+		}
+		return
+	}
+	resp = &kitex_gen.CountsResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+		Counts:     counts,
+	}
+	return
+}
+
+// BePraisedCounts implements the UserCenterImpl interface.
+func (s *UserCenterImpl) BePraisedCounts(ctx context.Context, req *kitex_gen.GetInfoRequest) (resp *kitex_gen.CountsResponse, err error) {
+	counts, err := service.UserCenter{}.BePraisedCounts(req.Uuid)
+	if err != nil {
+		resp = &kitex_gen.CountsResponse{
+			StatusCode: -1,
+			StatusMsg:  "be praise counts query failed" + err.Error(),
+			Counts:     0,
+		}
+		return
+	}
+	resp = &kitex_gen.CountsResponse{
+		StatusCode: 0,
+		StatusMsg:  "success",
+		Counts:     counts,
+	}
+	return
+}

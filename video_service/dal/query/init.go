@@ -19,8 +19,7 @@ func init() {
 	if err != nil {
 		panic(err.Error())
 	}
-
-	err = GormClient.AutoMigrate(&model.Video{}, &model.Favorite{}, &model.Comment{})
+	err = GormClient.AutoMigrate(&model.Comment{}, &model.Video{}, &model.Favorite{})
 	if err != nil {
 		panic("gorm init table failed ")
 	}
