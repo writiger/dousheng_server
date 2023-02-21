@@ -128,7 +128,10 @@ func FollowerList(uuid int64) (*[]model.Follower, error) {
 // FriendList // 通过uuid查询好友列表
 func FriendList(uuid int64) (*[]model.Follower, error) {
 	var friends []model.Follower
-	err := GormClient.Raw("SELECT DISTINCT t1.* FROM (SELECT * FROM followers WHERE `user_id` = ?)  AS t1 INNER JOIN followers t2 ON t2.user_id=t1.follow_id  AND t2.follow_id= ?", uuid, uuid).Scan(&friends).Error
+	err := GormClient.
+		Raw("SELECT DISTINCT t1.* FROM (SELECT * FROM followers WHERE `user_id` = ?)  "+
+			"AS t1 INNER JOIN followers t2 ON t2.user_id=t1.follow_id  AND t2.follow_id= ?", uuid, uuid).
+		Scan(&friends).Error
 	return &friends, err
 }
 
@@ -141,10 +144,13 @@ func SendMessage(message *model.Message) error {
 	return err
 }
 
-// 查询消息列表
+// MessageList 查询消息列表
 func MessageList(FromId, ToId, nowTime int64) (*[]model.Message, error) {
 	var messageList []model.Message
-	err := GormClient.Where("from_user_id = ? AND to_user_id = ? AND created_at > ? OR from_user_id = ? AND to_user_id = ? AND created_at > ?", FromId, ToId, nowTime, ToId, FromId, nowTime).Order("created_at").Find(&messageList).Error
+	err := GormClient.
+		Where("from_user_id = ? AND to_user_id = ? AND created_at > ?"+
+			" OR from_user_id = ? AND to_user_id = ? AND created_at > ?",
+			FromId, ToId, nowTime, ToId, FromId, nowTime).Order("created_at").Find(&messageList).Error
 	return &messageList, err
 }
 

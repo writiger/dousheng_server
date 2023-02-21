@@ -51,8 +51,8 @@ go build -o dousheng_server && ./dousheng_server
 - [x] 用户关注列表
 - [x] 用户粉丝列表
 - [x] 用户好友列表
-- [ ] 发送消息
-- [ ] 消息列表
+- [x] 发送消息
+- [x] 消息列表
 
 
 

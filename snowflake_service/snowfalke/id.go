@@ -1,6 +1,7 @@
 package snowfalke
 
 import (
+	zaplog "dousheng_server/deploy/log"
 	"errors"
 	"sync"
 	"time"
@@ -23,6 +24,7 @@ func init() {
 	workerId, err := NewLeaseMaker().getLease()
 	iDMaker, err = newWorker(workerId)
 	if err != nil {
+		zaplog.ZapLogger.Error("IDMaker Init Error")
 		panic("IDMaker Init Error")
 	}
 }

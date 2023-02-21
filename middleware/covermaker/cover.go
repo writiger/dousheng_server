@@ -2,10 +2,10 @@ package covermaker
 
 import (
 	"bytes"
+	zaplog "dousheng_server/deploy/log"
 	"fmt"
 	"github.com/disintegration/imaging"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
-	"log"
 	"os"
 	"strings"
 )
@@ -19,19 +19,19 @@ func GetSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName str
 		WithOutput(buf, os.Stdout).
 		Run()
 	if err != nil {
-		log.Fatal("生成缩略图失败：", err)
+		zaplog.ZapLogger.Warnf("failed when making cover err:%v", err)
 		return "", err
 	}
 
 	img, err := imaging.Decode(buf)
 	if err != nil {
-		log.Fatal("生成缩略图失败：", err)
+		zaplog.ZapLogger.Warnf("failed when making cover err:%v", err)
 		return "", err
 	}
 
 	err = imaging.Save(img, snapshotPath+".png")
 	if err != nil {
-		log.Fatal("生成缩略图失败：", err)
+		zaplog.ZapLogger.Warnf("failed when making cover err:%v", err)
 		return "", err
 	}
 
