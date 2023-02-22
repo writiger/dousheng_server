@@ -1,7 +1,7 @@
 package model
 
 type Message struct {
-	// UserId 关注了 FollowID
+	//FromUserId对ToUserId发消息
 	Id         int64  `gorm:"primaryKey" json:"id"`
 	ToUserId   int64  `gorm:"to_user_id,index:idx_to" json:"to_user_id"`
 	FromUserId int64  `gorm:"from_user_id,index:idx_from" json:"from_user_id"`
