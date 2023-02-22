@@ -90,13 +90,12 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	// 1. 初始化可选参数
 	var uuid int64
 	lastTimeStamp := time.Now().UnixMilli()
-
 	// 2. 通过时间戳生成time
 	lastTimeStr := c.Query("latest_time")
 	if lastTimeStr != "" {
 		lastTimeStamp, _ = strconv.ParseInt(lastTimeStr, 10, 64)
+		//lastTimeStamp = lastTimeStamp * 100
 	}
-
 	// 4. 通过token字符串解析uuid
 	tokenString := c.Query("token")
 	if tokenString != "" {
@@ -108,7 +107,7 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	videos, nextTime, err := rpc.Feed(lastTimeStamp, uuid)
 	if len(videos) < 3 {
 		// 时间设置为当前时间即可完成循环
-		nextTime = time.Now().Unix()
+		nextTime = time.Now().UnixMilli()
 	}
 	if err != nil {
 		c.JSON(consts.StatusBadRequest, utils.H{

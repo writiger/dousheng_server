@@ -98,13 +98,13 @@ sudo systemctl start grafana-server
 
 ### 服务端口预分配
 
-| 服务        | 端口   |
-|-----------|------|
-| hertz     | 8080、9980 |
-| user      | 8900、9900 |
-| snowflake | 8901、9901 |
-| video     | 8902、9902 |
-| promethus | 9090  |
+| 服务         | 端口   |
+|------------|------|
+| hertz      | 8080、9980 |
+| user       | 8900、9900 |
+| snowflake  | 8901、9901 |
+| video      | 8902、9902 |
+| prometheus | 9090  |
 
 
 
@@ -114,15 +114,37 @@ sudo systemctl start grafana-server
 
 ~~~ golang
 type User struct {
-	UUID          int64         `gorm:"primaryKey" json:"id"`
-	Username      string        `json:"username"`
-	Password      string        `json:"password"`
-	FollowCount   int64         `json:"follow_count"`
-	FollowerCount int64         `json:"follower_count"`
-	Videos        []model.Video `gorm:"foreignKey:user_id"`
+	UUID          int64      `gorm:"primaryKey" json:"id"`
+	Username      string     `json:"name"`
+	Password      string     `json:"password"`
+	FollowCount   int64      `json:"follow_count"`
+	FollowerCount int64      `json:"follower_count"`
+	Followers     []Follower `gorm:"foreignKey:user_id;foreignKey:follow_id"`
+	Messages      []Message  `gorm:"foreignKey:from_user_id;foreignKey:to_user_id"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
+}
+~~~
+
+### Follower模型
+~~~ golang
+type Follower struct {
+	// UserId 关注了 FollowID
+	UserId   int64 `gorm:"primaryKey" json:"userId"`
+	FollowId int64 `gorm:"primaryKey" json:"followerId"`
+}
+~~~
+
+### Message模型
+~~~ golang
+type Message struct {
+	//FromUserId对ToUserId发消息
+	Id         int64  `gorm:"primaryKey" json:"id"`
+	ToUserId   int64  `gorm:"to_user_id,index:idx_to" json:"to_user_id"`
+	FromUserId int64  `gorm:"from_user_id,index:idx_from" json:"from_user_id"`
+	Messages   string `gorm:"message" json:"content"`
+	CreatedAt  int64  `gorm:"index:idx_create" json:"create_time"`
 }
 ~~~
 
@@ -130,7 +152,7 @@ type User struct {
 
 ~~~ golang
 type Video struct {
-	UUID          int64  `json:"id"`
+	UUID          int64  `gorm:"primaryKey" json:"id"`
 	UserID        int64  `json:"user_id"`
 	PlayURL       string `json:"play_url"`
 	CoverURL      string `json:"cover_url"`
@@ -140,6 +162,8 @@ type Video struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
+	//外键
+	User model.User `gorm:"foreignKey:user_id"`
 }
 ~~~
 
@@ -147,8 +171,10 @@ type Video struct {
 
 ~~~ golang
 type Favorite struct {
-	UserId  int64 `json:"user_id"`
+	UserId  int64 `gorm:"index:idx_user" json:"user_id"`
 	VideoId int64 `json:"video_id"`
+	//外键
+	User model.User `gorm:"foreignKey:user_id"`
 }
 ~~~
 
@@ -157,10 +183,11 @@ type Favorite struct {
 ~~~ golang
 type Comment struct {
 	CommentId  int64  `gorm:"primaryKey" json:"comment_id"`
-	UserId     int64  `json:"user_id"`
-	VideoId    int64  `json:"video_id"`
+	UserId     int64  `gorm:"index:idx_user" json:"user_id"`
+	VideoId    int64  `gorm:"index:idx_video" json:"video_id"`
 	Content    string `json:"content"`
-	CreateDate string `json:"create_date"`
+	CreateDate string `gorm:"index:idx_create,sort:desc" json:"create_date"`
+	CreatedAt  time.Time
 }
 ~~~
 
@@ -169,4 +196,4 @@ type Comment struct {
 * UUID使用雪花算法生成
 * 使用etcd的lease机制维护雪花算法
 * 密码使用bcrypt加盐
-
+* 使用令牌桶限流

@@ -46,6 +46,9 @@ func (vc VideoCenter) Delete(uuid int64) error {
 func (vc VideoCenter) Feed(timeStamp int64) ([]*kitex_gen.Video, error) {
 	lastTime := time.UnixMilli(timeStamp)
 	videos, err := query.Feed(lastTime)
+	if videos == nil {
+		return nil, err
+	}
 	if err != nil {
 		return nil, err
 	}

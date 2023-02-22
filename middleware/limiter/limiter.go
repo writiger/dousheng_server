@@ -4,7 +4,6 @@ import (
 	"context"
 	"dousheng_server/middleware/rc"
 	"errors"
-	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/go-redis/redis/v8"
 	"time"
@@ -55,8 +54,8 @@ var limiter *TokenBucketLimiter
 
 func InitLimiter() {
 	limiter = &TokenBucketLimiter{
-		capacity: 5,
-		rate:     5,
+		capacity: 10,
+		rate:     10,
 		client:   rc.RedisClient,
 		script:   redis.NewScript(tokenBucketLimiterTryAcquireRedisScript),
 	}
@@ -77,7 +76,6 @@ func (l *TokenBucketLimiter) TryAcquire(ctx context.Context, resource string) er
 	if err != nil {
 		return err
 	}
-	fmt.Println("success", success)
 	// 若到达窗口请求上限，请求失败
 	if !success {
 		return errors.New("bucket script failed")
