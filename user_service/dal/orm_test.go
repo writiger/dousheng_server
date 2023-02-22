@@ -6,6 +6,7 @@ import (
 	"dousheng_server/user_service/util"
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -209,16 +210,34 @@ func TestSendMessage(t *testing.T) {
 
 // 测试消息列表
 func TestMessageList(t *testing.T) {
+	var FromId int64
+	var ToId int64
+	FromId = 631992324594860032
+	ToId = 632238110008147968
+	r, err := query.MessageList(FromId, ToId, time.Time{}.Unix())
+	if err != nil {
+		fmt.Println("错误", err)
+	}
+	for _, i := range *r {
+		fmt.Println("测试", i)
+	}
+}
 
-	//var FromId int64
-	//var ToId int64
-	//FromId = 631992324594860032
-	//ToId = 632238110008147968
-	//r, err := query.MessageList(FromId, ToId)
-	//if err != nil {
-	//	fmt.Println("错误", err)
-	//}
-	//for _, i := range *r {
-	//	fmt.Println("测试", i)
-	//}
+// 测试获赞，作品，点赞数量
+func TestCountsList(t *testing.T) {
+	a, erra := query.FavouriteCounts(634419366489751552)
+	b, errb := query.WorkCounts(634419366489751552)
+	c, errc := query.BePraisedCounts(634419366489751552)
+	if erra != nil {
+		fmt.Println(erra)
+	}
+	if errb != nil {
+		fmt.Println(errb)
+	}
+	if errc != nil {
+		fmt.Println(errc)
+	}
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
 }

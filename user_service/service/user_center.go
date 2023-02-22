@@ -124,6 +124,21 @@ func (uc UserCenter) MessageList(FromUserId, ToUserId, lastTime int64) ([]*kitex
 
 }
 
+// 作品数
+func (uc UserCenter) WorkCounts(uuid int64) (int64, error) {
+	return query.WorkCounts(uuid)
+}
+
+// 喜欢数
+func (uc UserCenter) FavouriteCounts(uuid int64) (int64, error) {
+	return query.FavouriteCounts(uuid)
+}
+
+// 获赞数
+func (uc UserCenter) BePraisedCounts(uuid int64) (int64, error) {
+	return query.BePraisedCounts(uuid)
+}
+
 // 将model中的follower转换为kitex中生成的follower
 func modelToKitexFollower(follower *[]model.Follower) []*kitex_gen.Follower {
 	var followerList []*kitex_gen.Follower

@@ -3,6 +3,7 @@ package query
 import (
 	"dousheng_server/user_service/dal/model"
 	"dousheng_server/user_service/util"
+	video "dousheng_server/video_service/dal/model"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -151,4 +152,27 @@ func MessageList(FromId, ToId, nowTime int64) (*[]model.Message, error) {
 			" OR from_user_id = ? AND to_user_id = ? AND created_at > ?",
 			FromId, ToId, nowTime, ToId, FromId, nowTime).Order("created_at").Find(&messageList).Error
 	return &messageList, err
+}
+
+// 作品数
+func WorkCounts(userID int64) (count int64, err error) {
+	err = GormClient.Model(&video.Video{}).Where("user_id = ?", userID).Count(&count).Error
+	return
+}
+
+// 喜欢数
+func FavouriteCounts(userID int64) (count int64, err error) {
+	err = GormClient.Model(&video.Favorite{}).Where("user_id = ?", userID).Count(&count).Error
+	return
+}
+
+// 获赞数
+func BePraisedCounts(userID int64) (count int64, err error) {
+	var resultList []int64
+	err = GormClient.Model(&video.Video{}).Select("uuid").Where("user_id = ?", userID).Find(&resultList).Error
+	if err != nil {
+		return
+	}
+	err = GormClient.Model(&video.Favorite{}).Where("video_id IN ?", resultList).Count(&count).Error
+	return
 }

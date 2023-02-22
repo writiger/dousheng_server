@@ -21,8 +21,7 @@ func init() {
 		zaplog.ZapLogger.Error("failed when opening gorm:%s err:%v", conf.Conf.Database, err)
 		panic(err.Error())
 	}
-
-	err = GormClient.AutoMigrate(&model.Video{}, &model.Favorite{}, &model.Comment{})
+	err = GormClient.AutoMigrate(&model.Comment{}, &model.Video{}, &model.Favorite{})
 	if err != nil {
 		zaplog.ZapLogger.Error("failed when init gorm table err:%v", err)
 		panic("gorm init table failed ")

@@ -239,6 +239,9 @@ func GetComment(tokenId, uuid int64) ([]CommentWithUser, error) {
 	if err != nil {
 		return nil, err
 	}
+	if resp == nil {
+		return nil, err
+	}
 	for _, item := range resp.Comments {
 		userInfo, err := GetUserInfo(tokenId, item.UserId)
 		if err != nil {

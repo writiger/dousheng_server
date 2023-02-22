@@ -12,7 +12,7 @@ func Favorite(userId, videoId int64) error {
 		UserId:  userId,
 		VideoId: videoId,
 	}
-	if ok, _ := IsLiked(userId, videoId); ok {
+	if ok := IsLiked(userId, videoId); ok {
 		return errors.New("already liked")
 	}
 	return GormClient.Transaction(func(tx *gorm.DB) error {
@@ -45,10 +45,14 @@ func UndoFavorite(userId, videoId int64) error {
 }
 
 // IsLiked 判断此视频该用户是否点过赞
-func IsLiked(userId, videoId int64) (bool, error) {
-	favorite := model.Favorite{UserId: userId}
-	err := GormClient.Where("video_id = ?", videoId).Find(&favorite).Error
-	return favorite.VideoId != 0, err
+func IsLiked(userId, videoId int64) bool {
+	favorite := model.Favorite{
+		UserId:  userId,
+		VideoId: videoId,
+	}
+	//err := GormClient.Where("video_id = ?", videoId).Find(&favorite).Error
+	result := GormClient.Find(&favorite)
+	return result.RowsAffected != 0
 }
 
 // FavoriteList 点赞过的视频uuid列表

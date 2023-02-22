@@ -121,9 +121,6 @@ func (s *VideoCenterImpl) GetComment(ctx context.Context, req *kitex_gen.GetComm
 
 // IsFavorite implements the VideoCenterImpl interface.
 func (s *VideoCenterImpl) IsFavorite(ctx context.Context, req *kitex_gen.IsFavoriteRequest) (*kitex_gen.BasicResponse, error) {
-	res, err := service.VideoCenter{}.IsFavorite(req.UserId, req.VideoId)
-	if err != nil {
-		return nil, err
-	}
+	res := service.VideoCenter{}.IsFavorite(req.UserId, req.VideoId)
 	return &kitex_gen.BasicResponse{StatusMsg: fmt.Sprint(res), StatusCode: 0}, nil
 }

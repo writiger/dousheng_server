@@ -23,6 +23,9 @@ type Client interface {
 	FriendList(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.FollowListResponse, err error)
 	SendMessage(ctx context.Context, Req *kitex_gen.SendMessageRequest, callOptions ...callopt.Option) (r *kitex_gen.BasicResponse, err error)
 	MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest, callOptions ...callopt.Option) (r *kitex_gen.MessageListResponse, err error)
+	WorkCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.CountsResponse, err error)
+	FavouriteCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.CountsResponse, err error)
+	BePraisedCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.CountsResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -112,4 +115,19 @@ func (p *kUserCenterClient) SendMessage(ctx context.Context, Req *kitex_gen.Send
 func (p *kUserCenterClient) MessageList(ctx context.Context, Req *kitex_gen.MessageListRequest, callOptions ...callopt.Option) (r *kitex_gen.MessageListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.MessageList(ctx, Req)
+}
+
+func (p *kUserCenterClient) WorkCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.CountsResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.WorkCounts(ctx, Req)
+}
+
+func (p *kUserCenterClient) FavouriteCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.CountsResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FavouriteCounts(ctx, Req)
+}
+
+func (p *kUserCenterClient) BePraisedCounts(ctx context.Context, Req *kitex_gen.GetInfoRequest, callOptions ...callopt.Option) (r *kitex_gen.CountsResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.BePraisedCounts(ctx, Req)
 }

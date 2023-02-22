@@ -81,7 +81,7 @@ func (vc VideoCenter) Like(userId, videoId int64, actionType int32) error {
 }
 
 // IsFavorite 判断是否点过赞
-func (vc VideoCenter) IsFavorite(userId, videoId int64) (bool, error) {
+func (vc VideoCenter) IsFavorite(userId, videoId int64) bool {
 	return query.IsLiked(userId, videoId)
 }
 

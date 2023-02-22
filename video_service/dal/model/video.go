@@ -1,6 +1,7 @@
 package model
 
 import (
+	"dousheng_server/user_service/dal/model"
 	"gorm.io/gorm"
 	"time"
 )
@@ -16,4 +17,6 @@ type Video struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
+	//外键
+	User model.User `gorm:"foreignKey:user_id"`
 }
