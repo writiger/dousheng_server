@@ -45,7 +45,7 @@ type VideoWithUser struct {
 
 // CommentWithUser 将用户信息中的user_id替换为user
 type CommentWithUser struct {
-	UUID       int64    `json:"comment_id"`
+	UUID       int64    `json:"id"`
 	UserInfo   UserInfo `json:"user"`
 	Content    string   `json:"content"`
 	CreateDate string   `json:"createDate"`

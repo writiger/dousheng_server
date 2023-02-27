@@ -28,12 +28,12 @@ func DeleteComment(uuid int64) error {
 		if err := tx.First(comment).Error; err != nil {
 			return err
 		}
-		if err := tx.Delete(comment).Error; err != nil {
-			return err
-		}
 		if err := tx.Where("uuid = ?", comment.VideoId).Model(&model.Video{}).
 			Update("comment_count", gorm.Expr("comment_count - 1")).
 			Error; err != nil {
+			return err
+		}
+		if err := tx.Delete(comment).Error; err != nil {
 			return err
 		}
 		return nil
